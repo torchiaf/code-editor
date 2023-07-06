@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: gitpod/openvscode-server
   tag: 'latest'
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 # Specifies one or more secrets to be used when pulling images from a
 # private container repository
