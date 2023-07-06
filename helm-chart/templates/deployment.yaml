@@ -111,19 +111,11 @@ spec:
           livenessProbe:
             tcpSocket:
               port: 3000
-            initialDelaySeconds: 10
             failureThreshold: 5
-            successThreshold: 1
-            timeoutSeconds: 5
-            periodSeconds: 10
           readinessProbe:
             tcpSocket:
               port: 3000
-            initialDelaySeconds: 10
             failureThreshold: 5
-            successThreshold: 2
-            timeoutSeconds: 5
-            periodSeconds: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
