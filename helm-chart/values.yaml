@@ -44,14 +44,14 @@ ingress:
   annotations:
     kubernetes.io/tls-acme: "true"
   hosts:
-    - host: epinio.164.92.128.43.nip.io
+    - host: epinio.openvscode.164.92.128.43.nip.io
       paths:
         - /
   ingressClassName: ""
   tls:
     - secretName: open-vscode
       hosts:
-        - epinio.164.92.128.43.nip.io
+        - epinio.openvscode.164.92.128.43.nip.io
 
 # Optional additional arguments
 extraArgs:
