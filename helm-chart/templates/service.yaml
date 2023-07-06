@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "open-vscode.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "open-vscode.name" . }}
+    helm.sh/chart: {{ include "open-vscode.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  {{- range .Values.extraPorts }}
+    - port: {{ .port }}
+      targetPort: {{ .port }}
+      protocol: {{ .protocol }}
+      name: {{ .name }}
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "open-vscode.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
