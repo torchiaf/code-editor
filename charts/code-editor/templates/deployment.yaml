@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "open-vscode.fullname" . }}
+  name: {{ include "code-editor.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "open-vscode.name" . }}
-    helm.sh/chart: {{ include "open-vscode.chart" . }}
+    app.kubernetes.io/name: {{ include "code-editor.name" . }}
+    helm.sh/chart: {{ include "code-editor.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
@@ -13,12 +13,12 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "open-vscode.name" . }}
+      app.kubernetes.io/name: {{ include "code-editor.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "open-vscode.name" . }}
+        app.kubernetes.io/name: {{ include "code-editor.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       imagePullSecrets: {{- toYaml .Values.imagePullSecrets | nindent 8 }}
@@ -40,7 +40,7 @@ spec:
         command:
           - /bin/sh
           - -c
-          - "cd /git && git clone https://github.com/torchiaf/epinio-code-editor && chown -R 1000:1000 /git"
+          - "cd /git && git clone https://github.com/torchiaf/code-editor && chown -R 1000:1000 /git"
         volumeMounts:
         - name: data
           mountPath: /git
@@ -130,13 +130,13 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ template "open-vscode.serviceAccountName" . }}
+      serviceAccountName: {{ template "code-editor.serviceAccountName" . }}
       volumes:
       - name: data
       {{- if .Values.persistence.enabled }}
         {{- if not .Values.persistence.hostPath }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "open-vscode.fullname" .) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "code-editor.fullname" .) }}
         {{- else }}
         hostPath:
           path: {{ .Values.persistence.hostPath }}

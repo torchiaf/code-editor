@@ -1,4 +1,4 @@
-# Default values for open-vscode.
+# Default values for code-editor.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: gitpod/openvscode-server
   tag: 'latest'
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 # Specifies one or more secrets to be used when pulling images from a
 # private container repository
@@ -44,14 +44,14 @@ ingress:
   annotations:
     kubernetes.io/tls-acme: "true"
   hosts:
-    - host: epinio.openvscode.164.92.128.43.nip.io
+    - host: localhost
       paths:
         - /
   ingressClassName: ""
   tls:
-    - secretName: open-vscode
+    - secretName: code-editor
       hosts:
-        - epinio.openvscode.164.92.128.43.nip.io
+        - localhost
 
 # Optional additional arguments
 extraArgs:
@@ -59,8 +59,8 @@ extraArgs:
   - "false"
   - --connection-token
   - "secretfrance"
-  # These are the arguments normally passed to open-vscode; run
-  # open-vscode --help for a list of available options.
+  # These are the arguments normally passed to code-editor; run
+  # code-editor --help for a list of available options.
   #
   # Each argument and parameter must have its own entry; if you use
   # --param value on the command line, then enter it here as:
@@ -123,7 +123,7 @@ affinity: {}
 ## Persist data to a persistent volume
 persistence:
   enabled: false
-  ## open-vscode data Persistent Volume Storage Class
+  ## code-editor data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
@@ -147,7 +147,7 @@ lifecycle:
   #      - curl -s -L SOME_SCRIPT | bash
 
 ## Enable an Specify container in extraContainers.
-## This is meant to allow adding open-vscode dependencies, like docker-dind.
+## This is meant to allow adding code-editor dependencies, like docker-dind.
 extraContainers: |
 # If docker-dind is used, DOCKER_HOST env is mandatory to set in "extraVars"
 #- name: docker-dind
@@ -179,21 +179,21 @@ extraInitContainers: |
 #     - sh
 #     - -c
 #     - |
-#       open-vscode --install-extension ms-python.python
-#       open-vscode --install-extension golang.Go
+#       code-editor --install-extension ms-python.python
+#       code-editor --install-extension golang.Go
 #   volumeMounts:
 #     - name: data
 #       mountPath: /home/coder
 
-## Additional open-vscode secret mounts
+## Additional code-editor secret mounts
 extraSecretMounts: []
   # - name: secret-files
   #   mountPath: /etc/secrets
   #   subPath: private.key # (optional)
-  #   secretName: open-vscode-secret-files
+  #   secretName: code-editor-secret-files
   #   readOnly: true
 
-## Additional open-vscode volume mounts
+## Additional code-editor volume mounts
 extraVolumeMounts: []
   # - name: extra-volume
   #   mountPath: /mnt/volume
@@ -203,7 +203,7 @@ extraVolumeMounts: []
 
 extraConfigmapMounts: []
   # - name: certs-configmap
-  #   mountPath: /etc/open-vscode/ssl/
+  #   mountPath: /etc/code-editor/ssl/
   #   subPath: certificates.crt # (optional)
   #   configMap: certs-configmap
   #   readOnly: true

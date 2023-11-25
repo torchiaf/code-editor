@@ -2,15 +2,15 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ include "open-vscode.fullname" . }}
+  name: {{ include "code-editor.fullname" . }}
   namespace: {{ .Release.Namespace }}
 {{- with .Values.persistence.annotations  }}
   annotations:
 {{ toYaml . | indent 4 }}
 {{- end }}
   labels:
-    app.kubernetes.io/name: {{ include "open-vscode.name" . }}
-    helm.sh/chart: {{ include "open-vscode.chart" . }}
+    app.kubernetes.io/name: {{ include "code-editor.name" . }}
+    helm.sh/chart: {{ include "code-editor.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:

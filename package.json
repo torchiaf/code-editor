@@ -1,0 +1,23 @@
+{
+  "name": "code-editor",
+  "version": "1.0.0",
+  "description": "vscode deployed on kubernetes clusters",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cluster:create": "k3d cluster create code-editor -p '80:80@loadbalancer'",
+    "cluster:delete": "k3d cluster delete code-editor",
+    "code-editor:install": "helm install code-editor charts/code-editor -n code-editor --create-namespace",
+    "code-editor:uninstall": "helm uninstall code-editor -n code-editor"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/torchiaf/code-editor.git"
+  },
+  "author": "torchiaf",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/torchiaf/code-editor/issues"
+  },
+  "homepage": "https://github.com/torchiaf/code-editor#readme"
+}

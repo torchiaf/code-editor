@@ -1,14 +1,9 @@
-# epinio-code-editor
-A code-editor based on VSCode -> Openvscode and used in Rancher Epinio UI
+# code-editor
+A code-editor based on VSCode deployed on kubernetes
 
 ## Usage
 
 - ```bash
-  helm install openvscode -n openvscode --create-namespace helm-chart
+  npm run code-editor:install
   ```
-- Go to https://epinio.openvscode.164.92.128.43.nip.io/?folder=/git&tkn=secretfrance
-
-## ToDo
-
-- Clean-up code
-- Remove hard-code values from templates
+- Go to http://localhost/?folder=/git&tkn=secretfrance
