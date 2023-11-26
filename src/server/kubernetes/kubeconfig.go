@@ -2,8 +2,9 @@ package kubernetes
 
 import (
 	"flag"
-	"os"
 	"path/filepath"
+
+	config "server/config"
 
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -11,20 +12,14 @@ import (
 	"k8s.io/client-go/util/homedir"
 )
 
-func isDevEnv() bool {
-	env := os.Getenv("DEV_ENV")
-	if len(env) > 0 {
-		return true
-	}
-	return false
-}
-
 func InitKubeconfig() *kubernetes.Clientset {
+
+	localConfig := config.GetConfig()
 
 	var config *rest.Config
 	var err error
 
-	if isDevEnv() {
+	if localConfig.IsDev {
 		var kubeconfig *string
 		if home := homedir.HomeDir(); home != "" {
 			kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")

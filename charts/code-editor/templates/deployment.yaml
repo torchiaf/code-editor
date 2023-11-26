@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.codeServer.replicaCount }}
   strategy:
     type: Recreate
   selector:
@@ -190,8 +190,10 @@ spec:
       - env:
         - name: PORT
           value: {{ quote .Values.server.server.env.port }}
-        - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ quote .Values.kubernetesClusterDomain }}
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
         image: {{ .Values.server.server.image.repository }}:{{ .Values.server.server.image.tag
           | default .Chart.AppVersion }}
         name: server

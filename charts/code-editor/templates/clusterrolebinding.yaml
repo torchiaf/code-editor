@@ -4,8 +4,8 @@ metadata:
   name: server
 rules:
 - apiGroups: [""]
-  resources: ["pods","services","namespaces","deployments","jobs","nodes"]
-  verbs: ["get", "watch", "list"]
+  resources: ["pods","services","namespaces","deployments","jobs"]
+  verbs: ["get", "update", "create", "watch", "list"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
