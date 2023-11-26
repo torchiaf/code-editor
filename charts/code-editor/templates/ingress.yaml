@@ -41,7 +41,7 @@ spec:
                 name: 'server'
                 port:
                   number: 8082
-            path: /api/
+            path: /code-editor/api/
             pathType: Prefix
 ---
 apiVersion: traefik.containo.us/v1alpha1
@@ -51,7 +51,8 @@ metadata:
 spec:
   stripPrefix:
     prefixes:
-    - /api
+    - /code-editor/api
+    - /code-editor
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -66,4 +67,6 @@ spec:
       services:
         - name: {{ $fullName }}
           port: {{ $svcPort }}
+      middlewares:
+        - name: strip-prefix
 {{- end }}
