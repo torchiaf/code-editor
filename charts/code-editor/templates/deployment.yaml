@@ -49,6 +49,16 @@ spec:
 {{- end }}
       {{- end }}
       containers:
+        - name: nginx
+          image: nginx:alpine
+          ports:
+            - name: nginxport
+              containerPort: 8081
+              protocol: TCP
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
 {{- if .Values.codeServer.extraContainers }}
 {{ tpl .Values.codeServer.extraContainers . | indent 8}}
 {{- end }}
@@ -132,6 +142,9 @@ spec:
     {{- end }}
       serviceAccountName: {{ template "code-editor.serviceAccountName" . }}
       volumes:
+      - name: nginx-config
+        configMap:
+          name: confnginx
       - name: data
       {{- if .Values.codeServer.persistence.enabled }}
         {{- if not .Values.codeServer.persistence.hostPath }}

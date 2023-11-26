@@ -10,8 +10,8 @@ metadata:
 spec:
   type: {{ .Values.codeServer.service.type }}
   ports:
-    - port: {{ .Values.codeServer.service.port }}
-      targetPort: http
+    - port: 8081
+      targetPort: nginxport
       protocol: TCP
       name: http
   {{- range .Values.codeServer.extraPorts }}
