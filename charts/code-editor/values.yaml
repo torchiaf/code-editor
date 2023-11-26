@@ -1,217 +1,233 @@
-# Default values for code-editor.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+kubernetesClusterDomain: cluster.local
+codeServer:
+  # Default values for code-editor.
+  # This is a YAML-formatted file.
+  # Declare variables to be passed into your templates.
 
-replicaCount: 1
+  replicaCount: 1
 
-image:
-  repository: gitpod/openvscode-server
-  tag: 'latest'
-  pullPolicy: Always
+  image:
+    repository: gitpod/openvscode-server
+    tag: 'latest'
+    pullPolicy: Always
 
-# Specifies one or more secrets to be used when pulling images from a
-# private container repository
-# https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry
-imagePullSecrets: []
-#  - name: registry-creds
+  # Specifies one or more secrets to be used when pulling images from a
+  # private container repository
+  # https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry
+  imagePullSecrets: []
+  #  - name: registry-creds
 
-nameOverride: ""
-fullnameOverride: ""
-hostnameOverride: ""
+  nameOverride: ""
+  fullnameOverride: ""
+  hostnameOverride: ""
 
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
 
-podAnnotations: {}
+  podAnnotations: {}
 
-podSecurityContext: {}
-  # fsGroup: 2000
+  podSecurityContext: {}
+    # fsGroup: 2000
 
-priorityClassName: ""
+  priorityClassName: ""
 
-service:
-  type: ClusterIP
-  port: 3000
+  service:
+    type: ClusterIP
+    port: 3000
 
-ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: localhost
-      paths:
-        - /
-  ingressClassName: ""
-  tls:
-    - secretName: code-editor
-      hosts:
-        - localhost
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: localhost
+        paths:
+          - /
+    ingressClassName: ""
+    tls:
+      - secretName: code-editor
+        hosts:
+          - localhost
 
-# Optional additional arguments
-extraArgs:
-  - --without-connection-token
-  - "false"
-  - --connection-token
-  - "secretfrance"
-  # These are the arguments normally passed to code-editor; run
-  # code-editor --help for a list of available options.
-  #
-  # Each argument and parameter must have its own entry; if you use
-  # --param value on the command line, then enter it here as:
-  #
-  # - --param
-  # - value
-  #
-  # If you receive an error like "Unknown option --param value", it may be
-  # because both the parameter and value are specified as a single argument,
-  # rather than two separate arguments (e.g. "- --param value" on a line).
+  # Optional additional arguments
+  extraArgs:
+    - --without-connection-token
+    - "false"
+    - --connection-token
+    - "secretfrance"
+    # These are the arguments normally passed to code-editor; run
+    # code-editor --help for a list of available options.
+    #
+    # Each argument and parameter must have its own entry; if you use
+    # --param value on the command line, then enter it here as:
+    #
+    # - --param
+    # - value
+    #
+    # If you receive an error like "Unknown option --param value", it may be
+    # because both the parameter and value are specified as a single argument,
+    # rather than two separate arguments (e.g. "- --param value" on a line).
 
-# Optional additional environment variables
-extraVars: []
-  # - name: PUID
-  #   value: 1000
-  # - name: PGID
-  #   value: 1000
-  # - name: TZ
-  #   value: "Etc/UTC"
-#  - name: DISABLE_TELEMETRY
-#    value: true
-#  - name: DOCKER_HOST
-#    value: "tcp://localhost:2375"
+  # Optional additional environment variables
+  extraVars: []
+    # - name: PUID
+    #   value: 1000
+    # - name: PGID
+    #   value: 1000
+    # - name: TZ
+    #   value: "Etc/UTC"
+  #  - name: DISABLE_TELEMETRY
+  #    value: true
+  #  - name: DOCKER_HOST
+  #    value: "tcp://localhost:2375"
 
-##
-## Init containers parameters:
-## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
-##
-volumePermissions:
-  enabled: false
-  securityContext:
-    runAsUser: 0
-
-## Pod Security Context
-## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-##
-securityContext:
-  enabled: true
-  fsGroup: 1000
-  runAsUser: 1000
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 1000Mi
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-
-## Persist data to a persistent volume
-persistence:
-  enabled: false
-  ## code-editor data Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
   ##
-  # storageClass: "-"
-  accessMode: ReadWriteOnce
-  size: 10Gi
-  annotations: {}
-  # existingClaim: ""
-  # hostPath: /data
+  ## Init containers parameters:
+  ## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
+  ##
+  volumePermissions:
+    enabled: false
+    securityContext:
+      runAsUser: 0
 
-lifecycle:
-  enabled: false
-  # postStart:
-  #  exec:
-  #    command:
-  #      - /bin/bash
-  #      - -c
-  #      - curl -s -L SOME_SCRIPT | bash
+  ## Pod Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  ##
+  securityContext:
+    enabled: true
+    fsGroup: 1000
+    runAsUser: 1000
 
-## Enable an Specify container in extraContainers.
-## This is meant to allow adding code-editor dependencies, like docker-dind.
-extraContainers: |
-# If docker-dind is used, DOCKER_HOST env is mandatory to set in "extraVars"
-#- name: docker-dind
-#  image: docker:19.03-dind
-#  imagePullPolicy: IfNotPresent
-#  resources:
-#    requests:
-#      cpu: 250m
-#      memory: 256M
-#  securityContext:
-#    privileged: true
-#    procMount: Default
-#  env:
-#  - name: DOCKER_TLS_CERTDIR
-#    value: ""
-#  - name: DOCKER_DRIVER
-#    value: "overlay2"
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 1000Mi
 
-extraInitContainers: |
-# - name: customization
-#   image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-#   imagePullPolicy: IfNotPresent
-#   env:
-#     - name: SERVICE_URL
-#       value: https://open-vsx.org/vscode/gallery
-#     - name: ITEM_URL
-#       value: https://open-vsx.org/vscode/item
-#   command:
-#     - sh
-#     - -c
-#     - |
-#       code-editor --install-extension ms-python.python
-#       code-editor --install-extension golang.Go
-#   volumeMounts:
-#     - name: data
-#       mountPath: /home/coder
+  nodeSelector: {}
 
-## Additional code-editor secret mounts
-extraSecretMounts: []
-  # - name: secret-files
-  #   mountPath: /etc/secrets
-  #   subPath: private.key # (optional)
-  #   secretName: code-editor-secret-files
-  #   readOnly: true
+  tolerations: []
 
-## Additional code-editor volume mounts
-extraVolumeMounts: []
-  # - name: extra-volume
-  #   mountPath: /mnt/volume
-  #   readOnly: true
-  #   existingClaim: volume-claim
-  #   hostPath: ""
+  affinity: {}
 
-extraConfigmapMounts: []
-  # - name: certs-configmap
-  #   mountPath: /etc/code-editor/ssl/
-  #   subPath: certificates.crt # (optional)
-  #   configMap: certs-configmap
-  #   readOnly: true
+  ## Persist data to a persistent volume
+  persistence:
+    enabled: false
+    ## code-editor data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    annotations: {}
+    # existingClaim: ""
+    # hostPath: /data
 
-extraPorts: []
-  # - name: minecraft
-  #   port: 25565
-  #   protocol: tcp
+  lifecycle:
+    enabled: false
+    # postStart:
+    #  exec:
+    #    command:
+    #      - /bin/bash
+    #      - -c
+    #      - curl -s -L SOME_SCRIPT | bash
 
-fetchGitSource:
-  enabled: true
+  ## Enable an Specify container in extraContainers.
+  ## This is meant to allow adding code-editor dependencies, like docker-dind.
+  extraContainers: |
+  # If docker-dind is used, DOCKER_HOST env is mandatory to set in "extraVars"
+  #- name: docker-dind
+  #  image: docker:19.03-dind
+  #  imagePullPolicy: IfNotPresent
+  #  resources:
+  #    requests:
+  #      cpu: 250m
+  #      memory: 256M
+  #  securityContext:
+  #    privileged: true
+  #    procMount: Default
+  #  env:
+  #  - name: DOCKER_TLS_CERTDIR
+  #    value: ""
+  #  - name: DOCKER_DRIVER
+  #    value: "overlay2"
+
+  extraInitContainers: |
+  # - name: customization
+  #   image: {{ .Values.codeServer.image.repository }}:{{ .Values.codeServer.image.tag }}
+  #   imagePullPolicy: IfNotPresent
+  #   env:
+  #     - name: SERVICE_URL
+  #       value: https://open-vsx.org/vscode/gallery
+  #     - name: ITEM_URL
+  #       value: https://open-vsx.org/vscode/item
+  #   command:
+  #     - sh
+  #     - -c
+  #     - |
+  #       code-editor --install-extension ms-python.python
+  #       code-editor --install-extension golang.Go
+  #   volumeMounts:
+  #     - name: data
+  #       mountPath: /home/coder
+
+  ## Additional code-editor secret mounts
+  extraSecretMounts: []
+    # - name: secret-files
+    #   mountPath: /etc/secrets
+    #   subPath: private.key # (optional)
+    #   secretName: code-editor-secret-files
+    #   readOnly: true
+
+  ## Additional code-editor volume mounts
+  extraVolumeMounts: []
+    # - name: extra-volume
+    #   mountPath: /mnt/volume
+    #   readOnly: true
+    #   existingClaim: volume-claim
+    #   hostPath: ""
+
+  extraConfigmapMounts: []
+    # - name: certs-configmap
+    #   mountPath: /etc/code-editor/ssl/
+    #   subPath: certificates.crt # (optional)
+    #   configMap: certs-configmap
+    #   readOnly: true
+
+  extraPorts: []
+    # - name: minecraft
+    #   port: 25565
+    #   protocol: tcp
+
+  fetchGitSource:
+    enabled: true
+
+server:
+  server:
+    env:
+      port: "8082"
+    image:
+      repository: ghcr.io/torchiaf/code-editor/server
+      tag: latest
+  ports:
+  - port: 8082
+    protocol: TCP
+    targetPort: 8082
+  replicas: 1
+  type: ClusterIP

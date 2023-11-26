@@ -9,4 +9,6 @@ RUN cd /app && go build -o server
 FROM alpine
 WORKDIR /server
 COPY --from=build /app /server
+
+EXPOSE 8082
 ENTRYPOINT ["./server"]

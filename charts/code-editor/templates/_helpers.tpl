@@ -3,7 +3,7 @@
 Expand the name of the chart.
 */}}
 {{- define "code-editor.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- default .Chart.Name .Values.codeServer.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -12,10 +12,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 If release name contains chart name it will be used as a full name.
 */}}
 {{- define "code-editor.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- if .Values.codeServer.fullnameOverride -}}
+{{- .Values.codeServer.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- $name := default .Chart.Name .Values.codeServer.nameOverride -}}
 {{- if contains $name .Release.Name -}}
 {{- .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -55,9 +55,9 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Create the name of the service account to use
 */}}
 {{- define "code-editor.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create -}}
-    {{ default (include "code-editor.fullname" .) .Values.serviceAccount.name }}
+{{- if .Values.codeServer.serviceAccount.create -}}
+    {{ default (include "code-editor.fullname" .) .Values.codeServer.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.serviceAccount.name }}
+    {{ default "default" .Values.codeServer.serviceAccount.name }}
 {{- end -}}
 {{- end -}}

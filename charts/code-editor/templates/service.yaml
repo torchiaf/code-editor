@@ -8,13 +8,13 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.codeServer.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.codeServer.service.port }}
       targetPort: http
       protocol: TCP
       name: http
-  {{- range .Values.extraPorts }}
+  {{- range .Values.codeServer.extraPorts }}
     - port: {{ .port }}
       targetPort: {{ .port }}
       protocol: {{ .protocol }}
@@ -23,3 +23,16 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "code-editor.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server
+  labels:
+    app: server
+spec:
+  type: {{ .Values.server.type }}
+  selector:
+    app: server
+  ports:
+	{{- .Values.server.ports | toYaml | nindent 2 }}

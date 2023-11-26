@@ -1,6 +1,6 @@
-{{- if .Values.ingress.enabled -}}
+{{- if .Values.codeServer.ingress.enabled -}}
 {{- $fullName := include "code-editor.fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
+{{- $svcPort := .Values.codeServer.service.port -}}
 {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
 {{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -13,17 +13,19 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "code-editor.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+  {{- with .Values.codeServer.ingress.annotations }}
   annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+    traefik.ingress.kubernetes.io/router.middlewares: code-editor-strip-prefix@kubernetescrd
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if .Values.ingress.ingressClassName }}
-  ingressClassName: {{ .Values.ingress.ingressClassName }}
+  {{- if .Values.codeServer.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.codeServer.ingress.ingressClassName }}
   {{- end }}
-  {{- if .Values.ingress.tls }}
+  {{- if .Values.codeServer.ingress.tls }}
   tls:
-    {{- range .Values.ingress.tls }}
+    {{- range .Values.codeServer.ingress.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
@@ -32,32 +34,36 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-  {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion -}}
-    {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
-      http:
+    - http:
         paths:
-          {{- range .paths }}
-          - path: {{ . }}
-            pathType: Prefix
-            backend:
+          - backend:
               service:
-                name: {{ $fullName }}
-                port: 
-                  number: {{ $svcPort }}
-          {{- end }}
-    {{- end }}
-  {{- else -}}
-    {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
-      http:
-        paths:
-          {{- range .paths }}
-          - path: {{ . }}
-            backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
-          {{- end }}
-    {{- end }}
-  {{- end }}
+                name: 'server'
+                port:
+                  number: 8082
+            path: /api/
+            pathType: Prefix
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-prefix
+spec:
+  stripPrefix:
+    prefixes:
+    - /api
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: code-editor-ui
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: {{ $fullName }}
+          port: {{ $svcPort }}
 {{- end }}

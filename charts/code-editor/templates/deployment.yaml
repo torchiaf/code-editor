@@ -21,18 +21,18 @@ spec:
         app.kubernetes.io/name: {{ include "code-editor.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      imagePullSecrets: {{- toYaml .Values.imagePullSecrets | nindent 8 }}
-      {{- if .Values.hostnameOverride }}
-      hostname: {{ .Values.hostnameOverride }}
+      imagePullSecrets: {{- toYaml .Values.codeServer.imagePullSecrets | nindent 8 }}
+      {{- if .Values.codeServer.hostnameOverride }}
+      hostname: {{ .Values.codeServer.hostnameOverride }}
       {{- end }}
-      {{- if .Values.priorityClassName }}
-      priorityClassName: {{ .Values.priorityClassName }}
+      {{- if .Values.codeServer.priorityClassName }}
+      priorityClassName: {{ .Values.codeServer.priorityClassName }}
       {{- end }}
-      {{- if .Values.securityContext.enabled }}
+      {{- if .Values.codeServer.securityContext.enabled }}
       securityContext:
-        fsGroup: {{ .Values.securityContext.fsGroup }}
+        fsGroup: {{ .Values.codeServer.securityContext.fsGroup }}
       {{- end }}
-      {{- if and .Values.fetchGitSource.enabled }}
+      {{- if and .Values.codeServer.fetchGitSource.enabled }}
       initContainers:
       - name: init-git-source
         image: alpine/git
@@ -44,56 +44,56 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /git
-{{- if .Values.extraInitContainers }}
-{{ tpl .Values.extraInitContainers . | indent 6}}
+{{- if .Values.codeServer.extraInitContainers }}
+{{ tpl .Values.codeServer.extraInitContainers . | indent 6}}
 {{- end }}
       {{- end }}
       containers:
-{{- if .Values.extraContainers }}
-{{ tpl .Values.extraContainers . | indent 8}}
+{{- if .Values.codeServer.extraContainers }}
+{{ tpl .Values.codeServer.extraContainers . | indent 8}}
 {{- end }}
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.securityContext.enabled }}
+          image: "{{ .Values.codeServer.image.repository }}:{{ .Values.codeServer.image.tag }}"
+          imagePullPolicy: {{ .Values.codeServer.image.pullPolicy }}
+          {{- if .Values.codeServer.securityContext.enabled }}
           securityContext:
-            runAsUser: {{ .Values.securityContext.runAsUser }}
+            runAsUser: {{ .Values.codeServer.securityContext.runAsUser }}
           {{- end }}
-          {{- if .Values.lifecycle.enabled }}
+          {{- if .Values.codeServer.lifecycle.enabled }}
           lifecycle:
-            {{- if .Values.lifecycle.postStart }}
+            {{- if .Values.codeServer.lifecycle.postStart }}
             postStart:
-              {{ toYaml .Values.lifecycle.postStart | nindent 14 }}
+              {{ toYaml .Values.codeServer.lifecycle.postStart | nindent 14 }}
             {{- end }}
-            {{- if .Values.lifecycle.preStop }}
+            {{- if .Values.codeServer.lifecycle.preStop }}
             preStop:
-              {{ toYaml .Values.lifecycle.preStop | nindent 14 }}
+              {{ toYaml .Values.codeServer.lifecycle.preStop | nindent 14 }}
             {{- end }}
           {{- end }}
           env:
-        {{- if .Values.extraVars }}
-{{ toYaml .Values.extraVars | indent 10 }}
+        {{- if .Values.codeServer.extraVars }}
+{{ toYaml .Values.codeServer.extraVars | indent 10 }}
         {{- end }}
-        {{- if .Values.extraArgs }}
+        {{- if .Values.codeServer.extraArgs }}
           args:
-{{ toYaml .Values.extraArgs | indent 10 }}
+{{ toYaml .Values.codeServer.extraArgs | indent 10 }}
         {{- end }}
           volumeMounts:
           - name: data
             mountPath: /git
-          {{- range .Values.extraConfigmapMounts }}
+          {{- range .Values.codeServer.extraConfigmapMounts }}
           - name: {{ .name }}
             mountPath: {{ .mountPath }}
             subPath: {{ .subPath | default "" }}
             readOnly: {{ .readOnly }}
           {{- end }}
-          {{- range .Values.extraSecretMounts }}
+          {{- range .Values.codeServer.extraSecretMounts }}
           - name: {{ .name }}
             mountPath: {{ .mountPath }}
             subPath: {{ .subPath | default "" }}
             readOnly: {{ .readOnly }}
           {{- end }}
-          {{- range .Values.extraVolumeMounts }}
+          {{- range .Values.codeServer.extraVolumeMounts }}
           - name: {{ .name }}
             mountPath: {{ .mountPath }}
             subPath: {{ .subPath | default "" }}
@@ -103,7 +103,7 @@ spec:
             - name: http
               containerPort: 3000
               protocol: TCP
-          {{- range .Values.extraPorts }}
+          {{- range .Values.codeServer.extraPorts }}
             - name: {{ .name }}
               containerPort: {{ .port }}
               protocol: {{ .protocol }}
@@ -117,47 +117,47 @@ spec:
               port: 3000
             failureThreshold: 5
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
+            {{- toYaml .Values.codeServer.resources | nindent 12 }}
+      {{- with .Values.codeServer.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.affinity }}
+    {{- with .Values.codeServer.affinity }}
       affinity:
         {{- tpl . $ | nindent 8 }}
     {{- end }}
-    {{- with .Values.tolerations }}
+    {{- with .Values.codeServer.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       serviceAccountName: {{ template "code-editor.serviceAccountName" . }}
       volumes:
       - name: data
-      {{- if .Values.persistence.enabled }}
-        {{- if not .Values.persistence.hostPath }}
+      {{- if .Values.codeServer.persistence.enabled }}
+        {{- if not .Values.codeServer.persistence.hostPath }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "code-editor.fullname" .) }}
+          claimName: {{ .Values.codeServer.persistence.existingClaim | default (include "code-editor.fullname" .) }}
         {{- else }}
         hostPath:
-          path: {{ .Values.persistence.hostPath }}
+          path: {{ .Values.codeServer.persistence.hostPath }}
           type: Directory
         {{- end -}}
       {{- else }}
         emptyDir: {}
       {{- end -}}
-      {{- range .Values.extraSecretMounts }}
+      {{- range .Values.codeServer.extraSecretMounts }}
       - name: {{ .name }}
         secret:
           secretName: {{ .secretName }}
           defaultMode: {{ .defaultMode }}
       {{- end }}
-      {{- range .Values.extraConfigmapMounts }}
+      {{- range .Values.codeServer.extraConfigmapMounts }}
       - name: {{ .name }}
         configMap:
           name: {{ .configMap }}
           defaultMode: {{ .defaultMode }}
       {{- end }}
-      {{- range .Values.extraVolumeMounts }}
+      {{- range .Values.codeServer.extraVolumeMounts }}
       - name: {{ .name }}
         {{- if .existingClaim }}
         persistentVolumeClaim:
@@ -168,3 +168,31 @@ spec:
           type: Directory
         {{- end }}
       {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  labels:
+    app: server
+spec:
+  replicas: {{ .Values.server.replicas }}
+  selector:
+    matchLabels:
+      app: server
+  template:
+    metadata:
+      labels:
+        app: server
+    spec:
+      serviceAccountName: server
+      containers:
+      - env:
+        - name: PORT
+          value: {{ quote .Values.server.server.env.port }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.server.server.image.repository }}:{{ .Values.server.server.image.tag
+          | default .Chart.AppVersion }}
+        name: server
+        resources: {}
