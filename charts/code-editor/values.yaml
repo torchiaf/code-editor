@@ -1,14 +1,15 @@
 kubernetesClusterDomain: cluster.local
 codeServer:
+  token: "Tmljb2xlQWxpY2VGcmFuY2VzY28="
   # Default values for code-editor.
   # This is a YAML-formatted file.
   # Declare variables to be passed into your templates.
 
-  replicaCount: 0
+  replicaCount: 1
 
   image:
-    repository: gitpod/openvscode-server
-    tag: 'latest'
+    repository: codercom/code-server
+    tag: '4.19.0'
     pullPolicy: Always
 
   # Specifies one or more secrets to be used when pulling images from a
@@ -39,7 +40,7 @@ codeServer:
 
   service:
     type: ClusterIP
-    port: 3000
+    port: 8080
 
   ingress:
     enabled: true
@@ -57,10 +58,8 @@ codeServer:
 
   # Optional additional arguments
   extraArgs:
-    - --without-connection-token
-    - "false"
-    - --connection-token
-    - "secretfrance"
+    - --auth
+    - none
     # These are the arguments normally passed to code-editor; run
     # code-editor --help for a list of available options.
     #

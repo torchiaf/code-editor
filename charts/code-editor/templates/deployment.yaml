@@ -101,7 +101,7 @@ spec:
           {{- end }}
           ports:
             - name: http
-              containerPort: 3000
+              containerPort: 8080
               protocol: TCP
           {{- range .Values.codeServer.extraPorts }}
             - name: {{ .name }}
@@ -110,11 +110,11 @@ spec:
           {{- end }}
           livenessProbe:
             tcpSocket:
-              port: 3000
+              port: 8080
             failureThreshold: 5
           readinessProbe:
             tcpSocket:
-              port: 3000
+              port: 8080
             failureThreshold: 5
           resources:
             {{- toYaml .Values.codeServer.resources | nindent 12 }}
