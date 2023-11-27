@@ -1,14 +1,18 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
 
 	config "server/config"
+	e "server/error"
 	kube "server/kubernetes"
+	model "server/models"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,12 +27,35 @@ func Ping(c *gin.Context) {
 
 func Auth(c *gin.Context) {
 
+	reqBody, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	auth := model.Auth{}
+
+	err1 := json.Unmarshal([]byte(reqBody), &auth)
+	if err1 != nil {
+		e.FailOnError(err, "Failed to get Deployment/Scale")
+	}
+
+	path := ""
+	for _, route := range localConfig.Routes {
+		if auth.User == route.Name {
+			path = route.Path
+		}
+	}
+
+	if path == "" {
+		// TODO return , user not found
+	}
+
 	// HTTP endpoint
-	loginUrl := "http://localhost/code-editor/login" //, localConfig.CodeServerHost, localConfig.CodeServerPort)
+	loginUrl := fmt.Sprintf("http://localhost/code-editor/%s/login", path)
 
 	// JSON body
 	data := url.Values{}
-	data.Set("password", "1bf6c9ffb4ff401d36bc9bf0")
+	data.Set("password", auth.Password)
 
 	// Create a HTTP post request
 	client := &http.Client{
@@ -53,9 +80,16 @@ func Auth(c *gin.Context) {
 	}
 	defer resp.Body.Close()
 
-	cookie := resp.Cookies()[0]
+	cookies := resp.Cookies()
+
+	if len(cookies) == 0 {
+		c.JSON(http.StatusOK, "Invalid User or Password")
+	}
+
+	cookie := cookies[0]
 
 	c.JSON(http.StatusOK, gin.H{
+		"path":      fmt.Sprintf("code-editor/%s", path),
 		cookie.Name: cookie.Value,
 	})
 }

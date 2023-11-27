@@ -52,7 +52,9 @@ spec:
   stripPrefix:
     prefixes:
     - /code-editor/api
-    - /code-editor/
+    {{- range .Values.routes }}
+    - /code-editor/{{ .path }}
+    {{- end }}
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -62,11 +64,13 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: PathPrefix(`/code-editor/`)
+  {{- range .Values.routes }}
+    - match: PathPrefix(`/code-editor/{{ .path }}/`)
       kind: Rule
       services:
-        - name: {{ $fullName }}
+        - name: code-editor-{{ .name }}
           port: {{ $svcPort }}
       middlewares:
         - name: strip-prefix
+  {{- end }}
 {{- end }}

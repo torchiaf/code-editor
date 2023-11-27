@@ -1,4 +1,17 @@
 kubernetesClusterDomain: cluster.local
+
+users:
+  - name: user1
+    password: password1
+  - name: user2
+    password: password2
+
+routes:
+  - name: user1
+    path: mFYRM
+  - name: user2
+    path: cVWZp
+
 codeServer:
   # Default values for code-editor.
   # This is a YAML-formatted file.

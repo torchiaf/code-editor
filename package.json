@@ -8,6 +8,7 @@
     "cluster:create": "k3d cluster create code-editor -p '80:80@loadbalancer'",
     "cluster:delete": "k3d cluster delete code-editor",
     "code-editor:install": "helm install code-editor charts/code-editor -n code-editor --create-namespace",
+    "code-editor:install:dry-run": "helm install code-editor charts/code-editor -n code-editor --create-namespace --dry-run > out.yaml",
     "code-editor:uninstall": "helm uninstall code-editor -n code-editor"
   },
   "repository": {

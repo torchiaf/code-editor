@@ -2,7 +2,7 @@
 {{- if .Values.codeServer.ingress.enabled }}
 {{- range $host := .Values.codeServer.ingress.hosts }}
   {{- range .paths }}
-  http://{{ $host.host }}/code-editor/Tmljb2xlQWxpY2VGcmFuY2VzY28=/?folder=/home/coder
+  http://{{ $host.host }}/code-editor/route_name/?folder=/git/code-editor
   {{- end }}
 {{- end }}
 {{- else if contains "NodePort" .Values.codeServer.service.type }}

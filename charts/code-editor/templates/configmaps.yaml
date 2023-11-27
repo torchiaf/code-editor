@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: code-editor-routes
+data:
+  routes: | 
+    routes:
+    {{- range .Values.routes }}
+    - name: {{ .name }}
+      path: {{ .path }}
+    {{- end }}

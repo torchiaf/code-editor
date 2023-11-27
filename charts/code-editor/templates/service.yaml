@@ -1,28 +1,30 @@
+{{- range .Values.routes }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "code-editor.fullname" . }}
+  name: code-editor-{{ .name }}
   labels:
-    app.kubernetes.io/name: {{ include "code-editor.name" . }}
-    helm.sh/chart: {{ include "code-editor.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/name: code-editor-{{ .name }}
+    helm.sh/chart: code-editor-{{ .name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
 spec:
-  type: {{ .Values.codeServer.service.type }}
+  type: {{ $.Values.codeServer.service.type }}
   ports:
-    - port: {{ .Values.codeServer.service.port }}
+    - port: {{ $.Values.codeServer.service.port }}
       targetPort: http
       protocol: TCP
       name: http
-  {{- range .Values.codeServer.extraPorts }}
+  {{- range $.Values.codeServer.extraPorts }}
     - port: {{ .port }}
       targetPort: {{ .port }}
       protocol: {{ .protocol }}
       name: {{ .name }}
   {{- end }}
   selector:
-    app.kubernetes.io/name: {{ include "code-editor.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.code-editor/path: {{ .path }}
+---
+{{- end }}
 ---
 apiVersion: v1
 kind: Service
