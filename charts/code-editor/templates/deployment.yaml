@@ -206,6 +206,7 @@ spec:
         image: {{ .Values.server.server.image.repository }}:{{ .Values.server.server.image.tag
           | default .Chart.AppVersion }}
         name: server
+        imagePullPolicy: {{ .Values.server.server.image.pullPolicy }}
         resources: {}
         volumeMounts:
         - name: routes

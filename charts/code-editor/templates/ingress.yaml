@@ -1,49 +1,3 @@
-{{- if .Values.codeServer.ingress.enabled -}}
-{{- $fullName := include "code-editor.fullname" . -}}
-{{- $svcPort := .Values.codeServer.service.port -}}
-{{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1
-{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
-kind: Ingress
-metadata:
-  name: {{ $fullName }}
-  labels:
-    {{- include "code-editor.labels" . | nindent 4 }}
-  {{- with .Values.codeServer.ingress.annotations }}
-  annotations:
-    ingress.kubernetes.io/ssl-redirect: "false"
-    traefik.ingress.kubernetes.io/router.middlewares: code-editor-strip-prefix@kubernetescrd
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-spec:
-  {{- if .Values.codeServer.ingress.ingressClassName }}
-  ingressClassName: {{ .Values.codeServer.ingress.ingressClassName }}
-  {{- end }}
-  {{- if .Values.codeServer.ingress.tls }}
-  tls:
-    {{- range .Values.codeServer.ingress.tls }}
-    - hosts:
-        {{- range .hosts }}
-        - {{ . | quote }}
-        {{- end }}
-      secretName: {{ .secretName }}
-    {{- end }}
-  {{- end }}
-  rules:
-    - http:
-        paths:
-          - backend:
-              service:
-                name: 'server'
-                port:
-                  number: 8082
-            path: /code-editor/api/
-            pathType: Prefix
----
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
@@ -55,6 +9,24 @@ spec:
     {{- range .Values.routes }}
     - /code-editor/{{ .path }}
     {{- end }}
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: headers-manage
+spec:
+  headers:
+    customRequestHeaders:
+      Host: 'localhost'
+      Content-Type: 'application/x-www-form-urlencoded'
+      Postman-Token: ''
+      X-Forwarded-For: ''
+      X-Forwarded-Host: ''
+      X-Forwarded-Port: ''
+      X-Forwarded-Prefix: ''
+      X-Forwarded-Proto: ''
+      X-Forwarded-Server: ''
+      X-Real-Ip: ''
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -69,8 +41,22 @@ spec:
       kind: Rule
       services:
         - name: code-editor-{{ .name }}
-          port: {{ $svcPort }}
+          port: 8080
       middlewares:
         - name: strip-prefix
   {{- end }}
-{{- end }}
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: code-editor-server
+spec:
+  routes:
+    - match: PathPrefix(`/code-editor/api/`)
+      kind: Rule
+      services:
+        - name: server
+          port: 8082
+      middlewares:
+        - name: headers-manage
+        - name: strip-prefix

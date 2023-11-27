@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 
@@ -39,19 +40,26 @@ func Auth(c *gin.Context) {
 		e.FailOnError(err, "Failed to get Deployment/Scale")
 	}
 
+	name := ""
 	path := ""
+
 	for _, route := range localConfig.Routes {
 		if auth.User == route.Name {
+			name = route.Name
 			path = route.Path
 		}
 	}
 
-	if path == "" {
-		// TODO return , user not found
+	if path == "" || name == "" {
+		c.JSON(http.StatusBadRequest, "Invalid User")
+		return
 	}
 
+	host := os.Getenv(fmt.Sprintf("CODE_EDITOR_%s_SERVICE_HOST", strings.ToUpper(name)))
+	port := os.Getenv(fmt.Sprintf("CODE_EDITOR_%s_SERVICE_PORT", strings.ToUpper(name)))
+
 	// HTTP endpoint
-	loginUrl := fmt.Sprintf("http://localhost/code-editor/%s/login", path)
+	loginUrl := fmt.Sprintf("http://%s:%s/login", host, port)
 
 	// JSON body
 	data := url.Values{}
@@ -59,14 +67,13 @@ func Auth(c *gin.Context) {
 
 	// Create a HTTP post request
 	client := &http.Client{
-
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 		},
 	}
 	req, err := http.NewRequest("POST", loginUrl, strings.NewReader(data.Encode()))
 	if err != nil {
-		fmt.Println(err)
+		e.FailOnError(err, "Code server Request create error")
 		return
 	}
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
@@ -74,8 +81,9 @@ func Auth(c *gin.Context) {
 	req.Header.Add("Host", "localhost")
 
 	resp, err := client.Do(req)
+
 	if err != nil {
-		fmt.Println(err)
+		e.FailOnError(err, "Code server login Response error")
 		return
 	}
 	defer resp.Body.Close()
@@ -83,7 +91,8 @@ func Auth(c *gin.Context) {
 	cookies := resp.Cookies()
 
 	if len(cookies) == 0 {
-		c.JSON(http.StatusOK, "Invalid User or Password")
+		c.JSON(http.StatusBadRequest, "Login failed, invalid User or Password")
+		return
 	}
 
 	cookie := cookies[0]

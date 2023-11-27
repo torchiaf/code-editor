@@ -236,9 +236,13 @@ server:
     image:
       repository: ghcr.io/torchiaf/code-editor/server
       tag: latest
+      pullPolicy: Always
   ports:
   - port: 8082
     protocol: TCP
     targetPort: 8082
   replicas: 1
   type: ClusterIP
+  externalService:
+    host: code-editor
+    externalName: "code-editor.code-editor.svc.cluster.local"
