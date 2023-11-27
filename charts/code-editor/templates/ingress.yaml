@@ -52,7 +52,7 @@ spec:
   stripPrefix:
     prefixes:
     - /code-editor/api
-    - /code-editor/{{ .Values.codeServer.token }}
+    - /code-editor/
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -62,7 +62,7 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: PathPrefix(`/code-editor/{{ .Values.codeServer.token }}/`)
+    - match: PathPrefix(`/code-editor/`)
       kind: Rule
       services:
         - name: {{ $fullName }}

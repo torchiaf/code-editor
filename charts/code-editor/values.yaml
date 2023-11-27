@@ -1,6 +1,5 @@
 kubernetesClusterDomain: cluster.local
 codeServer:
-  token: "Tmljb2xlQWxpY2VGcmFuY2VzY28="
   # Default values for code-editor.
   # This is a YAML-formatted file.
   # Declare variables to be passed into your templates.
@@ -58,8 +57,8 @@ codeServer:
 
   # Optional additional arguments
   extraArgs:
-    - --auth
-    - none
+    # - --auth
+    # - none
     # These are the arguments normally passed to code-editor; run
     # code-editor --help for a list of available options.
     #
