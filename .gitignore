@@ -1,2 +1,7 @@
+# dev
 out.yaml
 src/server/assets/routes
+
+# certificates
+tls.key
+tls.crt

@@ -12,6 +12,9 @@ routes:
   - name: user2
     path: cVWZp
 
+rancher:
+  domain: localhost
+
 codeServer:
   # Default values for code-editor.
   # This is a YAML-formatted file.

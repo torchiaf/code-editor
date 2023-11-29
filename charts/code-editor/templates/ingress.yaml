@@ -19,6 +19,7 @@ spec:
     customRequestHeaders:
       Host: 'localhost'
       Content-Type: 'application/x-www-form-urlencoded'
+      Access-Control-Allow-Credentials: 'true'
       Postman-Token: ''
       X-Forwarded-For: ''
       X-Forwarded-Host: ''
@@ -29,15 +30,34 @@ spec:
       X-Real-Ip: ''
 ---
 apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: cors
+spec:
+  headers:
+    accessControlAllowMethods:
+      - "GET"
+      - "OPTIONS"
+      - "PUT"
+      - "POST"
+      - "HEADER"
+    accessControlAllowHeaders:
+      - "*"
+    accessControlAllowOriginList:
+      - "https://localhost:8005"
+      - "https://{{ $.Values.rancher.domain }}"
+    addVaryHeader: true
+---
+apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: code-editor-ui
 spec:
   entryPoints:
-    - web
+    - websecure
   routes:
   {{- range .Values.routes }}
-    - match: PathPrefix(`/code-editor/{{ .path }}/`)
+    - match: Host(`{{ $.Values.rancher.domain }}`) && PathPrefix(`/code-editor/{{ .path }}/`)
       kind: Rule
       services:
         - name: code-editor-{{ .name }}
@@ -45,14 +65,18 @@ spec:
       middlewares:
         - name: strip-prefix
   {{- end }}
+  tls:
+    secretName: minio-tls
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: code-editor-server
 spec:
+  entryPoints:
+    - websecure
   routes:
-    - match: PathPrefix(`/code-editor/api/`)
+    - match: Host(`{{ $.Values.rancher.domain }}`) && PathPrefix(`/code-editor/api/`)
       kind: Rule
       services:
         - name: server
@@ -60,3 +84,4 @@ spec:
       middlewares:
         - name: headers-manage
         - name: strip-prefix
+        - name: cors

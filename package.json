@@ -5,11 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "cluster:create": "k3d cluster create code-editor -p '80:80@loadbalancer'",
+    "cluster:create": "k3d cluster create code-editor -p '80:80@loadbalancer' -p '443:443@loadbalancer'",
     "cluster:delete": "k3d cluster delete code-editor",
-    "code-editor:install": "helm install code-editor charts/code-editor -n code-editor --create-namespace",
+    "code-editor:install": "npm run cert:generate && helm install code-editor charts/code-editor -n code-editor --create-namespace",
     "code-editor:install:dry-run": "helm install code-editor charts/code-editor -n code-editor --create-namespace --dry-run > out.yaml",
-    "code-editor:uninstall": "helm uninstall code-editor -n code-editor"
+    "code-editor:uninstall": "helm uninstall code-editor -n code-editor",
+    "cert:generate": "sh scripts/generate-certificates.sh"
   },
   "repository": {
     "type": "git",
