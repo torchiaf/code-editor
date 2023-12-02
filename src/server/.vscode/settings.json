@@ -3,4 +3,5 @@
         "clientset",
         "kubeconfig"
     ],
+    "editor.tabSize": 2,
 }

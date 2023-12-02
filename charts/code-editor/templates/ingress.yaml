@@ -45,7 +45,7 @@ spec:
       - "*"
     accessControlAllowOriginList:
       - "https://localhost:8005"
-      - "https://{{ $.Values.rancher.domain }}"
+      - "https://{{ $.Values.domain }}"
     addVaryHeader: true
 ---
 apiVersion: traefik.containo.us/v1alpha1
@@ -57,7 +57,7 @@ spec:
     - websecure
   routes:
   {{- range .Values.routes }}
-    - match: Host(`{{ $.Values.rancher.domain }}`) && PathPrefix(`/code-editor/{{ .path }}/`)
+    - match: Host(`{{ $.Values.domain }}`) && PathPrefix(`/code-editor/{{ .path }}/`)
       kind: Rule
       services:
         - name: code-editor-{{ .name }}
@@ -76,7 +76,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`{{ $.Values.rancher.domain }}`) && PathPrefix(`/code-editor/api/`)
+    - match: Host(`{{ $.Values.domain }}`) && PathPrefix(`/code-editor/api/`)
       kind: Rule
       services:
         - name: server

@@ -1,7 +1,7 @@
 {
   "name": "code-editor",
   "version": "1.0.0",
-  "description": "vscode deployed on kubernetes clusters",
+  "description": "code-server deployed on kubernetes clusters, supporting multi-user and external authentication",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

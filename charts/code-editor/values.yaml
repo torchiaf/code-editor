@@ -1,5 +1,7 @@
 kubernetesClusterDomain: cluster.local
 
+domain: localhost
+
 users:
   - name: user1
     password: password1
@@ -11,9 +13,6 @@ routes:
     path: mFYRM
   - name: user2
     path: cVWZp
-
-rancher:
-  domain: localhost
 
 codeServer:
   # Default values for code-editor.
