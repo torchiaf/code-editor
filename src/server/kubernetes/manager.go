@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"server/config"
-	"server/utils"
 
 	e "server/error"
 
@@ -40,11 +39,11 @@ func StopEditor() string {
 	return scaleDeployment(c.App, c.Namespace, 0)
 }
 
-func GetPods() string {
-	pods, err := clientset.CoreV1().Pods(c.App).List(context.TODO(), metav1.ListOptions{})
-	if err != nil {
-		panic(err.Error())
-	}
+// func GetPods() string {
+// 	pods, err := clientset.CoreV1().Pods(c.App).List(context.TODO(), metav1.ListOptions{})
+// 	if err != nil {
+// 		panic(err.Error())
+// 	}
 
-	return utils.ToString(pods)
-}
+// 	return utils.ToString(pods)
+// }

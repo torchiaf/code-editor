@@ -6,7 +6,6 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"os"
 	"strconv"
 	"strings"
 
@@ -14,6 +13,8 @@ import (
 	e "server/error"
 	kube "server/kubernetes"
 	model "server/models"
+	routing "server/routing"
+	utils "server/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,8 +27,9 @@ func Ping(c *gin.Context) {
 	})
 }
 
-func Auth(c *gin.Context) {
+func Login(c *gin.Context) {
 
+	// Read request body
 	reqBody, err := io.ReadAll(c.Request.Body)
 	if err != nil {
 		panic(err)
@@ -40,26 +42,25 @@ func Auth(c *gin.Context) {
 		e.FailOnError(err, "Failed to get Deployment/Scale")
 	}
 
-	name := ""
-	path := ""
+	// Get user route
+	found, route := utils.Find(localConfig.Routes, "Name", auth.User)
 
-	for _, route := range localConfig.Routes {
-		if auth.User == route.Name {
-			name = route.Name
-			path = route.Path
-		}
-	}
-
-	if path == "" || name == "" {
+	if !found {
 		c.JSON(http.StatusBadRequest, "Invalid User")
 		return
 	}
 
-	host := os.Getenv(fmt.Sprintf("CODE_EDITOR_%s_SERVICE_HOST", strings.ToUpper(name)))
-	port := os.Getenv(fmt.Sprintf("CODE_EDITOR_%s_SERVICE_PORT", strings.ToUpper(name)))
+	// code-server login endpoint
+	loginUrl := ""
 
-	// HTTP endpoint
-	loginUrl := fmt.Sprintf("http://%s:%s/login", host, port)
+	if localConfig.IsDev {
+		loginUrl = fmt.Sprintf("http://localhost/code-editor/%s/login", route.Path)
+	} else {
+		host := routing.GetUserHost(route.Name)
+		port := routing.GetUserPort(route.Name)
+
+		loginUrl = fmt.Sprintf("http://%s:%s/login", host, port)
+	}
 
 	// JSON body
 	data := url.Values{}
@@ -73,7 +74,7 @@ func Auth(c *gin.Context) {
 	}
 	req, err := http.NewRequest("POST", loginUrl, strings.NewReader(data.Encode()))
 	if err != nil {
-		e.FailOnError(err, "Code server Request create error")
+		e.FailOnError(err, "Code-server, login request creation error")
 		return
 	}
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
@@ -83,7 +84,7 @@ func Auth(c *gin.Context) {
 	resp, err := client.Do(req)
 
 	if err != nil {
-		e.FailOnError(err, "Code server login Response error")
+		e.FailOnError(err, "Code-server, login response error")
 		return
 	}
 	defer resp.Body.Close()
@@ -98,7 +99,7 @@ func Auth(c *gin.Context) {
 	cookie := cookies[0]
 
 	c.JSON(http.StatusOK, gin.H{
-		"path":      fmt.Sprintf("code-editor/%s", path),
+		"path":      fmt.Sprintf("code-editor/%s", route.Path),
 		cookie.Name: cookie.Value,
 	})
 }
@@ -115,9 +116,4 @@ func StopEditor(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status": "stopped",
 	})
-}
-
-func GetPods(c *gin.Context) {
-	pods := kube.GetPods()
-	c.JSON(200, pods)
 }
