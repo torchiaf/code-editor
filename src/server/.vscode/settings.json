@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
         "clientset",
+        "codeserver",
         "kubeconfig"
     ],
     "editor.tabSize": 2,

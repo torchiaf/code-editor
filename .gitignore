@@ -5,3 +5,9 @@ src/server/assets/routes
 # certificates
 tls.key
 tls.crt
+
+# node
+node_modules
+
+# helm
+routes.yaml

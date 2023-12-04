@@ -7,10 +7,16 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "cluster:create": "k3d cluster create code-editor -p '80:80@loadbalancer' -p '443:443@loadbalancer'",
     "cluster:delete": "k3d cluster delete code-editor",
-    "code-editor:install": "npm run cert:generate && helm install code-editor charts/code-editor -n code-editor --create-namespace",
-    "code-editor:install:dry-run": "helm install code-editor charts/code-editor -n code-editor --create-namespace --dry-run > out.yaml",
+    "code-editor:install": "npm run assets:generate && helm install code-editor charts/code-editor -f charts/code-editor/routes.yaml -n code-editor --create-namespace",
     "code-editor:uninstall": "helm uninstall code-editor -n code-editor",
-    "cert:generate": "sh scripts/generate-certificates.sh"
+    "code-editor:install:dry-run": "npm run assets:generate && helm install code-editor charts/code-editor -f charts/code-editor/routes.yaml -n code-editor --create-namespace --dry-run > out.yaml",
+    "assets:generate": "npm run routes:generate && npm run cert:generate",
+    "cert:generate": "sh scripts/generate-certificates.sh",
+    "routes:generate": "sh scripts/generate-routes.sh",
+    "dev:code-editor:install": "npm run dev:assets:generate && helm install code-editor charts/code-editor -f charts/code-editor/routes.yaml --set dev=true -n code-editor --create-namespace",
+    "dev:code-editor:install:dry-run": "npm run dev:assets:generate && helm install code-editor charts/code-editor -f charts/code-editor/routes.yaml --set dev=true -n code-editor --create-namespace --dry-run > out.yaml",
+    "dev:assets:generate": "npm run dev:routes:generate && npm run cert:generate",
+    "dev:routes:generate": "sh scripts/generate-routes.sh 1"
   },
   "repository": {
     "type": "git",
@@ -21,5 +27,10 @@
   "bugs": {
     "url": "https://github.com/torchiaf/code-editor/issues"
   },
-  "homepage": "https://github.com/torchiaf/code-editor#readme"
+  "homepage": "https://github.com/torchiaf/code-editor#readme",
+  "devDependencies": {
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.2",
+    "yq": "^0.0.1"
+  }
 }

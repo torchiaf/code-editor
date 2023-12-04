@@ -44,8 +44,13 @@ spec:
     accessControlAllowHeaders:
       - "*"
     accessControlAllowOriginList:
+      {{- if .Values.dev }}
+      - "http://localhost:8005"
+      - "http://{{ $.Values.domain }}"
+      {{- else }}
       - "https://localhost:8005"
       - "https://{{ $.Values.domain }}"
+      {{- end }}
     addVaryHeader: true
 ---
 apiVersion: traefik.containo.us/v1alpha1
@@ -54,7 +59,11 @@ metadata:
   name: code-editor-ui
 spec:
   entryPoints:
+    {{- if .Values.dev }}
+    - web
+    {{- else }}
     - websecure
+    {{- end }}
   routes:
   {{- range .Values.routes }}
     - match: Host(`{{ $.Values.domain }}`) && PathPrefix(`/code-editor/{{ .path }}/`)
@@ -65,8 +74,11 @@ spec:
       middlewares:
         - name: strip-prefix
   {{- end }}
+  {{- if .Values.dev }}
+  {{- else }}
   tls:
     secretName: minio-tls
+  {{- end }}
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -74,7 +86,11 @@ metadata:
   name: code-editor-server
 spec:
   entryPoints:
+    {{- if .Values.dev }}
+    - web
+    {{- else }}
     - websecure
+    {{- end }}
   routes:
     - match: Host(`{{ $.Values.domain }}`) && PathPrefix(`/code-editor/api/`)
       kind: Rule
