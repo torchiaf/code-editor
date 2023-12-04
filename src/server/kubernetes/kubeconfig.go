@@ -4,7 +4,7 @@ import (
 	"flag"
 	"path/filepath"
 
-	config "server/config"
+	cfg "server/config"
 
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -14,7 +14,7 @@ import (
 
 func InitKubeconfig() *kubernetes.Clientset {
 
-	localConfig := config.GetConfig()
+	localConfig := cfg.Config
 
 	var config *rest.Config
 	var err error

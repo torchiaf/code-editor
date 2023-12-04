@@ -6,10 +6,15 @@ import (
 
 func Routes(engine *gin.Engine) {
 
-	g := engine.Group("v1")
+	v := engine.Group("v1")
 
-	g.GET("/ping", Ping)
-	g.POST("/login", Login)
-	g.POST("/editor/start", StartEditor)
-	g.POST("/editor/stop", StopEditor)
+	v.GET("/ping", Ping)
+	v.POST("/login", Login)
+
+	cd := v.Group("code-editor")
+
+	cd.Use(func(c *gin.Context) {}) // continue
+
+	cd.POST("/create", CreateEditor)
+	cd.POST("/delete", DeleteEditor)
 }

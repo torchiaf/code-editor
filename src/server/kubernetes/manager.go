@@ -3,7 +3,7 @@ package kubernetes
 import (
 	"context"
 
-	"server/config"
+	config "server/config"
 
 	e "server/error"
 
@@ -11,7 +11,7 @@ import (
 )
 
 var clientset = InitKubeconfig()
-var c = config.GetConfig()
+var c = config.Config
 
 func scaleDeployment(name string, namespace string, scale int32) string {
 	s, err := clientset.AppsV1().Deployments(namespace).GetScale(context.TODO(), name, metav1.GetOptions{})
