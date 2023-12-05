@@ -1,4 +1,4 @@
-{{- range $i, $s := .Values.routes }}
+{{- range $s := .Values.users }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -76,9 +76,7 @@ spec:
           {{- end }}
           env:
             - name: PASSWORD
-              {{ with index $.Values.users $i }}
-              value: {{ .password | quote }}
-              {{- end }}
+              value: {{ $s.password | quote }}
         {{- if $.Values.codeServer.extraVars }}
 {{ toYaml $.Values.codeServer.extraVars | indent 10 }}
         {{- end }}
@@ -203,20 +201,24 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: API_SECRET
+          value: {{ quote .Values.server.server.env.api.secret }}
+        - name: API_TOKEN_EXPIRATION
+          value: {{ quote .Values.server.server.env.api.tokenExpiration }}
         image: {{ .Values.server.server.image.repository }}:{{ .Values.server.server.image.tag
           | default .Chart.AppVersion }}
         name: server
         imagePullPolicy: {{ .Values.server.server.image.pullPolicy }}
         resources: {}
         volumeMounts:
-        - name: routes
+        - name: users
           mountPath: "/server/assets"
           readOnly: true
       volumes:
-        - name: routes
+        - name: users
           configMap:
-            name: code-editor-routes
+            name: code-editor-users
             items:
-            - key: routes
-              path: routes
+            - key: users
+              path: users
 

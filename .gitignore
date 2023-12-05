@@ -1,6 +1,6 @@
 # dev
 out.yaml
-src/server/assets/routes
+src/server/assets/users
 
 # certificates
 tls.key
@@ -10,4 +10,4 @@ tls.crt
 node_modules
 
 # helm
-routes.yaml
+users.yaml

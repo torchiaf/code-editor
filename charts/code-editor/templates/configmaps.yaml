@@ -1,11 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: code-editor-routes
+  name: code-editor-users
 data:
-  routes: | 
-    routes:
-    {{- range .Values.routes }}
+  users: | 
+    users:
+    {{- range .Values.users }}
     - name: {{ .name }}
+      password: {{ .password | quote }}
       path: {{ .path }}
     {{- end }}

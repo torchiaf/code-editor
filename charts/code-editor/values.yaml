@@ -229,6 +229,9 @@ server:
   server:
     env:
       port: "8082"
+      api:
+        secret: france
+        tokenExpiration: 24
     image:
       repository: ghcr.io/torchiaf/code-editor/server
       tag: latest

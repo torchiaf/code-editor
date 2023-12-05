@@ -6,7 +6,7 @@ spec:
   stripPrefix:
     prefixes:
     - /code-editor/api
-    {{- range .Values.routes }}
+    {{- range .Values.users }}
     - /code-editor/{{ .path }}
     {{- end }}
 ---
@@ -65,7 +65,7 @@ spec:
     - websecure
     {{- end }}
   routes:
-  {{- range .Values.routes }}
+  {{- range .Values.users }}
     - match: Host(`{{ $.Values.domain }}`) && PathPrefix(`/code-editor/{{ .path }}/`)
       kind: Rule
       services:
