@@ -1,15 +1,21 @@
 package models
 
-type Route struct {
-	Name string
-	Path string
-}
-
-type Routes struct {
-	Routes []Route
-}
-
 type Auth struct {
-	User     string `yaml:"user"`
+	Username string `yaml:"username"`
 	Password string `yaml:"password"`
+}
+
+type User struct {
+	Name     string `yaml:"name"`
+	Password string `yaml:"password"`
+	Path     string `yaml:"path"`
+}
+
+type Users struct {
+	Users []User
+}
+
+type CodeServerSession struct {
+	Name  string `yaml:"name"`
+	Value string `yaml:"value"`
 }

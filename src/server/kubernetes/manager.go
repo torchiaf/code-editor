@@ -3,17 +3,16 @@ package kubernetes
 import (
 	"context"
 
-	"server/config"
-
+	config "server/config"
 	e "server/error"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var clientset = InitKubeconfig()
-var c = config.GetConfig()
+var c = config.Config
 
-func scaleDeployment(name string, namespace string, scale int32) string {
+func scaleDeployment(name string, namespace string, scale int32) (string, error) {
 	s, err := clientset.AppsV1().Deployments(namespace).GetScale(context.TODO(), name, metav1.GetOptions{})
 	if err != nil {
 		e.FailOnError(err, "Failed to get Deployment/Scale")
@@ -25,25 +24,16 @@ func scaleDeployment(name string, namespace string, scale int32) string {
 	res, err := clientset.AppsV1().Deployments(namespace).UpdateScale(context.TODO(), name, &sc, metav1.UpdateOptions{})
 
 	if err != nil {
-		panic(err.Error())
+		return "", err
 	}
 
-	return res.Name
+	return res.Name, nil
 }
 
-func StartEditor() string {
+func StartEditor() (string, error) {
 	return scaleDeployment(c.App, c.Namespace, 1)
 }
 
-func StopEditor() string {
+func StopEditor() (string, error) {
 	return scaleDeployment(c.App, c.Namespace, 0)
 }
-
-// func GetPods() string {
-// 	pods, err := clientset.CoreV1().Pods(c.App).List(context.TODO(), metav1.ListOptions{})
-// 	if err != nil {
-// 		panic(err.Error())
-// 	}
-
-// 	return utils.ToString(pods)
-// }

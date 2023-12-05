@@ -2,16 +2,16 @@ package config
 
 import (
 	"os"
+	"server/utils"
 
 	models "server/models"
-	"server/utils"
 )
 
-type Config struct {
+type config struct {
 	IsDev     bool
 	App       string
 	Namespace string
-	Routes    []models.Route
+	Users     []models.User
 }
 
 func isDevEnv() bool {
@@ -22,16 +22,16 @@ func isDevEnv() bool {
 	return false
 }
 
-func GetConfig() Config {
+func getConfig() config {
 
-	routes := utils.ParseFile[models.Routes]("assets/routes")
-
-	c := Config{
+	c := config{
 		IsDev:     isDevEnv(),
 		App:       "code-editor",
 		Namespace: os.Getenv("POD_NAMESPACE"),
-		Routes:    routes.Routes,
+		Users:     utils.ParseFile[models.Users]("assets/users").Users,
 	}
 
 	return c
 }
+
+var Config = getConfig()

@@ -10,9 +10,21 @@ require (
 )
 
 require (
+	github.com/tidwall/btree v0.0.0-20170113224114-9876f1454cf0 // indirect
+	github.com/tidwall/buntdb v1.1.0 // indirect
+	github.com/tidwall/gjson v1.3.2 // indirect
+	github.com/tidwall/grect v0.0.0-20161006141115-ba9a043346eb // indirect
+	github.com/tidwall/match v1.0.1 // indirect
+	github.com/tidwall/pretty v1.0.0 // indirect
+	github.com/tidwall/rtree v0.0.0-20180113144539-6cd427091e0e // indirect
+	github.com/tidwall/tinyqueue v0.0.0-20180302190814-1e39f5511563 // indirect
+)
+
+require (
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/emicklei/go-restful/v3 v3.9.0 // indirect
 	github.com/fatih/structs v1.1.0
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
@@ -56,6 +68,7 @@ require (
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
+	gopkg.in/oauth2.v3 v3.12.0
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/api v0.28.4 // indirect
 	k8s.io/klog/v2 v2.100.1 // indirect

@@ -10,6 +10,12 @@ func Routes(engine *gin.Engine) {
 
 	g.GET("/ping", Ping)
 	g.POST("/login", Login)
-	g.POST("/editor/start", StartEditor)
-	g.POST("/editor/stop", StopEditor)
+
+	ui := g.Group("ui")
+
+	ui.Use(JwtAuthMiddleware())
+
+	// ui.GET("/user",controllers.CurrentUser)
+	ui.POST("/create", Create)
+	ui.POST("/delete", Delete)
 }
