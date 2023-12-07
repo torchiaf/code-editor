@@ -38,16 +38,12 @@ spec:
       {{- end }}
       {{- if and $.Values.codeServer.fetchGitSource.enabled }}
       initContainers:
-      - name: init-git-source
-        image: alpine/git
-        imagePullPolicy: IfNotPresent
-        command:
-          - /bin/sh
-          - -c
-          - "cd /git && git clone https://github.com/torchiaf/code-editor && chown -R 1000:1000 /git"
+      - name: gitconfig
+        image: busybox
+        command: ['/bin/sh', '-c', "chown -R 1000:1000 /etc && echo '[user]\n\temail = francesco.torchia@suse.com\n\tname = Francesco Torchia' > /home/coder/.gitconfig"]
         volumeMounts:
-        - name: data
-          mountPath: /git
+        - name: cfg
+          mountPath: /home/coder/
 {{- if $.Values.codeServer.extraInitContainers }}
 {{ tpl $.Values.codeServer.extraInitContainers . | indent 6}}
 {{- end }}
@@ -87,6 +83,8 @@ spec:
           volumeMounts:
           - name: data
             mountPath: /git
+          - name: cfg
+            mountPath: /home/coder
           {{- range $.Values.codeServer.extraConfigmapMounts }}
           - name: {{ .name }}
             mountPath: {{ .mountPath }}
@@ -138,6 +136,8 @@ spec:
     {{- end }}
       serviceAccountName: {{ template "code-editor.serviceAccountName" $ }}
       volumes:
+      - name: cfg
+        emptyDir: {}
       - name: data
       {{- if $.Values.codeServer.persistence.enabled }}
         {{- if not $.Values.codeServer.persistence.hostPath }}
