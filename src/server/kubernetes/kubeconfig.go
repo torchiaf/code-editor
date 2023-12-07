@@ -12,7 +12,7 @@ import (
 	"k8s.io/client-go/util/homedir"
 )
 
-func InitKubeconfig() *kubernetes.Clientset {
+func InitKubeconfig() (*kubernetes.Clientset, *rest.Config) {
 
 	localConfig := cfg.Config
 
@@ -46,5 +46,5 @@ func InitKubeconfig() *kubernetes.Clientset {
 		panic(err.Error())
 	}
 
-	return clientset
+	return clientset, config
 }

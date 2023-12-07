@@ -11,11 +11,15 @@ func Routes(engine *gin.Engine) {
 	g.GET("/ping", Ping)
 	g.POST("/login", Login)
 
-	ui := g.Group("ui")
+	ui := g.Group("view")
 
 	ui.Use(JwtAuthMiddleware())
 
 	// ui.GET("/user",controllers.CurrentUser)
-	ui.POST("/create", Create)
-	ui.POST("/delete", Delete)
+	// ui.GET("/status", Status)
+
+	vw := View{}
+	ui.POST("/enable", vw.Enable)
+	ui.POST("/disable", vw.Disable)
+	ui.POST("/config", vw.Config)
 }

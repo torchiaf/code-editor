@@ -1,8 +1,12 @@
 package authentication
 
 import (
+	"errors"
 	"fmt"
 	"os"
+	"server/config"
+	"server/models"
+	utils "server/utils"
 	"strconv"
 	"strings"
 	"time"
@@ -11,8 +15,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var tokenSecret = os.Getenv("API_SECRET")
-var tokenExpiration = os.Getenv("API_TOKEN_EXPIRATION")
+var tokenSecret = utils.IfNull(os.Getenv("API_SECRET"), "francesco")
+var tokenExpiration = utils.IfNull(os.Getenv("API_TOKEN_EXPIRATION"), "24")
 
 func GenerateToken(username string) (string, error) {
 
@@ -22,9 +26,16 @@ func GenerateToken(username string) (string, error) {
 		return "", err
 	}
 
+	found, user := utils.Find(config.Config.Users, "Name", username)
+
+	if !found {
+		return "", errors.New("User not found")
+	}
+
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
 	claims["username"] = username
+	claims["path"] = user.Path
 	claims["exp"] = time.Now().Add(time.Hour * time.Duration(token_lifespan)).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
@@ -58,8 +69,8 @@ func ExtractToken(c *gin.Context) string {
 	return ""
 }
 
-func ExtractUser(c *gin.Context) (string, error) {
-
+func ExtractUser(c *gin.Context) (models.User, error) {
+	var user models.User
 	tokenString := ExtractToken(c)
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -68,15 +79,12 @@ func ExtractUser(c *gin.Context) (string, error) {
 		return []byte(tokenSecret), nil
 	})
 	if err != nil {
-		return "", err
+		return user, err
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok && token.Valid {
-		user := claims["username"].(string)
-		if err != nil {
-			return "", err
-		}
-		return user, nil
+		user.Name = claims["username"].(string)
+		user.Path = claims["path"].(string)
 	}
-	return "", nil
+	return user, nil
 }

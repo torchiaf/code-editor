@@ -8,25 +8,19 @@ import (
 	"strconv"
 	"strings"
 
+	"server/config"
 	"server/models"
 	"server/routing"
-	utils "server/utils"
 )
 
-func EditorLogin(username string) (models.CodeServerSession, error) {
+func EditorLogin(user models.User) (models.CodeServerSession, error) {
 
 	var session models.CodeServerSession
-
-	found, user := utils.Find(config.Users, "Name", username)
-
-	if !found {
-		return session, errors.New("User not found")
-	}
 
 	// code-server login endpoint
 	loginUrl := ""
 
-	if config.IsDev {
+	if config.Config.IsDev {
 		loginUrl = fmt.Sprintf("http://localhost/code-editor/%s/login", user.Path)
 	} else {
 		host := routing.GetUserHost(user.Name)

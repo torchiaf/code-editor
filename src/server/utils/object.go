@@ -12,3 +12,15 @@ func Find[T comparable](items []T, key string, v string) (bool, T) {
 
 	return false, *new(T)
 }
+
+func If[T any](cond bool, vtrue, vfalse T) T {
+	if cond {
+		return vtrue
+	}
+	return vfalse
+}
+
+func IfNull[T comparable](defValue T, value T) T {
+	var nilValue T
+	return If(defValue == nilValue, value, defValue)
+}

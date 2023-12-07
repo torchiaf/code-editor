@@ -27,7 +27,7 @@ func getConfig() config {
 	c := config{
 		IsDev:     isDevEnv(),
 		App:       "code-editor",
-		Namespace: os.Getenv("POD_NAMESPACE"),
+		Namespace: utils.IfNull(os.Getenv("POD_NAMESPACE"), "code-editor"),
 		Users:     utils.ParseFile[models.Users]("assets/users").Users,
 	}
 
