@@ -1,6 +1,5 @@
 # dev
 out.yaml
-src/server/assets/users
 
 # certificates
 tls.key
