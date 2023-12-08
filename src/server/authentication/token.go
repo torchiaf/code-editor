@@ -26,16 +26,9 @@ func GenerateToken(username string) (string, error) {
 		return "", err
 	}
 
-	found, user := utils.Find(config.Config.Users, "Name", username)
-
-	if !found {
-		return "", errors.New("User not found")
-	}
-
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
 	claims["username"] = username
-	claims["path"] = user.Path
 	claims["exp"] = time.Now().Add(time.Hour * time.Duration(token_lifespan)).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
@@ -69,8 +62,7 @@ func ExtractToken(c *gin.Context) string {
 	return ""
 }
 
-func ExtractUser(c *gin.Context) (models.User, error) {
-	var user models.User
+func ExtractUser(c *gin.Context) (string, error) {
 	tokenString := ExtractToken(c)
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -79,12 +71,27 @@ func ExtractUser(c *gin.Context) (models.User, error) {
 		return []byte(tokenSecret), nil
 	})
 	if err != nil {
-		return user, err
+		return "", err
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok && token.Valid {
-		user.Name = claims["username"].(string)
-		user.Path = claims["path"].(string)
+		return claims["username"].(string), nil
 	}
+	return "", nil
+}
+
+func GetUser(c *gin.Context) (models.User, error) {
+
+	v, ok := c.Get("username")
+	if !ok {
+		return models.User{}, errors.New("User not found")
+	}
+
+	user, ok := config.Config.Users[v.(string)]
+
+	if !ok {
+		return models.User{}, errors.New("User not found")
+	}
+
 	return user, nil
 }

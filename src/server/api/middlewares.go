@@ -16,13 +16,13 @@ func JwtAuthMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		user, err := authentication.ExtractUser(c)
+		username, err := authentication.ExtractUser(c)
 		if err != nil {
 			c.String(http.StatusNotFound, "User not found")
 			c.Abort()
 			return
 		}
-		c.Set("user", user)
+		c.Set("username", username)
 		c.Next()
 	}
 }

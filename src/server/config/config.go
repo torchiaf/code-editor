@@ -11,7 +11,7 @@ type config struct {
 	IsDev     bool
 	App       string
 	Namespace string
-	Users     []models.User
+	Users     map[string]models.User
 }
 
 func isDevEnv() bool {
@@ -24,11 +24,14 @@ func isDevEnv() bool {
 
 func getConfig() config {
 
+	arr := utils.ParseFile[models.Users]("assets/users").Users
+	userMap := utils.Map(arr, func(user models.User) string { return user.Name })
+
 	c := config{
 		IsDev:     isDevEnv(),
 		App:       "code-editor",
 		Namespace: utils.IfNull(os.Getenv("POD_NAMESPACE"), "code-editor"),
-		Users:     utils.ParseFile[models.Users]("assets/users").Users,
+		Users:     userMap,
 	}
 
 	return c

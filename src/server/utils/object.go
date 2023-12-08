@@ -13,6 +13,14 @@ func Find[T comparable](items []T, key string, v string) (bool, T) {
 	return false, *new(T)
 }
 
+func Map[T any](src []T, key func(T) string) map[string]T {
+	var result = make(map[string]T)
+	for _, v := range src {
+		result[key(v)] = v
+	}
+	return result
+}
+
 func If[T any](cond bool, vtrue, vfalse T) T {
 	if cond {
 		return vtrue

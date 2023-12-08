@@ -5,8 +5,6 @@ import (
 	"server/config"
 	"server/models"
 
-	utils "server/utils"
-
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -23,9 +21,9 @@ func verifyPassword(password, userPassword string) error {
 
 func LoginCheck(auth models.Auth) (string, error) {
 
-	found, user := utils.Find(config.Config.Users, "Name", auth.Username)
+	user, ok := config.Config.Users[auth.Username]
 
-	if !found {
+	if !ok {
 		return "", errors.New("User not found")
 	}
 

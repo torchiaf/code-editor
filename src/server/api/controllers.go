@@ -6,10 +6,8 @@ import (
 	"time"
 
 	authentication "server/authentication"
-	"server/config"
 	kube "server/kubernetes"
 	model "server/models"
-	"server/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -52,18 +50,7 @@ type View struct {
 
 func (vw View) Enable(c *gin.Context) {
 
-	v, ok := c.Get("user")
-	if !ok {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
-		return
-	}
-	u := v.(model.User)
-
-	found, user := utils.Find(config.Config.Users, "Name", u.Name)
-	if !found {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Code-server - User not found"})
-		return
-	}
+	user, _ := authentication.GetUser(c)
 
 	_, err := kube.ScaleCodeServer(user, 1)
 	if err != nil {
@@ -88,12 +75,7 @@ func (vw View) Enable(c *gin.Context) {
 
 func (vw View) Disable(c *gin.Context) {
 
-	v, ok := c.Get("user")
-	if !ok {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
-		return
-	}
-	user := v.(model.User)
+	user, _ := authentication.GetUser(c)
 
 	kube.ScaleCodeServer(user, 0)
 	c.JSON(http.StatusOK, gin.H{
@@ -103,12 +85,7 @@ func (vw View) Disable(c *gin.Context) {
 
 func (vw View) Config(c *gin.Context) {
 
-	v, ok := c.Get("user")
-	if !ok {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
-		return
-	}
-	user := v.(model.User)
+	user, _ := authentication.GetUser(c)
 
 	var vwConfig model.ViewConfig
 	if err := c.ShouldBindJSON(&vwConfig); err != nil {
