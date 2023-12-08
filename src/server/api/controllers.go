@@ -132,7 +132,8 @@ func (vw View) Config(c *gin.Context) {
 	err := kube.ExecCmdOnPod(label, gitCmd, nil, nil, nil)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Pod Configuration failed"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Pod Configuration failed; %s", err.Error())})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{

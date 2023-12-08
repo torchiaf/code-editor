@@ -43,9 +43,8 @@ func ExecCmdOnPod(label string, command string, stdin io.Reader, stdout io.Write
 		"-c",
 		command,
 	}
-	fmt.Printf(c.Namespace)
-	pods, err := clientset.CoreV1().Pods(c.Namespace).List(context.TODO(), metav1.ListOptions{LabelSelector: label})
 
+	pods, err := clientset.CoreV1().Pods(c.Namespace).List(context.TODO(), metav1.ListOptions{LabelSelector: label})
 	if err != nil || len(pods.Items) == 0 {
 		e.FailOnError(err, "Pod not found")
 		return err
@@ -55,8 +54,9 @@ func ExecCmdOnPod(label string, command string, stdin io.Reader, stdout io.Write
 
 	scheme := runtime.NewScheme()
 	if err := v1.AddToScheme(scheme); err != nil {
-		return fmt.Errorf("could not add to scheme: %w", err)
+		return err
 	}
+
 	parameterCodec := runtime.NewParameterCodec(scheme)
 	req.VersionedParams(&v1.PodExecOptions{
 		Stdin:     true,
@@ -69,7 +69,7 @@ func ExecCmdOnPod(label string, command string, stdin io.Reader, stdout io.Write
 	url := req.URL()
 	exec, err := remotecommand.NewSPDYExecutor(restConfig, "POST", url)
 	if err != nil {
-		return fmt.Errorf("could not exec command: %w", err)
+		return err
 	}
 	var streamErr error
 	l := &LogStreamer{}
@@ -82,11 +82,7 @@ func ExecCmdOnPod(label string, command string, stdin io.Reader, stdout io.Write
 	})
 
 	if streamErr != nil {
-		if strings.Contains(streamErr.Error(), "command terminated with exit code") {
-			return nil
-		} else {
-			return fmt.Errorf("could not stream results: %w", streamErr)
-		}
+		return streamErr
 	}
 
 	return nil
@@ -172,7 +168,7 @@ func ScaleCodeServer(user models.User, replicas int) (string, error) {
 
 	label := fmt.Sprintf("app.code-editor/path=%s", user.Path)
 
-	if replicas > 0 {
+	if num > 0 {
 		waitPodRunning(context.TODO(), label)
 	}
 
