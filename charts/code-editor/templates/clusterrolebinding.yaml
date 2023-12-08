@@ -3,8 +3,8 @@ kind: ClusterRole
 metadata:
   name: server
 rules:
-- apiGroups: [""]
-  resources: ["pods","services","namespaces","deployments","jobs"]
+- apiGroups: ["", "apps"]
+  resources: ["pods","pods/exec","services","namespaces","deployments","deployments/scale","jobs"]
   verbs: ["get", "update", "create", "watch", "list"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1

@@ -18,7 +18,7 @@ codeServer:
   image:
     repository: codercom/code-server
     tag: '4.19.0'
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
 
   # Specifies one or more secrets to be used when pulling images from a
   # private container repository
@@ -237,7 +237,7 @@ server:
     image:
       repository: ghcr.io/torchiaf/code-editor/server
       tag: latest
-      pullPolicy: Always
+      pullPolicy: IfNotPresent
   ports:
   - port: 8082
     protocol: TCP
