@@ -39,7 +39,7 @@ spec:
       {{- if and $.Values.codeServer.fetchGitSource.enabled }}
       initContainers:
       - name : ssh
-        image: kroniak/ssh-client
+        image: {{ $.Values.ssh.image.repository }}:{{ $.Values.ssh.image.tag }}
         command: ['/bin/sh', '-c', "cp /ssh/id_ed25519 /etc/ssh-key/id_ed25519 && ssh-keyscan -t ed25519 github.com >> /etc/ssh-key/known_hosts && chown -R 1000:1000 /etc/ssh-key && chmod 700 /etc/ssh-key/id_ed25519"]
         volumeMounts:
         - name: ssh

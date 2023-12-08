@@ -8,6 +8,11 @@ users:
   - name: user2
     password: password2
 
+ssh:
+  image:
+    repository: kroniak/ssh-client
+    tag: latest
+
 codeServer:
   # Default values for code-editor.
   # This is a YAML-formatted file.

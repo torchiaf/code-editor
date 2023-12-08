@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  creationTimestamp: null
+  name: pre-pull
+  labels:
+    app.kubernetes.io/name: {{ include "code-editor.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      name: pre-pull
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: pre-pull
+      creationTimestamp: null
+    spec:
+      containers:
+      - image: {{ .Values.ssh.image.repository }}:{{ .Values.ssh.image.tag }}
+        name: pre-pull-ssh
+        command: ['/bin/sh', '-c', "while true; do sleep 9000; done"]
+        resources: {}
+      - image: {{ .Values.codeServer.image.repository }}:{{ .Values.codeServer.image.tag }}
+        name: pre-pull-code-server
+        command: ['/bin/sh', '-c', "while true; do sleep 9000; done"]
+        resources: {}
+      - image: busybox
+        name: pre-pull-generic
+        command: ['/bin/sh', '-c', "while true; do sleep 9000; done"]
+        resources: {}
+status: {}
