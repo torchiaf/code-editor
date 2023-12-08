@@ -38,6 +38,14 @@ spec:
       {{- end }}
       {{- if and $.Values.codeServer.fetchGitSource.enabled }}
       initContainers:
+      - name : ssh
+        image: kroniak/ssh-client
+        command: ['/bin/sh', '-c', "cp /ssh/id_ed25519 /etc/ssh-key/id_ed25519 && ssh-keyscan -t ed25519 github.com >> /etc/ssh-key/known_hosts && chown -R 1000:1000 /etc/ssh-key && chmod 700 /etc/ssh-key/id_ed25519"]
+        volumeMounts:
+        - name: ssh
+          mountPath: "/ssh"
+        - name: ssh-root
+          mountPath: "/etc/ssh-key"
       - name: gitconfig
         image: busybox
         command: ['/bin/sh', '-c', "chown -R 1000:1000 /etc && echo '[user]\n\temail = francesco.torchia@suse.com\n\tname = Francesco Torchia' > /home/coder/.gitconfig"]
@@ -81,6 +89,8 @@ spec:
 {{ toYaml $.Values.codeServer.extraArgs | indent 10 }}
         {{- end }}
           volumeMounts:
+          - name: ssh-root
+            mountPath: "/home/coder/.ssh"
           - name: data
             mountPath: /git
           - name: cfg
@@ -136,6 +146,11 @@ spec:
     {{- end }}
       serviceAccountName: {{ template "code-editor.serviceAccountName" $ }}
       volumes:
+      - name: ssh
+        secret:
+          secretName: secret-ssh-auth
+      - name: ssh-root
+        emptyDir: {}
       - name: cfg
         emptyDir: {}
       - name: data

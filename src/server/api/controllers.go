@@ -119,7 +119,7 @@ func (vw View) Config(c *gin.Context) {
 	git := vwConfig.Git
 
 	gitCmd := fmt.Sprintf(
-		"cd /git && rm -rf * && git clone https://github.com/%s/%s -b %s && cd %s && git checkout %s",
+		"cd /git && rm -rf * && git clone git@github.com:%s/%s -b %s && cd %s && git checkout %s",
 		git.Org,
 		git.Repo,
 		git.Branch,

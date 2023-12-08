@@ -1,9 +1,10 @@
 # dev
 out.yaml
 
-# certificates
+# keys and certs
 tls.key
 tls.crt
+ssh.key
 
 # node
 node_modules
