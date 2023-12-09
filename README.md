@@ -1,6 +1,14 @@
 # code-editor
 code-server running on Kubernetes with Rest API authentication and multi-user support.
 
+## Requirements
+
+- Node
+- Helm
+- k3d
+- kubectl
+- yq
+
 ## Usage
 
 - Install `code-editor`
