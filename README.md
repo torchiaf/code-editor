@@ -1,5 +1,5 @@
 # code-editor
-code-server running on Kubernetes with Rest API authentication and multi-user support.
+[code-server](https://github.com/coder/code-server) running on Kubernetes with Rest API authentication and multi-user support.
 
 ## Requirements
 
@@ -16,21 +16,59 @@ code-server running on Kubernetes with Rest API authentication and multi-user su
   ```bash
   npm install
   npm run cluster:create
+  npm run traefik:install
   npm run code-editor:install
   ```
 - Authenticate a user:
   ```
-  POST http://localhost/code-editor/api/v1/auth
+  POST http://localhost/code-editor/api/v1/login
 
-  req:
+  body:
   {
       "user": "user1",
       "password": "password1"
   }
   resp:
   {
-    "code-server-session": "some-string",
-    "path": "code-editor/some-path-for-user1"
+    "token: ...
   }
   ```
-- Go to http://localhost/code-editor/some-path-for-user1/?folder=/git/code-editor
+- Enable `code-server` instance:
+  ```
+  POST http://localhost/code-editor/api/v1/enable
+
+  header:
+  {
+      "token": ...
+  }
+  resp:
+  {
+    "status": "enabled",
+    "code-server-session": some-token,
+    "path": some-string,
+  }
+  ```
+- Set vscode configs:
+  ```
+  POST http://localhost/code-editor/api/v1/enable
+
+  header:
+  {
+      "token": ...
+  }
+  body:
+  {
+    "git": {
+      org,
+      repo,
+      branch
+      ...
+    },
+  }
+  resp:
+  {
+    "status": "configured",
+		"query": some query params to access the git repository
+  }
+  ```
+- Go to http://localhost/code-editor/$path-for-user1/?folder=$query
