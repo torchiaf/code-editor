@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"server/config"
+	"server/kubernetes"
 	"server/models"
-	"server/routing"
 )
 
 func EditorLogin(user models.User) (models.CodeServerSession, error) {
@@ -23,8 +23,8 @@ func EditorLogin(user models.User) (models.CodeServerSession, error) {
 	if config.Config.IsDev {
 		loginUrl = fmt.Sprintf("http://localhost/code-editor/%s/login", user.Path)
 	} else {
-		host := routing.GetUserHost(user.Name)
-		port := routing.GetUserPort(user.Name)
+		host := kubernetes.GetUserHost(user.Name)
+		port := kubernetes.GetUserPort(user.Name)
 
 		loginUrl = fmt.Sprintf("http://%s:%s/login", host, port)
 	}
