@@ -8,8 +8,8 @@ users="charts/code-editor/users.yaml"
 rm -rf $users
 
 echo 'users:' >> $users
-for k in $(yq '.users[] | key' $values)
-do
+for k in $(yq '.users | to_entries | .[].key' $values)
+do 
   echo "  - name: $(yq ".users[$k].name" $values)" >> $users
   echo "    password: $(yq ".users[$k].password" $values)" >> $users
   echo "    path: $(tr -dc A-Za-z </dev/urandom | head -c 13)" >> $users

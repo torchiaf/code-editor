@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ $.Release.Service }}
     app.code-editor/path: {{ $s.path }}
 spec:
-  replicas: {{ $.Values.codeServer.replicaCount }}
+  replicas: {{ $.Values.codeServer.replicas }}
   strategy:
     type: Recreate
   selector:
@@ -36,7 +36,6 @@ spec:
       securityContext:
         fsGroup: {{ $.Values.codeServer.securityContext.fsGroup }}
       {{- end }}
-      {{- if and $.Values.codeServer.fetchGitSource.enabled }}
       initContainers:
       - name : ssh
         image: {{ $.Values.ssh.image.repository }}:{{ $.Values.ssh.image.tag }}
@@ -52,10 +51,22 @@ spec:
         volumeMounts:
         - name: cfg
           mountPath: /home/coder/
-{{- if $.Values.codeServer.extraInitContainers }}
-{{ tpl $.Values.codeServer.extraInitContainers . | indent 6}}
-{{- end }}
-      {{- end }}
+      - name: customization
+        image: {{ $.Values.codeServer.image.repository }}:{{ $.Values.codeServer.image.tag }}
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: SERVICE_URL
+            value: https://open-vsx.org/vscode/gallery
+          - name: ITEM_URL
+            value: https://open-vsx.org/vscode/item
+        command:
+          - sh
+          - -c
+          - |
+            code-server --install-extension hoovercj.vscode-power-mode
+        volumeMounts:
+          - name: cfg
+            mountPath: /home/coder
       containers:
 {{- if $.Values.codeServer.extraContainers }}
 {{ tpl $.Values.codeServer.extraContainers . | indent 8}}
@@ -89,6 +100,10 @@ spec:
 {{ toYaml $.Values.codeServer.extraArgs | indent 10 }}
         {{- end }}
           volumeMounts:
+          {{- if $.Values.codeServer.vscodeSettings.enable }}
+          - name: vscode-config
+            mountPath: "/home/coder/.local/share/code-server/User"
+          {{- end }}
           - name: ssh-root
             mountPath: "/home/coder/.ssh"
           - name: data
@@ -146,6 +161,11 @@ spec:
     {{- end }}
       serviceAccountName: {{ template "code-editor.serviceAccountName" $ }}
       volumes:
+      {{- if $.Values.codeServer.vscodeSettings.enable }}
+      - name: vscode-config
+        configMap:
+          name: vscode-config
+      {{- end }}
       - name: ssh
         secret:
           secretName: secret-ssh-auth

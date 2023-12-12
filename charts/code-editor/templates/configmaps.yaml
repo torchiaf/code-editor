@@ -10,3 +10,13 @@ data:
       password: {{ .password | quote }}
       path: {{ .path }}
     {{- end }}
+{{- if $.Values.codeServer.vscodeSettings.enable }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vscode-config
+data:
+  settings.json: |
+    {{- .Files.Get "vscode-settings.json" | nindent 4 }}
+{{- end }}

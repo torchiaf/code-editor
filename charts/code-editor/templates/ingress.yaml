@@ -74,8 +74,7 @@ spec:
       middlewares:
         - name: strip-prefix
   {{- end }}
-  {{- if .Values.dev }}
-  {{- else }}
+  {{- if not .Values.dev }}
   tls:
     secretName: minio-tls
   {{- end }}

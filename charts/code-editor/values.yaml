@@ -14,23 +14,15 @@ ssh:
     tag: latest
 
 codeServer:
-  # Default values for code-editor.
-  # This is a YAML-formatted file.
-  # Declare variables to be passed into your templates.
 
-  replicaCount: 0
+  replicas: 0
 
   image:
     repository: codercom/code-server
     tag: '4.19.0'
     pullPolicy: IfNotPresent
 
-  # Specifies one or more secrets to be used when pulling images from a
-  # private container repository
-  # https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry
   imagePullSecrets: []
-  #  - name: registry-creds
-
   nameOverride: ""
   fullnameOverride: ""
   hostnameOverride: ""
@@ -69,8 +61,14 @@ codeServer:
         hosts:
           - localhost
 
+  vscodeSettings:
+    enable: true
+
   # Optional additional arguments
   extraArgs:
+    - --disable-telemetry
+    - --disable-getting-started-override
+    - --disable-workspace-trust
     # - --install-extension
     # - hoovercj.vscode-power-mode
     # - --auth
@@ -182,25 +180,6 @@ codeServer:
   #  - name: DOCKER_DRIVER
   #    value: "overlay2"
 
-  extraInitContainers: |
-  # - name: customization
-  #   image: {{ .Values.codeServer.image.repository }}:{{ .Values.codeServer.image.tag }}
-  #   imagePullPolicy: IfNotPresent
-  #   env:
-  #     - name: SERVICE_URL
-  #       value: https://open-vsx.org/vscode/gallery
-  #     - name: ITEM_URL
-  #       value: https://open-vsx.org/vscode/item
-  #   command:
-  #     - sh
-  #     - -c
-  #     - |
-  #       code-editor --install-extension ms-python.python
-  #       code-editor --install-extension golang.Go
-  #   volumeMounts:
-  #     - name: data
-  #       mountPath: /home/coder
-
   ## Additional code-editor secret mounts
   extraSecretMounts: []
     # - name: secret-files
@@ -228,9 +207,6 @@ codeServer:
     # - name: minecraft
     #   port: 25565
     #   protocol: tcp
-
-  fetchGitSource:
-    enabled: true
 
 server:
   server:
