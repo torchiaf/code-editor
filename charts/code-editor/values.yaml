@@ -218,7 +218,7 @@ server:
     image:
       repository: ghcr.io/torchiaf/code-editor/server
       tag: latest
-      pullPolicy: IfNotPresent
+      pullPolicy: Always
   ports:
   - port: 8082
     protocol: TCP
