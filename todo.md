@@ -2,6 +2,11 @@ Todo
 
 - Write license
 - Replace username with paths in routing and object names
+- Create an external authentication mode:
+  -1 pre-requisite: routes dynamic creation (services, deployments, ingressroutes)
+  -2 helm param to switch to external authentication
+  -3 helm param to save the url of external login
+  -4 implement a new /register-user endpoint to make the login to the external authentication and register the user into code-editor
 - Add a saved postman endpoints for dev
 - Clean helm charts
 - Refactoring helm charts
