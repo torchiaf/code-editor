@@ -1,0 +1,7 @@
+kind: Rule
+match: "" # match user path
+middlewares:
+  - name: strip-prefix
+services:
+  - name: "" # unique for user
+    port: http

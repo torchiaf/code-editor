@@ -22,10 +22,19 @@ func isDevEnv() bool {
 	return false
 }
 
+func generatePath(users []models.User) {
+	for i := range users {
+		users[i].Path = utils.RandomString(13)
+	}
+}
+
 func getConfig() config {
 
-	arr := utils.ParseFile[models.Users]("assets/users").Users
-	userMap := utils.Map(arr, func(user models.User) string { return user.Name })
+	users := utils.ParseFile[models.Users]("assets/users").Users
+
+	generatePath(users)
+
+	userMap := utils.Map(users, func(user models.User) string { return user.Name })
 
 	c := config{
 		IsDev:     isDevEnv(),

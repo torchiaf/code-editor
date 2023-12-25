@@ -12,11 +12,18 @@ import (
 	config "server/config"
 	e "server/error"
 	"server/models"
+	"server/utils"
 
+	corev1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/tools/remotecommand"
+
+	traefikv1alpha1 "github.com/traefik/traefik/v3/pkg/provider/kubernetes/crd/traefikio/v1alpha1"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 var clientset, restConfig = InitKubeconfig()
@@ -138,33 +145,148 @@ func waitPodRunning(ctx context.Context, label string) error {
 // 	}
 // }
 
+func createService(name string, path string) {
+	service := utils.ParseK8sResource[*v1.Service]("routes/service.yaml")
+
+	service.Name = name
+	service.Labels["app.kubernetes.io/name"] = name
+	service.Spec.Selector["app.code-editor/path"] = path
+
+	clientset.CoreV1().Services(c.Namespace).Create(context.TODO(), service, metav1.CreateOptions{})
+}
+
+func createRoute(name string, path string) string {
+	cli, _ := client.New(restConfig, client.Options{})
+
+	in := &unstructured.Unstructured{}
+	in.SetGroupVersionKind(schema.GroupVersionKind{
+		Group:   "",
+		Kind:    "IngressRoute",
+		Version: "traefik.containo.us/v1alpha1",
+	})
+
+	err := cli.Get(context.Background(), client.ObjectKey{
+		Namespace: c.Namespace,
+		Name:      "code-editor-ui",
+	}, in)
+	if err != nil {
+		e.FailOnError(err, "Failed to get Code-server IngressRoute")
+	}
+
+	ingressRoute := &traefikv1alpha1.IngressRoute{}
+
+	err = runtime.DefaultUnstructuredConverter.
+		FromUnstructured(in.UnstructuredContent(), &ingressRoute)
+
+	route := utils.ParseFile[*traefikv1alpha1.Route]("routes/traefik-route.yaml")
+
+	route.Match = fmt.Sprintf("Host(`localhost`) && PathPrefix(`/code-editor/%s/`)", path)
+	route.Services[0].Name = name
+
+	// var y interface{}
+	// y = *route
+
+	// var routes []interface{}
+
+	// routes = append(routes, y)
+
+	// if err := unstructured.SetNestedMap(in.Object, routes, "spec", "routes[0]"); err != nil {
+	// 	e.FailOnError(err, "Failed to get Code-server IngressRoute")
+	// }
+
+	ingressRoute.Spec.Routes = append(ingressRoute.Spec.Routes, *route)
+
+	routeUnstructured := &unstructured.Unstructured{
+		Object: map[string]interface{}{
+			"apiVersion": "traefik.containo.us/v1alpha1",
+			"kind":       "Rule",
+			"match":      fmt.Sprintf("Host(`localhost`) && PathPrefix(`/code-editor/%s/`)", path),
+			"middlewares": []interface{}{
+				map[string]interface{}{
+					"name": "strip-prefix",
+				},
+			},
+			"services": []interface{}{
+				map[string]interface{}{
+					"name": name,
+					"port": "http",
+				},
+			},
+		},
+	}
+
+	routes, _, _ := unstructured.NestedSlice(in.Object, "spec", "routes")
+
+	routes = append(routes, routeUnstructured.Object)
+
+	if err := unstructured.SetNestedSlice(in.Object, routes, "spec", "routes"); err != nil {
+		e.FailOnError(err, "Failed to get Code-server IngressRoute")
+	}
+
+	// res, _ := runtime.DefaultUnstructuredConverter.ToUnstructured(ingressRoute)
+
+	// cli.Scheme().AddKnownTypeWithName(ingressRoute.GroupVersionKind(), ingressRoute)
+
+	// traefikv1alpha1.SchemeBuilder.AddToScheme(cli.Scheme())
+
+	err = cli.Update(context.TODO(), in)
+	if err != nil {
+		e.FailOnError(err, "Failed to get Code-server IngressRoute")
+	}
+
+	return ""
+}
+
+func createDeployment(user models.User, name string) {
+	deployment := utils.ParseK8sResource[*corev1.Deployment]("routes/deployment.yaml")
+
+	label := "app.code-editor/path"
+
+	deployment.Name = name
+	deployment.Labels[label] = user.Path
+	deployment.Spec.Selector.MatchLabels[label] = user.Path
+	deployment.Spec.Template.Labels[label] = user.Path
+
+	deployment.Spec.Template.Spec.Containers[0].Env = append(deployment.Spec.Template.Spec.Containers[0].Env, v1.EnvVar{
+		Name:  "PASSWORD",
+		Value: user.Password,
+	})
+
+	clientset.AppsV1().Deployments(c.Namespace).Create(context.TODO(), deployment, metav1.CreateOptions{})
+}
+
 func ScaleCodeServer(user models.User, replicas int) (string, error) {
 
 	num := int32(replicas)
-	namespace := c.Namespace
 	name := fmt.Sprintf("%s-%s", c.App, user.Name)
 
-	deployment := clientset.AppsV1().Deployments(namespace)
+	createService(name, user.Path)
 
-	s, err := deployment.GetScale(context.TODO(), name, metav1.GetOptions{})
-	if err != nil {
-		e.FailOnError(err, "Failed to get Code-server Deployment/Scale")
-	}
+	createRoute(name, user.Path)
 
-	sc := *s
+	createDeployment(user, name)
 
-	if sc.Spec.Replicas == num {
-		log.Printf("Deployment is already in desired status")
-		return "", nil
-	}
+	// deployment := clientset.AppsV1().Deployments(c.Namespace)
 
-	sc.Spec.Replicas = num
+	// s, err := deployment.GetScale(context.TODO(), name, metav1.GetOptions{})
+	// if err != nil {
+	// 	e.FailOnError(err, "Failed to get Code-server Deployment/Scale")
+	// }
 
-	_, err = deployment.UpdateScale(context.TODO(), name, &sc, metav1.UpdateOptions{})
+	// sc := *s
 
-	if err != nil {
-		return "", err
-	}
+	// if sc.Spec.Replicas == num {
+	// 	log.Printf("Deployment is already in desired status")
+	// 	return "", nil
+	// }
+
+	// sc.Spec.Replicas = num
+
+	// _, err = deployment.UpdateScale(context.TODO(), name, &sc, metav1.UpdateOptions{})
+
+	// if err != nil {
+	// 	return "", err
+	// }
 
 	label := fmt.Sprintf("app.code-editor/path=%s", user.Path)
 
