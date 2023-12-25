@@ -15,6 +15,10 @@ type Users struct {
 	Users []User
 }
 
+type CodeServerConfig struct {
+	Password string `yaml:"password"`
+}
+
 type CodeServerSession struct {
 	Name  string `yaml:"name"`
 	Value string `yaml:"value"`

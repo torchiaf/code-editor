@@ -13,7 +13,7 @@ import (
 	"server/models"
 )
 
-func EditorLogin(user models.User) (models.CodeServerSession, error) {
+func EditorLogin(user models.User, codeServerConfig models.CodeServerConfig) (models.CodeServerSession, error) {
 
 	var session models.CodeServerSession
 
@@ -31,7 +31,7 @@ func EditorLogin(user models.User) (models.CodeServerSession, error) {
 
 	// JSON body
 	data := url.Values{}
-	data.Set("password", user.Password)
+	data.Set("password", codeServerConfig.Password)
 
 	// Create a HTTP post request
 	client := &http.Client{

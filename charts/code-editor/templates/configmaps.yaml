@@ -16,6 +16,8 @@ data:
     {{- .Files.Get "routes/service.yaml" | nindent 4 }}
   traefik-route: |
     {{- .Files.Get "routes/traefik-route.yaml" | nindent 4 }}
+  secret: |
+    {{- .Files.Get "routes/secret.yaml" | nindent 4 }}
   deployment: |
     {{- .Files.Get "routes/deployment.yaml" | nindent 4 }}
 {{- if $.Values.codeServer.vscodeSettings.enable }}

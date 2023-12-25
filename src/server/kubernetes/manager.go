@@ -237,7 +237,20 @@ func createRoute(name string, path string) string {
 	return ""
 }
 
-func createDeployment(user models.User, name string) {
+func createDeployment(user models.User, name string) models.CodeServerConfig {
+
+	secret := utils.ParseK8sResource[*v1.Secret]("routes/secret.yaml")
+
+	secret.Name = name
+	secret.Namespace = c.Namespace
+
+	password := utils.RandomString(20, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
+	secret.StringData = map[string]string{
+		"PASSWORD": password,
+	}
+
+	clientset.CoreV1().Secrets(c.Namespace).Create(context.TODO(), secret, metav1.CreateOptions{})
+
 	deployment := utils.ParseK8sResource[*corev1.Deployment]("routes/deployment.yaml")
 
 	label := "app.code-editor/path"
@@ -247,15 +260,20 @@ func createDeployment(user models.User, name string) {
 	deployment.Spec.Selector.MatchLabels[label] = user.Path
 	deployment.Spec.Template.Labels[label] = user.Path
 
-	deployment.Spec.Template.Spec.Containers[0].Env = append(deployment.Spec.Template.Spec.Containers[0].Env, v1.EnvVar{
-		Name:  "PASSWORD",
-		Value: user.Password,
-	})
+	deployment.Spec.Template.Spec.Containers[0].EnvFrom[0].SecretRef = &v1.SecretEnvSource{
+		LocalObjectReference: v1.LocalObjectReference{
+			Name: name,
+		},
+	}
 
 	clientset.AppsV1().Deployments(c.Namespace).Create(context.TODO(), deployment, metav1.CreateOptions{})
+
+	return models.CodeServerConfig{
+		Password: password,
+	}
 }
 
-func ScaleCodeServer(user models.User, replicas int) (string, error) {
+func ScaleCodeServer(user models.User, replicas int) (models.CodeServerConfig, error) {
 
 	num := int32(replicas)
 	name := fmt.Sprintf("%s-%s", c.App, user.Name)
@@ -264,7 +282,7 @@ func ScaleCodeServer(user models.User, replicas int) (string, error) {
 
 	createRoute(name, user.Path)
 
-	createDeployment(user, name)
+	config := createDeployment(user, name)
 
 	// deployment := clientset.AppsV1().Deployments(c.Namespace)
 
@@ -294,5 +312,5 @@ func ScaleCodeServer(user models.User, replicas int) (string, error) {
 		waitPodRunning(context.TODO(), label)
 	}
 
-	return "", nil
+	return config, nil
 }

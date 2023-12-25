@@ -52,7 +52,7 @@ func (vw View) Enable(c *gin.Context) {
 
 	user, _ := authentication.GetUser(c)
 
-	_, err := kube.ScaleCodeServer(user, 1)
+	config, err := kube.ScaleCodeServer(user, 1)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Code-server - Cannot enable UI instance"})
 		return
@@ -60,7 +60,7 @@ func (vw View) Enable(c *gin.Context) {
 
 	time.Sleep(2000 * time.Millisecond)
 
-	session, err := authentication.EditorLogin(user)
+	session, err := authentication.EditorLogin(user, config)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Code-server - Unauthorized"})
 		return

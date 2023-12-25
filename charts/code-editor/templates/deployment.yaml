@@ -54,5 +54,7 @@ spec:
               path: service
             - key: traefik-route
               path: traefik-route
+            - key: secret
+              path: secret
             - key: deployment
               path: deployment

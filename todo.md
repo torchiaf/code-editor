@@ -1,9 +1,12 @@
 Todo
 
+- add user ID
+- change api response, status should be in a higher level than data
+- Replace username with user ID in routing and object names
+- add 
 - Write license
-- Replace username with paths in routing and object names
 - Create an external authentication mode:
-  -1 pre-requisite: routes dynamic creation (services, deployments, ingressroutes)
+  -1 DONE pre-requisite: routes dynamic creation (services, deployments, ingressroutes)
   -2 helm param to switch to external authentication
   -3 helm param to save the url of external login
   -4 implement a new /register-user endpoint to make the login to the external authentication and register the user into code-editor

@@ -11,9 +11,15 @@ func randInt(min int, max int) int {
 	return min + rand.Intn(max-min)
 }
 
-func RandomString(n int) string {
+func RandomString(n int, r ...string) string {
 
-	alphabet := []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+	var alphabet []rune
+
+	if len(r) > 0 {
+		alphabet = []rune(r[0])
+	} else {
+		alphabet = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+	}
 
 	alphabetSize := len(alphabet)
 	var sb strings.Builder
