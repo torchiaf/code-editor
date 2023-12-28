@@ -40,8 +40,8 @@ func initConfig() config {
 
 	c := config{
 		IsDev:     isDevEnv(),
-		App:       "code-editor",
-		Namespace: utils.IfNull(os.Getenv("POD_NAMESPACE"), "code-editor"),
+		App:       utils.IfNull(os.Getenv("APP_NAME"), "code-editor"),
+		Namespace: utils.IfNull(os.Getenv("APP_NAMESPACE"), "code-editor"),
 		Users:     getUsers(),
 	}
 

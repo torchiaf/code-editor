@@ -19,10 +19,10 @@ spec:
       - env:
         - name: PORT
           value: {{ quote .Values.server.server.env.port }}
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
+        - name: APP_NAME
+          value: {{ .Release.Name }}
+        - name: APP_NAMESPACE
+          value: {{ .Release.Namespace }}
         - name: API_SECRET
           value: {{ quote .Values.server.server.env.api.secret }}
         - name: API_TOKEN_EXPIRATION
