@@ -152,7 +152,7 @@ func (editor Editor) Login(port int32, password string) (models.CodeServerSessio
 
 	var session models.CodeServerSession
 
-	// code-server login endpoint
+	// editor login endpoint
 	loginUrl := ""
 
 	if config.Config.IsDev {
@@ -174,7 +174,7 @@ func (editor Editor) Login(port int32, password string) (models.CodeServerSessio
 
 	req, err := http.NewRequest("POST", loginUrl, strings.NewReader(data.Encode()))
 	if err != nil {
-		return session, errors.New("Code-server, login request creation error")
+		return session, errors.New("Editor, login request creation error")
 	}
 
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
@@ -184,7 +184,7 @@ func (editor Editor) Login(port int32, password string) (models.CodeServerSessio
 	resp, err := client.Do(req)
 
 	if err != nil {
-		return session, errors.New("Code-server, login response error")
+		return session, errors.New("Editor, login response error")
 	}
 	defer resp.Body.Close()
 
@@ -269,7 +269,7 @@ func (editor Editor) ruleCreate() error {
 		Name:      "code-editor-ui",
 	}, in)
 	if err != nil {
-		e.FailOnError(err, "Failed to get Code-server IngressRoute")
+		e.FailOnError(err, "Failed to get Editor IngressRoute")
 	}
 
 	routeUnstructured := &unstructured.Unstructured{
@@ -296,12 +296,12 @@ func (editor Editor) ruleCreate() error {
 	routes = append(routes, routeUnstructured.Object)
 
 	if err := unstructured.SetNestedSlice(in.Object, routes, "spec", "routes"); err != nil {
-		e.FailOnError(err, "Failed to get Code-server IngressRoute")
+		e.FailOnError(err, "Failed to set Editor rules")
 	}
 
 	err = cli.Update(context.TODO(), in)
 	if err != nil {
-		e.FailOnError(err, "Failed to get Code-server IngressRoute")
+		e.FailOnError(err, "Failed to get Editor IngressRoute")
 	}
 
 	return nil

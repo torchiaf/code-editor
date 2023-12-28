@@ -72,7 +72,7 @@ func (vw View) Enable(c *gin.Context) {
 
 	port, password, err := editor.Create()
 	if err != nil {
-		c.JSON(http.StatusNotFound, ginError("Code-server - Cannot enable UI instance"))
+		c.JSON(http.StatusNotFound, ginError("Cannot enable UI instance"))
 		return
 	}
 
