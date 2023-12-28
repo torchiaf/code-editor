@@ -7,11 +7,15 @@ import (
 	models "server/models"
 )
 
-type config struct {
-	IsDev     bool
-	App       string
+type app struct {
+	Name      string
 	Namespace string
-	Users     map[string]models.User
+}
+
+type config struct {
+	IsDev bool
+	App   app
+	Users map[string]models.User
 }
 
 func isDevEnv() bool {
@@ -39,10 +43,12 @@ func getUsers() map[string]models.User {
 func initConfig() config {
 
 	c := config{
-		IsDev:     isDevEnv(),
-		App:       utils.IfNull(os.Getenv("APP_NAME"), "code-editor"),
-		Namespace: utils.IfNull(os.Getenv("APP_NAMESPACE"), "code-editor"),
-		Users:     getUsers(),
+		IsDev: isDevEnv(),
+		Users: getUsers(),
+		App: app{
+			Name:      utils.IfNull(os.Getenv("APP_NAME"), "code-editor"),
+			Namespace: utils.IfNull(os.Getenv("APP_NAMESPACE"), "code-editor"),
+		},
 	}
 
 	return c

@@ -41,8 +41,8 @@ spec:
           readOnly: true
       volumes:
         - name: users
-          configMap:
-            name: code-editor-users
+          secret:
+            secretName: code-editor-users
             items:
             - key: users.yaml
               path: users.yaml

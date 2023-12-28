@@ -54,13 +54,13 @@ func execCmdOnPod(label string, command string, stdin io.Reader, stdout io.Write
 		command,
 	}
 
-	pods, err := clientset.CoreV1().Pods(c.Namespace).List(context.TODO(), metav1.ListOptions{LabelSelector: label})
+	pods, err := clientset.CoreV1().Pods(c.App.Namespace).List(context.TODO(), metav1.ListOptions{LabelSelector: label})
 	if err != nil || len(pods.Items) == 0 {
 		e.FailOnError(err, "Pod not found")
 		return err
 	}
 
-	req := clientset.CoreV1().RESTClient().Post().Resource("pods").Name(pods.Items[0].Name).Namespace(c.Namespace).SubResource("exec")
+	req := clientset.CoreV1().RESTClient().Post().Resource("pods").Name(pods.Items[0].Name).Namespace(c.App.Namespace).SubResource("exec")
 
 	scheme := runtime.NewScheme()
 	if err := v1.AddToScheme(scheme); err != nil {
@@ -73,7 +73,7 @@ func execCmdOnPod(label string, command string, stdin io.Reader, stdout io.Write
 		Stdout:    true,
 		Stderr:    false,
 		TTY:       true,
-		Container: c.App,
+		Container: c.App.Name,
 		Command:   cmd,
 	}, parameterCodec)
 	url := req.URL()
@@ -99,7 +99,7 @@ func execCmdOnPod(label string, command string, stdin io.Reader, stdout io.Write
 }
 
 func waitPodRunning(ctx context.Context, label string) error {
-	watcher, err := clientset.CoreV1().Pods(c.Namespace).Watch(context.TODO(), metav1.ListOptions{
+	watcher, err := clientset.CoreV1().Pods(c.App.Namespace).Watch(context.TODO(), metav1.ListOptions{
 		LabelSelector: label,
 	})
 
@@ -203,7 +203,7 @@ func (editor Editor) Login(port int32, password string) (models.CodeServerSessio
 }
 
 func deleteDeployment(user models.User, name string) error {
-	clientset.AppsV1().Deployments(c.Namespace).Delete(context.TODO(), name, metav1.DeleteOptions{})
+	clientset.AppsV1().Deployments(c.App.Namespace).Delete(context.TODO(), name, metav1.DeleteOptions{})
 
 	return nil
 }
@@ -236,7 +236,7 @@ func (editor Editor) credentialsCreate() *v1.Secret {
 		"PASSWORD": utils.RandomString(20, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"),
 	}
 
-	clientset.CoreV1().Secrets(c.Namespace).Create(context.TODO(), secret, metav1.CreateOptions{})
+	clientset.CoreV1().Secrets(editor.namespace).Create(context.TODO(), secret, metav1.CreateOptions{})
 
 	return secret
 }
@@ -324,15 +324,15 @@ func (editor Editor) deploymentCreate(service *v1.Service) *corev1.Deployment {
 		},
 	}
 
-	clientset.AppsV1().Deployments(c.Namespace).Create(context.TODO(), deployment, metav1.CreateOptions{})
+	clientset.AppsV1().Deployments(c.App.Namespace).Create(context.TODO(), deployment, metav1.CreateOptions{})
 
 	return deployment
 }
 
 func New(user models.User) Editor {
 	return Editor{
-		id:        fmt.Sprintf("%s-%s", c.App, user.Name),
-		namespace: c.Namespace,
+		id:        fmt.Sprintf("%s-%s", c.App.Name, user.Name),
+		namespace: c.App.Namespace,
 		label:     fmt.Sprintf("app.code-editor/path=%s", user.Path),
 		path:      user.Path,
 	}
@@ -363,7 +363,5 @@ func (editor Editor) Config(gitCmd string) error {
 }
 
 func (editor Editor) Destroy(user models.User) error {
-	name := fmt.Sprintf("%s-%s", c.App, user.Name)
-
-	return deleteDeployment(user, name)
+	return deleteDeployment(user, editor.id)
 }
