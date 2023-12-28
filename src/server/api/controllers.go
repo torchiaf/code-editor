@@ -12,10 +12,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func ginSuccess(message string, data ...map[string]any) gin.H {
+	ret := gin.H{
+		"message": message,
+	}
+
+	if len(data) > 0 {
+		ret["data"] = data[0]
+	}
+
+	return ret
+}
+
+func ginError(message string) gin.H {
+	return gin.H{
+		"error": message,
+	}
+}
+
 func Ping(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "paolo",
-	})
+	c.JSON(http.StatusOK, ginSuccess("paolo"))
 }
 
 func Login(c *gin.Context) {
@@ -23,20 +39,20 @@ func Login(c *gin.Context) {
 	var auth models.Auth
 
 	if err := c.ShouldBindJSON(&auth); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, ginError(err.Error()))
 		return
 	}
 
 	token, err := authentication.LoginCheck(auth)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, ginError(err.Error()))
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	c.JSON(http.StatusOK, ginSuccess("Successful login", map[string]interface{}{
 		"token": token,
-	})
+	}))
 }
 
 type ViewI interface {
@@ -56,7 +72,7 @@ func (vw View) Enable(c *gin.Context) {
 
 	port, password, err := editor.Create()
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Code-server - Cannot enable UI instance"})
+		c.JSON(http.StatusNotFound, ginError("Code-server - Cannot enable UI instance"))
 		return
 	}
 
@@ -64,15 +80,14 @@ func (vw View) Enable(c *gin.Context) {
 
 	session, err := editor.Login(port, password)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusUnauthorized, ginError(err.Error()))
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status":     "enabled",
+	c.JSON(http.StatusOK, ginSuccess("View Enable", map[string]interface{}{
 		session.Name: session.Value,
 		"path":       user.Path,
-	})
+	}))
 }
 
 func (vw View) Disable(c *gin.Context) {
@@ -82,9 +97,7 @@ func (vw View) Disable(c *gin.Context) {
 	editor := editor.New(user)
 
 	editor.Destroy(user)
-	c.JSON(http.StatusOK, gin.H{
-		"status": "disabled",
-	})
+	c.JSON(http.StatusOK, ginSuccess("View Disabled"))
 }
 
 func (vw View) Config(c *gin.Context) {
@@ -95,7 +108,7 @@ func (vw View) Config(c *gin.Context) {
 
 	var vwConfig models.ViewConfig
 	if err := c.ShouldBindJSON(&vwConfig); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, ginError(err.Error()))
 		return
 	}
 
@@ -113,14 +126,13 @@ func (vw View) Config(c *gin.Context) {
 	err := editor.Config(gitCmd)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Pod Configuration failed; %s", err.Error())})
+		c.JSON(http.StatusBadRequest, ginError(fmt.Sprintf("Pod Configuration failed; %s", err.Error())))
 		return
 	}
 
 	queryParam := fmt.Sprintf("folder=/git/%s", git.Repo)
 
-	c.JSON(http.StatusOK, gin.H{
-		"status":      "config saved",
+	c.JSON(http.StatusOK, ginSuccess("Configurations saved", map[string]interface{}{
 		"query-param": queryParam,
-	})
+	}))
 }

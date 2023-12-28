@@ -1,10 +1,8 @@
 Todo
 
-- server refactoring, example https://github.com/golang-standards/project-layout
 - errors handling
 - add user ID
 - make "code-editor" prefix parametric
-- change api response, status should be in a higher level than data
 - Replace username with user ID in routing and object names
 - vs-code-settings and extensions must be installed via APis, not hardcoded -> remove them from src/templates
 - Write license
@@ -15,7 +13,6 @@ Todo
   -4 implement a new /register-user endpoint to make the login to the external authentication and register the user into code-editor
 - Add a saved postman endpoints for dev
 - Clean helm charts
-- Refactoring helm charts
 - Add swagger
 - disable telemetry: --disable-telemetry option
 - Investigate kubevirt
