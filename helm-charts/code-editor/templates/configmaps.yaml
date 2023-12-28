@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: code-editor-users
+data:
+  users.yaml: |
+    users:
+    {{- $.Values.users | toYaml | nindent 4 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: code-editor-templates
+data:
+  service.yaml: |
+    {{- .Files.Get "assets/service.yaml" | nindent 4 }}
+  traefik-route.yaml: |
+    {{- .Files.Get "assets/traefik-route.yaml" | nindent 4 }}
+  secret.yaml: |
+    {{- .Files.Get "assets/secret.yaml" | nindent 4 }}
+  deployment.yaml: |
+    {{- .Files.Get "assets/deployment.yaml" | nindent 4 }}
+{{- if $.Values.codeServer.vscodeSettings.enable }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vscode-config
+data:
+  settings.json: |
+    {{- .Files.Get "assets/vscode-settings.json" | nindent 4 }}
+{{- end }}

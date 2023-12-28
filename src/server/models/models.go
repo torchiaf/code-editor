@@ -15,6 +15,16 @@ type Users struct {
 	Users []User
 }
 
+type Service struct {
+	Id   string `yaml:"id"`
+	Port int32  `yaml:"port"`
+}
+
+type CodeServerConfig struct {
+	ServicePort int32  `yaml:"port"`
+	Password    string `yaml:"password"`
+}
+
 type CodeServerSession struct {
 	Name  string `yaml:"name"`
 	Value string `yaml:"value"`

@@ -22,19 +22,30 @@ func isDevEnv() bool {
 	return false
 }
 
-func getConfig() config {
+func generatePath(users []models.User) {
+	for i := range users {
+		users[i].Path = utils.RandomString(13)
+	}
+}
 
-	arr := utils.ParseFile[models.Users]("assets/users").Users
-	userMap := utils.Map(arr, func(user models.User) string { return user.Name })
+func getUsers() map[string]models.User {
+	users := utils.ParseFile[models.Users]("assets/users/users.yaml").Users
+
+	generatePath(users)
+
+	return utils.Map(users, func(user models.User) string { return user.Name })
+}
+
+func initConfig() config {
 
 	c := config{
 		IsDev:     isDevEnv(),
 		App:       "code-editor",
 		Namespace: utils.IfNull(os.Getenv("POD_NAMESPACE"), "code-editor"),
-		Users:     userMap,
+		Users:     getUsers(),
 	}
 
 	return c
 }
 
-var Config = getConfig()
+var Config = initConfig()

@@ -1,25 +1,17 @@
 #!/bin/sh
 
-dev_users="src/server/assets/users"
+values="helm-charts/code-editor/values.yaml"
+dev_dir="src/server/assets/users"
 
-values="charts/code-editor/values.yaml"
-users="charts/code-editor/users.yaml"
-
-rm -rf $users
-
-echo 'users:' >> $users
-for k in $(yq '.users | to_entries | .[].key' $values)
-do 
-  echo "  - name: $(yq ".users[$k].name" $values)" >> $users
-  echo "    password: $(yq ".users[$k].password" $values)" >> $users
-  echo "    path: $(tr -dc A-Za-z </dev/urandom | head -c 13)" >> $users
-done
-
-# generate users file for Go
+# Add users in dev-mode Go server
 if [ ! -z $1 ]
 then
   echo 'dev mode'
-  cat $users > $dev_users
+
+  rm -rf $dev_dir
+  mkdir $dev_dir
+  echo "users: " > "$dev_dir/users.yaml"
+  yq '.users' $values >> "$dev_dir/users.yaml"
 fi
 
 echo "Users file successfully generated"

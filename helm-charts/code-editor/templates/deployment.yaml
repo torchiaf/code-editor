@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  labels:
+    app: server
+spec:
+  replicas: {{ .Values.server.replicas }}
+  selector:
+    matchLabels:
+      app: server
+  template:
+    metadata:
+      labels:
+        app: server
+    spec:
+      serviceAccountName: server
+      containers:
+      - env:
+        - name: PORT
+          value: {{ quote .Values.server.server.env.port }}
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: API_SECRET
+          value: {{ quote .Values.server.server.env.api.secret }}
+        - name: API_TOKEN_EXPIRATION
+          value: {{ quote .Values.server.server.env.api.tokenExpiration }}
+        image: {{ .Values.server.server.image.repository }}:{{ .Values.server.server.image.tag
+          | default .Chart.AppVersion }}
+        name: server
+        imagePullPolicy: {{ .Values.server.server.image.pullPolicy }}
+        resources: {}
+        volumeMounts:
+        - name: users
+          mountPath: "/server/assets/users"
+          readOnly: true
+        - name: templates
+          mountPath: "/server/assets/templates"
+          readOnly: true
+      volumes:
+        - name: users
+          configMap:
+            name: code-editor-users
+            items:
+            - key: users.yaml
+              path: users.yaml
+        - name: templates
+          configMap:
+            name: code-editor-templates
+            items:
+            - key: service.yaml
+              path: service.yaml
+            - key: traefik-route.yaml
+              path: traefik-route.yaml
+            - key: secret.yaml
+              path: secret.yaml
+            - key: deployment.yaml
+              path: deployment.yaml

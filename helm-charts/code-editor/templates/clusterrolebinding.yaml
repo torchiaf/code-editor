@@ -4,7 +4,10 @@ metadata:
   name: server
 rules:
 - apiGroups: ["", "apps"]
-  resources: ["pods","pods/exec","services","namespaces","deployments","deployments/scale","jobs"]
+  resources: ["pods","pods/exec","services","namespaces","deployments","deployments/scale","jobs","secrets"]
+  verbs: ["get", "update", "create", "watch", "list"]
+- apiGroups: ["traefik.containo.us"]
+  resources: ["ingressroutes"]
   verbs: ["get", "update", "create", "watch", "list"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1

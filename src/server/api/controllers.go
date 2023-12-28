@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	authentication "server/authentication"
-	kube "server/kubernetes"
-	model "server/models"
+	"server/authentication"
+	"server/editor"
+	"server/models"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +20,7 @@ func Ping(c *gin.Context) {
 
 func Login(c *gin.Context) {
 
-	var auth model.Auth
+	var auth models.Auth
 
 	if err := c.ShouldBindJSON(&auth); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -52,7 +52,9 @@ func (vw View) Enable(c *gin.Context) {
 
 	user, _ := authentication.GetUser(c)
 
-	_, err := kube.ScaleCodeServer(user, 1)
+	editor := editor.New(user)
+
+	port, password, err := editor.Create()
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Code-server - Cannot enable UI instance"})
 		return
@@ -60,9 +62,9 @@ func (vw View) Enable(c *gin.Context) {
 
 	time.Sleep(2000 * time.Millisecond)
 
-	session, err := authentication.EditorLogin(user)
+	session, err := editor.Login(port, password)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Code-server - Unauthorized"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -77,7 +79,9 @@ func (vw View) Disable(c *gin.Context) {
 
 	user, _ := authentication.GetUser(c)
 
-	kube.ScaleCodeServer(user, 0)
+	editor := editor.New(user)
+
+	editor.Destroy(user)
 	c.JSON(http.StatusOK, gin.H{
 		"status": "disabled",
 	})
@@ -87,7 +91,9 @@ func (vw View) Config(c *gin.Context) {
 
 	user, _ := authentication.GetUser(c)
 
-	var vwConfig model.ViewConfig
+	editor := editor.New(user)
+
+	var vwConfig models.ViewConfig
 	if err := c.ShouldBindJSON(&vwConfig); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -104,17 +110,17 @@ func (vw View) Config(c *gin.Context) {
 		git.Commit,
 	)
 
-	label := fmt.Sprintf("app.code-editor/path=%s", user.Path)
-
-	err := kube.ExecCmdOnPod(label, gitCmd, nil, nil, nil)
+	err := editor.Config(gitCmd)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Pod Configuration failed; %s", err.Error())})
 		return
 	}
 
+	queryParam := fmt.Sprintf("folder=/git/%s", git.Repo)
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":      "config saved",
-		"query-param": fmt.Sprintf("folder=/git/%s", git.Repo),
+		"query-param": queryParam,
 	})
 }

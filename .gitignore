@@ -1,13 +1,12 @@
 # dev
 out.yaml
 
-# keys and certs
-tls.key
-tls.crt
-ssh.key
-
 # node
 node_modules
 
 # helm
-users.yaml
+helm-charts/code-editor/assets
+
+# keys
+*.cert
+*.key

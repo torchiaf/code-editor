@@ -3,12 +3,9 @@ kind: Middleware
 metadata:
   name: strip-prefix
 spec:
-  stripPrefix:
-    prefixes:
-    - /code-editor/api
-    {{- range .Values.users }}
-    - /code-editor/{{ .path }}
-    {{- end }}
+  stripPrefixRegex:
+    regex:
+      - "/code-editor/[a-zA-Z]+/"
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
@@ -64,16 +61,7 @@ spec:
     {{- else }}
     - websecure
     {{- end }}
-  routes:
-  {{- range .Values.users }}
-    - match: Host(`{{ $.Values.domain }}`) && PathPrefix(`/code-editor/{{ .path }}/`)
-      kind: Rule
-      services:
-        - name: code-editor-{{ .name }}
-          port: 8080
-      middlewares:
-        - name: strip-prefix
-  {{- end }}
+  routes: []
   {{- if not .Values.dev }}
   tls:
     secretName: minio-tls

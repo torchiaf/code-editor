@@ -1,0 +1,145 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    meta.helm.sh/release-name: code-editor
+    meta.helm.sh/release-namespace: code-editor
+  labels:
+    app.code-editor/path: "" # user path
+    app.kubernetes.io/instance: code-editor
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: code-editor
+    helm.sh/chart: code-editor-1.0.0
+  name: "" # unique for user
+  namespace: code-editor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.code-editor/path: "" # user path
+      app.kubernetes.io/instance: code-editor
+      app.kubernetes.io/name: code-editor
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.code-editor/path: "" # user path
+        app.kubernetes.io/instance: code-editor
+        app.kubernetes.io/name: code-editor
+    spec:
+      containers:
+      - args:
+        - --disable-telemetry
+        - --disable-getting-started-override
+        - --disable-workspace-trust
+        image: codercom/code-server:4.19.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 5
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 8080
+          timeoutSeconds: 1
+        name: code-editor
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 5
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 8080
+          timeoutSeconds: 1
+        resources: {}
+        securityContext:
+          runAsUser: 1000
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /home/coder/.local/share/code-server/User
+          name: vscode-config
+        - mountPath: /home/coder/.ssh
+          name: ssh-root
+        - mountPath: /git
+          name: data
+        - mountPath: /home/coder
+          name: cfg
+        envFrom:
+        - secretRef:
+            name: "" # code-server password
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - command:
+        - /bin/sh
+        - -c
+        - cp /ssh/id_ed25519 /etc/ssh-key/id_ed25519 && ssh-keyscan -t ed25519 github.com >> /etc/ssh-key/known_hosts && chown -R 1000:1000 /etc/ssh-key && chmod 700 /etc/ssh-key/id_ed25519
+        image: kroniak/ssh-client:latest
+        imagePullPolicy: Always
+        name: ssh
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /ssh
+          name: ssh
+        - mountPath: /etc/ssh-key
+          name: ssh-root
+      - command:
+        - /bin/sh
+        - -c
+        - "chown -R 1000:1000 /etc && echo '[user]\n\temail = francesco.torchia@suse.com\n\tname
+          = Francesco Torchia' > /home/coder/.gitconfig"
+        image: busybox
+        imagePullPolicy: Always
+        name: gitconfig
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /home/coder/
+          name: cfg
+      - command:
+        - sh
+        - -c
+        - |
+          code-server --install-extension hoovercj.vscode-power-mode
+        env:
+        - name: SERVICE_URL
+          value: https://open-vsx.org/vscode/gallery
+        - name: ITEM_URL
+          value: https://open-vsx.org/vscode/item
+        image: codercom/code-server:4.19.0
+        imagePullPolicy: IfNotPresent
+        name: customization
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /home/coder
+          name: cfg
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 1000
+      serviceAccount: code-editor
+      serviceAccountName: code-editor
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: vscode-config
+        name: vscode-config
+      - name: ssh
+        secret:
+          defaultMode: 420
+          secretName: secret-ssh-auth
+      - emptyDir: {}
+        name: ssh-root
+      - emptyDir: {}
+        name: cfg
+      - emptyDir: {}
+        name: data

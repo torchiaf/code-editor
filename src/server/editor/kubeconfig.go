@@ -1,4 +1,4 @@
-package kubernetes
+package editor
 
 import (
 	"flag"
@@ -12,7 +12,7 @@ import (
 	"k8s.io/client-go/util/homedir"
 )
 
-func InitKubeconfig() (*kubernetes.Clientset, *rest.Config) {
+func initKubeconfig() (*kubernetes.Clientset, *rest.Config) {
 
 	localConfig := cfg.Config
 
