@@ -1,5 +1,7 @@
 Todo
 
+- implement configmaps to store editors status for each users; use the configmap to check if editor is already created in 'enable' api; 
+- implement destroy api
 - errors handling
 - add user ID
 - make "code-editor" prefix parametric

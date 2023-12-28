@@ -84,7 +84,7 @@ func (vw View) Enable(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, ginSuccess("View Enable", map[string]interface{}{
+	c.JSON(http.StatusOK, ginSuccess("View Enabled", map[string]interface{}{
 		session.Name: session.Value,
 		"path":       user.Path,
 	}))
