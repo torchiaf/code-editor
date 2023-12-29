@@ -72,7 +72,7 @@ func (vw View) Enable(c *gin.Context) {
 
 	store := e.Store()
 
-	if (store != editor.StoreData{} && store.Status == "ENABLED") {
+	if (store != editor.StoreData{} && store.Status == editor.Enabled) {
 		c.JSON(http.StatusNotFound, ginError("UI instance is already Enabled"))
 		return
 	}

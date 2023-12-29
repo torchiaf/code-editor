@@ -53,7 +53,7 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: code-editor-ui
+  name: {{ .Release.Name }}-ui
 spec:
   entryPoints:
     {{- if .Values.dev }}
@@ -70,7 +70,7 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: code-editor-server
+  name: {{ .Release.Name }}-server
 spec:
   entryPoints:
     {{- if .Values.dev }}

@@ -14,7 +14,8 @@ type app struct {
 }
 
 type resources struct {
-	ConfigName string
+	IngressName string
+	ConfigName  string
 }
 
 type config struct {
@@ -50,7 +51,8 @@ func initConfig() config {
 		Users: getUsers(),
 		App:   app,
 		Resources: resources{
-			ConfigName: fmt.Sprintf("%s-config", app.Name),
+			IngressName: fmt.Sprintf("%s-ui", app.Name),
+			ConfigName:  fmt.Sprintf("%s-config", app.Name),
 		},
 	}
 

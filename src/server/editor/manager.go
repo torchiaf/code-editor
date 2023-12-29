@@ -167,11 +167,10 @@ type EditorConfigKeys struct {
 }
 
 type Editor struct {
-	id         string
-	name       string
-	namespace  string
-	matchLabel func(string) string
-	keys       EditorConfigKeys
+	id        string
+	name      string
+	namespace string
+	keys      EditorConfigKeys
 }
 
 func New(user models.User) Editor {
@@ -182,9 +181,6 @@ func New(user models.User) Editor {
 		id:        id,
 		name:      c.App.Name,
 		namespace: c.App.Namespace,
-		matchLabel: func(s string) string {
-			return fmt.Sprintf("app.code-editor/path=%s", s)
-		},
 		keys: EditorConfigKeys{
 			status:   fmt.Sprintf("%s_STATUS", id),
 			path:     fmt.Sprintf("%s_PATH", id),
@@ -253,7 +249,7 @@ func (editor Editor) Login(port int32, password string) (models.CodeServerSessio
 
 func (editor Editor) configsCreate() {
 	data := StoreData{
-		Status:   "ENABLED",
+		Status:   Enabled,
 		Path:     utils.RandomString(13),
 		Password: utils.RandomString(20, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"),
 	}
@@ -266,8 +262,8 @@ func (editor Editor) serviceCreate() *v1.Service {
 	service := utils.ParseK8sResource[*v1.Service]("assets/templates/service.yaml")
 
 	service.Name = editor.id
-	service.Labels["app.kubernetes.io/name"] = editor.id
-	service.Labels["app.kubernetes.io/instance"] = editor.name
+	service.Labels[NAME_LABEL] = editor.id
+	service.Labels[INSTANCE_LABEL] = editor.name
 	service.Spec.Selector["app.code-editor/path"] = editor.Store().Path
 
 	ret, _ := clientset.CoreV1().Services(editor.namespace).Create(context.TODO(), service, metav1.CreateOptions{})
@@ -287,7 +283,7 @@ func (editor Editor) ruleCreate() error {
 
 	err := cli.Get(context.Background(), client.ObjectKey{
 		Namespace: editor.namespace,
-		Name:      "code-editor-ui",
+		Name:      c.Resources.IngressName,
 	}, in)
 	if err != nil {
 		e.FailOnError(err, "Failed to get Editor IngressRoute")
@@ -332,18 +328,15 @@ func (editor Editor) deploymentCreate(service *v1.Service) *corev1.Deployment {
 
 	deployment := utils.ParseK8sResource[*corev1.Deployment]("assets/templates/deployment.yaml")
 
-	label1 := "app.code-editor/path"
-	label2 := "app.kubernetes.io/instance"
-
 	deployment.Name = editor.id
 
-	deployment.Labels[label1] = editor.Store().Path
-	deployment.Spec.Selector.MatchLabels[label1] = editor.Store().Path
-	deployment.Spec.Template.Labels[label1] = editor.Store().Path
+	deployment.Labels[MATCH_LABEL] = editor.Store().Path
+	deployment.Spec.Selector.MatchLabels[MATCH_LABEL] = editor.Store().Path
+	deployment.Spec.Template.Labels[MATCH_LABEL] = editor.Store().Path
 
-	deployment.Labels[label2] = editor.name
-	deployment.Spec.Selector.MatchLabels[label2] = editor.name
-	deployment.Spec.Template.Labels[label2] = editor.name
+	deployment.Labels[INSTANCE_LABEL] = editor.name
+	deployment.Spec.Selector.MatchLabels[INSTANCE_LABEL] = editor.name
+	deployment.Spec.Template.Labels[INSTANCE_LABEL] = editor.name
 
 	deployment.Spec.Template.Spec.Containers[0].Name = c.App.Name
 	deployment.Spec.Template.Spec.ServiceAccountName = editor.name
@@ -366,7 +359,7 @@ func (editor Editor) Create() (int32, error) {
 
 	editor.deploymentCreate(service)
 
-	label := editor.matchLabel(editor.Store().Path)
+	label := matchLabel(editor.Store().Path)
 
 	waitPodRunning(context.TODO(), label)
 
@@ -376,7 +369,7 @@ func (editor Editor) Create() (int32, error) {
 }
 
 func (editor Editor) Config(gitCmd string) error {
-	label := editor.matchLabel(editor.Store().Path)
+	label := matchLabel(editor.Store().Path)
 
 	execCmdOnPod(label, gitCmd, nil, nil, nil)
 
