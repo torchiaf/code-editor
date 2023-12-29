@@ -43,9 +43,11 @@
   }
   resp:
   {
-    "status": "enabled",
-    "code-server-session": some-token,
-    "path": some-string,
+    "message": "View enabled",
+    "data": {
+      "code-server-session": some-token,
+      "path": some-string,
+    }
   }
   ```
 - Set vscode configs:
@@ -67,8 +69,10 @@
   }
   resp:
   {
-    "status": "configured",
-		"query": some query params to access the git repository
+    "message": "configured",
+    "data": {
+      "query": some query params to access the git repository
+    }
   }
   ```
 - Go to http://localhost/code-editor/$path-for-user1/?folder=$query
