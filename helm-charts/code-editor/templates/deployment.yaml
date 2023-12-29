@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: server
+  name: {{ .Release.Name }}-server
   labels:
-    app: server
+    app: {{ .Release.Name }}-server
 spec:
   replicas: {{ .Values.server.replicas }}
   selector:
     matchLabels:
-      app: server
+      app: {{ .Release.Name }}-server
   template:
     metadata:
       labels:
-        app: server
+        app: {{ .Release.Name }}-server
     spec:
-      serviceAccountName: server
+      serviceAccountName: {{ .Release.Name }}-server
       containers:
       - env:
         - name: PORT
@@ -29,7 +29,7 @@ spec:
           value: {{ quote .Values.server.server.env.api.tokenExpiration }}
         image: {{ .Values.server.server.image.repository }}:{{ .Values.server.server.image.tag
           | default .Chart.AppVersion }}
-        name: server
+        name: {{ .Release.Name }}-server
         imagePullPolicy: {{ .Values.server.server.image.pullPolicy }}
         resources: {}
         volumeMounts:

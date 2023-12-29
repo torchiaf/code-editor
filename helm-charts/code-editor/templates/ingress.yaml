@@ -82,7 +82,7 @@ spec:
     - match: Host(`{{ $.Values.domain }}`) && PathPrefix(`/code-editor/api/`)
       kind: Rule
       services:
-        - name: server
+        - name: {{ .Release.Name }}-server
           port: 8082
       middlewares:
         - name: headers-manage
