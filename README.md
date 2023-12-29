@@ -69,9 +69,9 @@
   }
   resp:
   {
-    "message": "configured",
+    "message": "Configurations saved",
     "data": {
-      "query": some query params to access the git repository
+      "query-param": some query params to access the git repository
     }
   }
   ```
