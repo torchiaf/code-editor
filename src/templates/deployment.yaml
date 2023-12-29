@@ -1,35 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    meta.helm.sh/release-name: code-editor
-    meta.helm.sh/release-namespace: code-editor
   labels:
     app.code-editor/path: "" # user path
-    app.kubernetes.io/instance: code-editor
+    app.kubernetes.io/instance: "" # app name
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: code-editor
-    helm.sh/chart: code-editor-1.0.0
   name: "" # unique for user
-  namespace: code-editor
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.code-editor/path: "" # user path
-      app.kubernetes.io/instance: code-editor
-      app.kubernetes.io/name: code-editor
+      app.kubernetes.io/instance: "" # app name
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app.code-editor/path: "" # user path
-        app.kubernetes.io/instance: code-editor
-        app.kubernetes.io/name: code-editor
+        app.kubernetes.io/instance: "" # app name
     spec:
       containers:
-      - args:
+      - name: "" # app name
+        args:
         - --disable-telemetry
         - --disable-getting-started-override
         - --disable-workspace-trust
@@ -42,7 +35,6 @@ spec:
           tcpSocket:
             port: 8080
           timeoutSeconds: 1
-        name: code-editor
         ports:
         - containerPort: 8080
           name: http
@@ -72,7 +64,7 @@ spec:
         - name: PASSWORD
           valueFrom:
             secretKeyRef:
-              name: code-editor-view-configs
+              name: "" # config name
               key: "" # unique for user
       dnsPolicy: ClusterFirst
       initContainers:
@@ -128,8 +120,7 @@ spec:
       schedulerName: default-scheduler
       securityContext:
         fsGroup: 1000
-      serviceAccount: code-editor
-      serviceAccountName: code-editor
+      serviceAccountName: "" # app name
       terminationGracePeriodSeconds: 30
       volumes:
       - configMap:

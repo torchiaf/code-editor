@@ -31,7 +31,7 @@ func initStore() map[string]StoreData {
 
 	store := map[string]StoreData{}
 
-	secret, err := clientset.CoreV1().Secrets(config.Config.App.Namespace).Get(context.TODO(), "code-editor-view-configs", metav1.GetOptions{})
+	secret, err := clientset.CoreV1().Secrets(config.Config.App.Namespace).Get(context.TODO(), c.Resources.ConfigName, metav1.GetOptions{})
 	if err != nil {
 		panic(err)
 	}
@@ -60,7 +60,7 @@ func (store store) Get(editor Editor) StoreData {
 }
 
 func (store store) Set(editor Editor, data StoreData) {
-	secret, err := clientset.CoreV1().Secrets(editor.namespace).Get(context.TODO(), "code-editor-view-configs", metav1.GetOptions{})
+	secret, err := clientset.CoreV1().Secrets(editor.namespace).Get(context.TODO(), c.Resources.ConfigName, metav1.GetOptions{})
 	if err != nil {
 		panic(err)
 	}

@@ -5,7 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: "" # unique for user
     helm.sh/chart: "" # unique for user
-    app.kubernetes.io/instance: code-editor
+    app.kubernetes.io/instance: "" # app name
     app.kubernetes.io/managed-by: Helm
 spec:
   type: ClusterIP

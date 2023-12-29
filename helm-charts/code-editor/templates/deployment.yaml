@@ -42,13 +42,13 @@ spec:
       volumes:
         - name: users
           secret:
-            secretName: code-editor-users
+            secretName: {{ .Release.Name }}-users
             items:
             - key: users.yaml
               path: users.yaml
         - name: templates
           configMap:
-            name: code-editor-templates
+            name: {{ .Release.Name }}-templates
             items:
             - key: service.yaml
               path: service.yaml

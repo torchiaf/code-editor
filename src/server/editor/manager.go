@@ -168,6 +168,7 @@ type EditorConfigKeys struct {
 
 type Editor struct {
 	id        string
+	name      string
 	namespace string
 	keys      EditorConfigKeys
 }
@@ -178,6 +179,7 @@ func New(user models.User) Editor {
 
 	return Editor{
 		id:        id,
+		name:      c.App.Name,
 		namespace: c.App.Namespace,
 		keys: EditorConfigKeys{
 			status:   fmt.Sprintf("%s_STATUS", id),
@@ -267,6 +269,7 @@ func (editor Editor) serviceCreate() *v1.Service {
 
 	service.Name = editor.id
 	service.Labels["app.kubernetes.io/name"] = editor.id
+	service.Labels["app.kubernetes.io/instance"] = editor.name
 	service.Spec.Selector["app.code-editor/path"] = editor.Store().Path
 
 	ret, _ := clientset.CoreV1().Services(editor.namespace).Create(context.TODO(), service, metav1.CreateOptions{})
@@ -331,16 +334,26 @@ func (editor Editor) deploymentCreate(service *v1.Service) *corev1.Deployment {
 
 	deployment := utils.ParseK8sResource[*corev1.Deployment]("assets/templates/deployment.yaml")
 
-	label := "app.code-editor/path"
+	label1 := "app.code-editor/path"
+	label2 := "app.kubernetes.io/instance"
 
 	deployment.Name = editor.id
-	deployment.Labels[label] = editor.Store().Path
-	deployment.Spec.Selector.MatchLabels[label] = editor.Store().Path
-	deployment.Spec.Template.Labels[label] = editor.Store().Path
 
+	deployment.Labels[label1] = editor.Store().Path
+	deployment.Spec.Selector.MatchLabels[label1] = editor.Store().Path
+	deployment.Spec.Template.Labels[label1] = editor.Store().Path
+
+	deployment.Labels[label2] = editor.name
+	deployment.Spec.Selector.MatchLabels[label2] = editor.name
+	deployment.Spec.Template.Labels[label2] = editor.name
+
+	deployment.Spec.Template.Spec.Containers[0].Name = c.App.Name
+	deployment.Spec.Template.Spec.ServiceAccountName = editor.name
+
+	deployment.Spec.Template.Spec.Containers[0].Env[0].ValueFrom.SecretKeyRef.Name = c.Resources.ConfigName
 	deployment.Spec.Template.Spec.Containers[0].Env[0].ValueFrom.SecretKeyRef.Key = editor.keys.password
 
-	ret, _ := clientset.AppsV1().Deployments(c.App.Namespace).Create(context.TODO(), deployment, metav1.CreateOptions{})
+	ret, _ := clientset.AppsV1().Deployments(editor.namespace).Create(context.TODO(), deployment, metav1.CreateOptions{})
 
 	return ret
 }

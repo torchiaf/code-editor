@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"server/utils"
 
@@ -12,10 +13,15 @@ type app struct {
 	Namespace string
 }
 
+type resources struct {
+	ConfigName string
+}
+
 type config struct {
-	IsDev bool
-	App   app
-	Users map[string]models.User
+	IsDev     bool
+	App       app
+	Users     map[string]models.User
+	Resources resources
 }
 
 func isDevEnv() bool {
@@ -34,12 +40,17 @@ func getUsers() map[string]models.User {
 
 func initConfig() config {
 
+	app := app{
+		Name:      utils.IfNull(os.Getenv("APP_NAME"), "code-editor"),
+		Namespace: utils.IfNull(os.Getenv("APP_NAMESPACE"), "code-editor"),
+	}
+
 	c := config{
 		IsDev: isDevEnv(),
 		Users: getUsers(),
-		App: app{
-			Name:      utils.IfNull(os.Getenv("APP_NAME"), "code-editor"),
-			Namespace: utils.IfNull(os.Getenv("APP_NAMESPACE"), "code-editor"),
+		App:   app,
+		Resources: resources{
+			ConfigName: fmt.Sprintf("%s-config", app.Name),
 		},
 	}
 
