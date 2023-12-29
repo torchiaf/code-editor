@@ -216,6 +216,3 @@ server:
     targetPort: 8082
   replicas: 1
   type: ClusterIP
-  externalService:
-    host: code-editor
-    externalName: "code-editor.code-editor.svc.cluster.local"
