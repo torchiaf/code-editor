@@ -167,10 +167,11 @@ type EditorConfigKeys struct {
 }
 
 type Editor struct {
-	id        string
-	name      string
-	namespace string
-	keys      EditorConfigKeys
+	id         string
+	name       string
+	namespace  string
+	matchLabel func(string) string
+	keys       EditorConfigKeys
 }
 
 func New(user models.User) Editor {
@@ -181,6 +182,9 @@ func New(user models.User) Editor {
 		id:        id,
 		name:      c.App.Name,
 		namespace: c.App.Namespace,
+		matchLabel: func(s string) string {
+			return fmt.Sprintf("app.code-editor/path=%s", s)
+		},
 		keys: EditorConfigKeys{
 			status:   fmt.Sprintf("%s_STATUS", id),
 			path:     fmt.Sprintf("%s_PATH", id),
@@ -245,12 +249,6 @@ func (editor Editor) Login(port int32, password string) (models.CodeServerSessio
 	session.Value = cookie.Value
 
 	return session, nil
-}
-
-func deleteDeployment(user models.User, name string) error {
-	clientset.AppsV1().Deployments(c.App.Namespace).Delete(context.TODO(), name, metav1.DeleteOptions{})
-
-	return nil
 }
 
 func (editor Editor) configsCreate() {
@@ -368,7 +366,7 @@ func (editor Editor) Create() (int32, error) {
 
 	editor.deploymentCreate(service)
 
-	label := fmt.Sprintf("app.code-editor/path=%s", editor.Store().Path)
+	label := editor.matchLabel(editor.Store().Path)
 
 	waitPodRunning(context.TODO(), label)
 
@@ -378,7 +376,7 @@ func (editor Editor) Create() (int32, error) {
 }
 
 func (editor Editor) Config(gitCmd string) error {
-	label := fmt.Sprintf("app.code-editor/path=%s", editor.Store().Path)
+	label := editor.matchLabel(editor.Store().Path)
 
 	execCmdOnPod(label, gitCmd, nil, nil, nil)
 
@@ -386,5 +384,6 @@ func (editor Editor) Config(gitCmd string) error {
 }
 
 func (editor Editor) Destroy(user models.User) error {
-	return deleteDeployment(user, editor.id)
+	// TODO delete(store, "code-editor-user1")...
+	return nil
 }
