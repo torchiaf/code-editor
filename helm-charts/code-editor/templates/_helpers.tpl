@@ -50,14 +50,3 @@ Selector labels
 app.kubernetes.io/name: {{ include "code-editor.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "code-editor.serviceAccountName" -}}
-{{- if .Values.codeServer.serviceAccount.create -}}
-    {{ default (include "code-editor.fullname" .) .Values.codeServer.serviceAccount.name }}
-{{- else -}}
-    {{ default "default" .Values.codeServer.serviceAccount.name }}
-{{- end -}}
-{{- end -}}
