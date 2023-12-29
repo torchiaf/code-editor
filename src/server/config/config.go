@@ -26,16 +26,8 @@ func isDevEnv() bool {
 	return false
 }
 
-func generatePath(users []models.User) {
-	for i := range users {
-		users[i].Path = utils.RandomString(13)
-	}
-}
-
 func getUsers() map[string]models.User {
 	users := utils.ParseFile[models.Users]("assets/users/users.yaml").Users
-
-	generatePath(users)
 
 	return utils.Map(users, func(user models.User) string { return user.Name })
 }

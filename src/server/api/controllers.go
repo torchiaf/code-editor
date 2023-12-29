@@ -68,9 +68,16 @@ func (vw View) Enable(c *gin.Context) {
 
 	user, _ := authentication.GetUser(c)
 
-	editor := editor.New(user)
+	e := editor.New(user)
 
-	port, password, err := editor.Create()
+	store := e.Store()
+
+	if (store != editor.StoreData{} && store.Status == "ENABLED") {
+		c.JSON(http.StatusNotFound, ginError("UI instance is already Enabled"))
+		return
+	}
+
+	port, err := e.Create()
 	if err != nil {
 		c.JSON(http.StatusNotFound, ginError("Cannot enable UI instance"))
 		return
@@ -78,7 +85,7 @@ func (vw View) Enable(c *gin.Context) {
 
 	time.Sleep(2000 * time.Millisecond)
 
-	session, err := editor.Login(port, password)
+	session, err := e.Login(port, e.Store().Password)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, ginError(err.Error()))
 		return
@@ -86,7 +93,7 @@ func (vw View) Enable(c *gin.Context) {
 
 	c.JSON(http.StatusOK, ginSuccess("View Enabled", map[string]interface{}{
 		session.Name: session.Value,
-		"path":       user.Path,
+		"path":       e.Store().Path,
 	}))
 }
 

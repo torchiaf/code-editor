@@ -148,6 +148,49 @@ func waitPodRunning(ctx context.Context, label string) error {
 // 	}
 // }
 
+type EditorI interface {
+	Create()
+	Config()
+	Destroy()
+	Login()
+	Store()
+	credentialsCreate()
+	serviceCreate()
+	ruleCreate()
+	deploymentCreate()
+}
+
+type EditorConfigKeys struct {
+	status   string
+	path     string
+	password string
+}
+
+type Editor struct {
+	id        string
+	namespace string
+	keys      EditorConfigKeys
+}
+
+func New(user models.User) Editor {
+
+	id := fmt.Sprintf("%s-%s", c.App.Name, user.Name)
+
+	return Editor{
+		id:        id,
+		namespace: c.App.Namespace,
+		keys: EditorConfigKeys{
+			status:   fmt.Sprintf("%s_STATUS", id),
+			path:     fmt.Sprintf("%s_PATH", id),
+			password: fmt.Sprintf("%s_PASSWORD", id),
+		},
+	}
+}
+
+func (editor Editor) Store() StoreData {
+	return Store.Get(editor)
+}
+
 func (editor Editor) Login(port int32, password string) (models.CodeServerSession, error) {
 
 	var session models.CodeServerSession
@@ -156,7 +199,7 @@ func (editor Editor) Login(port int32, password string) (models.CodeServerSessio
 	loginUrl := ""
 
 	if config.Config.IsDev {
-		loginUrl = fmt.Sprintf("http://localhost/code-editor/%s/login", editor.path)
+		loginUrl = fmt.Sprintf("http://localhost/code-editor/%s/login", editor.Store().Path)
 	} else {
 		loginUrl = fmt.Sprintf("http://%s:%d/login", editor.id, port)
 	}
@@ -208,37 +251,14 @@ func deleteDeployment(user models.User, name string) error {
 	return nil
 }
 
-type EditorI interface {
-	Create()
-	Config()
-	Destroy()
-	Login()
-	credentialsCreate()
-	serviceCreate()
-	ruleCreate()
-	deploymentCreate()
-}
-
-type Editor struct {
-	id        string
-	namespace string
-	label     string
-	path      string
-}
-
-func (editor Editor) credentialsCreate() *v1.Secret {
-	secret := utils.ParseK8sResource[*v1.Secret]("assets/templates/secret.yaml")
-
-	secret.Name = editor.id
-	secret.Namespace = editor.namespace
-
-	secret.StringData = map[string]string{
-		"PASSWORD": utils.RandomString(20, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"),
+func (editor Editor) configsCreate() {
+	data := StoreData{
+		Status:   "ENABLED",
+		Path:     utils.RandomString(13),
+		Password: utils.RandomString(20, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"),
 	}
 
-	clientset.CoreV1().Secrets(editor.namespace).Create(context.TODO(), secret, metav1.CreateOptions{})
-
-	return secret
+	Store.Set(editor, data)
 }
 
 func (editor Editor) serviceCreate() *v1.Service {
@@ -247,11 +267,11 @@ func (editor Editor) serviceCreate() *v1.Service {
 
 	service.Name = editor.id
 	service.Labels["app.kubernetes.io/name"] = editor.id
-	service.Spec.Selector["app.code-editor/path"] = editor.path
+	service.Spec.Selector["app.code-editor/path"] = editor.Store().Path
 
-	clientset.CoreV1().Services(editor.namespace).Create(context.TODO(), service, metav1.CreateOptions{})
+	ret, _ := clientset.CoreV1().Services(editor.namespace).Create(context.TODO(), service, metav1.CreateOptions{})
 
-	return service
+	return ret
 }
 
 func (editor Editor) ruleCreate() error {
@@ -276,7 +296,7 @@ func (editor Editor) ruleCreate() error {
 		Object: map[string]interface{}{
 			"apiVersion": "traefik.containo.us/v1alpha1",
 			"kind":       "Rule",
-			"match":      fmt.Sprintf("Host(`localhost`) && PathPrefix(`/code-editor/%s/`)", editor.path),
+			"match":      fmt.Sprintf("Host(`localhost`) && PathPrefix(`/code-editor/%s/`)", editor.Store().Path),
 			"middlewares": []interface{}{
 				map[string]interface{}{
 					"name": "strip-prefix",
@@ -314,50 +334,40 @@ func (editor Editor) deploymentCreate(service *v1.Service) *corev1.Deployment {
 	label := "app.code-editor/path"
 
 	deployment.Name = editor.id
-	deployment.Labels[label] = editor.path
-	deployment.Spec.Selector.MatchLabels[label] = editor.path
-	deployment.Spec.Template.Labels[label] = editor.path
+	deployment.Labels[label] = editor.Store().Path
+	deployment.Spec.Selector.MatchLabels[label] = editor.Store().Path
+	deployment.Spec.Template.Labels[label] = editor.Store().Path
 
-	deployment.Spec.Template.Spec.Containers[0].EnvFrom[0].SecretRef = &v1.SecretEnvSource{
-		LocalObjectReference: v1.LocalObjectReference{
-			Name: editor.id,
-		},
-	}
+	deployment.Spec.Template.Spec.Containers[0].Env[0].ValueFrom.SecretKeyRef.Key = editor.keys.password
 
-	clientset.AppsV1().Deployments(c.App.Namespace).Create(context.TODO(), deployment, metav1.CreateOptions{})
+	ret, _ := clientset.AppsV1().Deployments(c.App.Namespace).Create(context.TODO(), deployment, metav1.CreateOptions{})
 
-	return deployment
+	return ret
 }
 
-func New(user models.User) Editor {
-	return Editor{
-		id:        fmt.Sprintf("%s-%s", c.App.Name, user.Name),
-		namespace: c.App.Namespace,
-		label:     fmt.Sprintf("app.code-editor/path=%s", user.Path),
-		path:      user.Path,
-	}
-}
+func (editor Editor) Create() (int32, error) {
 
-func (editor Editor) Create() (int32, string, error) {
+	editor.configsCreate()
 
 	service := editor.serviceCreate()
 
 	editor.ruleCreate()
 
-	secret := editor.credentialsCreate()
-
 	editor.deploymentCreate(service)
 
-	waitPodRunning(context.TODO(), editor.label)
+	label := fmt.Sprintf("app.code-editor/path=%s", editor.Store().Path)
+
+	waitPodRunning(context.TODO(), label)
 
 	port := service.Spec.Ports[0].Port
-	password := secret.StringData["PASSWORD"]
 
-	return port, password, nil
+	return port, nil
 }
 
 func (editor Editor) Config(gitCmd string) error {
-	execCmdOnPod(editor.label, gitCmd, nil, nil, nil)
+	label := fmt.Sprintf("app.code-editor/path=%s", editor.Store().Path)
+
+	execCmdOnPod(label, gitCmd, nil, nil, nil)
 
 	return nil
 }

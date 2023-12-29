@@ -68,9 +68,12 @@ spec:
           name: data
         - mountPath: /home/coder
           name: cfg
-        envFrom:
-        - secretRef:
-            name: "" # code-server password
+        env:
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: code-editor-view-configs
+              key: "" # unique for user
       dnsPolicy: ClusterFirst
       initContainers:
       - command:
