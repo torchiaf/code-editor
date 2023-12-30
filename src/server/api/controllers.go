@@ -93,7 +93,7 @@ func (vw View) Enable(c *gin.Context) {
 
 	c.JSON(http.StatusOK, ginSuccess("View enabled", map[string]interface{}{
 		session.Name: session.Value,
-		"path":       e.Store().Path,
+		"path":       fmt.Sprintf("/code-editor/%s/", e.Store().Path),
 	}))
 }
 

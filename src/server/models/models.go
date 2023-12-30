@@ -6,6 +6,7 @@ type Auth struct {
 }
 
 type User struct {
+	Id       string `yaml:"id"`
 	Name     string `yaml:"name"`
 	Password string `yaml:"password"`
 }

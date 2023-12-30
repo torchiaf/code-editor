@@ -1,10 +1,8 @@
 Todo
 
-- implement destroy api
 - errors handling
-- add user ID
+- check log errors on destroyRule() call
 - make "code-editor" prefix parametric
-- Replace username with user ID in routing and object names
 - vs-code-settings and extensions must be installed via APis, not hardcoded -> remove them from src/templates
 - Write license
 - Create an external authentication mode:

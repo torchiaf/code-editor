@@ -171,7 +171,7 @@ type Editor struct {
 
 func New(user models.User) Editor {
 
-	id := fmt.Sprintf("%s-%s", c.App.Name, user.Name)
+	id := fmt.Sprintf("%s-%s", c.App.Name, user.Id)
 
 	return Editor{
 		id:        id,
