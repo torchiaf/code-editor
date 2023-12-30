@@ -40,7 +40,7 @@ func initStore() map[string]StoreData {
 	users := utils.Slice[models.User](c.Users)
 
 	for _, user := range users {
-		id := fmt.Sprintf("%s-%s", c.App.Name, user.Name)
+		id := fmt.Sprintf("%s-%s", c.App.Name, user.Id)
 
 		if len(secret.Data[fmt.Sprintf("%s_STATUS", id)]) > 0 {
 			data := StoreData{
