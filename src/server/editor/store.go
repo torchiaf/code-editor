@@ -20,6 +20,7 @@ type StoreData struct {
 type storeI interface {
 	Get()
 	Set()
+	Del()
 }
 
 type store struct {
@@ -77,6 +78,24 @@ func (store store) Set(editor Editor, data StoreData) {
 	}
 
 	_store[editor.id] = data
+}
+
+func (store store) Del(editor Editor) {
+	secret, err := clientset.CoreV1().Secrets(editor.namespace).Get(context.TODO(), c.Resources.ConfigName, metav1.GetOptions{})
+	if err != nil {
+		panic(err)
+	}
+
+	delete(secret.Data, editor.keys.status)
+	delete(secret.Data, editor.keys.path)
+	delete(secret.Data, editor.keys.password)
+
+	_, err = clientset.CoreV1().Secrets(editor.namespace).Update(context.TODO(), secret, metav1.UpdateOptions{})
+	if err != nil {
+		panic(err)
+	}
+
+	delete(_store, editor.id)
 }
 
 var Store = store{}

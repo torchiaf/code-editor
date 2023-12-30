@@ -91,7 +91,7 @@ func (vw View) Enable(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, ginSuccess("View Enabled", map[string]interface{}{
+	c.JSON(http.StatusOK, ginSuccess("View enabled", map[string]interface{}{
 		session.Name: session.Value,
 		"path":       e.Store().Path,
 	}))
@@ -101,10 +101,17 @@ func (vw View) Disable(c *gin.Context) {
 
 	user, _ := authentication.GetUser(c)
 
-	editor := editor.New(user)
+	e := editor.New(user)
 
-	editor.Destroy(user)
-	c.JSON(http.StatusOK, ginSuccess("View Disabled"))
+	store := e.Store()
+
+	if (store == editor.StoreData{} || store.Status == editor.Disabled) {
+		c.JSON(http.StatusNotFound, ginError("UI instance is already Disabled"))
+		return
+	}
+
+	e.Destroy(user)
+	c.JSON(http.StatusOK, ginSuccess("View disabled"))
 }
 
 func (vw View) Config(c *gin.Context) {

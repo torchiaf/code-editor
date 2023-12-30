@@ -5,10 +5,10 @@ metadata:
 rules:
 - apiGroups: ["", "apps"]
   resources: ["pods","pods/exec","services","namespaces","deployments","deployments/scale","jobs","secrets"]
-  verbs: ["get", "update", "create", "watch", "list"]
+  verbs: ["list", "get", "update", "create", "delete", "watch"]
 - apiGroups: ["traefik.containo.us"]
   resources: ["ingressroutes"]
-  verbs: ["get", "update", "create", "watch", "list"]
+  verbs: ["list", "get", "update", "create", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

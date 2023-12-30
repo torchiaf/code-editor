@@ -154,10 +154,6 @@ type EditorI interface {
 	Destroy()
 	Login()
 	Store()
-	credentialsCreate()
-	serviceCreate()
-	ruleCreate()
-	deploymentCreate()
 }
 
 type EditorConfigKeys struct {
@@ -257,6 +253,10 @@ func (editor Editor) configsCreate() {
 	Store.Set(editor, data)
 }
 
+func (editor Editor) configsDestroy() {
+	Store.Del(editor)
+}
+
 func (editor Editor) serviceCreate() *v1.Service {
 
 	service := utils.ParseK8sResource[*v1.Service]("assets/templates/service.yaml")
@@ -269,6 +269,10 @@ func (editor Editor) serviceCreate() *v1.Service {
 	ret, _ := clientset.CoreV1().Services(editor.namespace).Create(context.TODO(), service, metav1.CreateOptions{})
 
 	return ret
+}
+
+func (editor Editor) serviceDestroy() {
+	clientset.CoreV1().Services(editor.namespace).Delete(context.TODO(), editor.id, metav1.DeleteOptions{})
 }
 
 func (editor Editor) ruleCreate() error {
@@ -324,6 +328,49 @@ func (editor Editor) ruleCreate() error {
 	return nil
 }
 
+func (editor Editor) ruleDelete() {
+	cli, _ := client.New(restConfig, client.Options{})
+
+	in := &unstructured.Unstructured{}
+	in.SetGroupVersionKind(schema.GroupVersionKind{
+		Group:   "",
+		Kind:    "IngressRoute",
+		Version: "traefik.containo.us/v1alpha1",
+	})
+
+	err := cli.Get(context.Background(), client.ObjectKey{
+		Namespace: editor.namespace,
+		Name:      c.Resources.IngressName,
+	}, in)
+	if err != nil {
+		e.FailOnError(err, "Failed to get Editor IngressRoute")
+	}
+
+	routes, _, _ := unstructured.NestedSlice(in.Object, "spec", "routes")
+
+	for i := range routes {
+
+		services, _, _ := unstructured.NestedSlice(routes[i].(map[string]interface{}), "services")
+
+		name, _, _ := unstructured.NestedString(services[0].(map[string]interface{}), "name")
+
+		if name == editor.id {
+			routes = append(routes[:i], routes[i+1:]...)
+			break
+		}
+
+	}
+
+	if err := unstructured.SetNestedSlice(in.Object, routes, "spec", "routes"); err != nil {
+		e.FailOnError(err, "Failed to set Editor rules")
+	}
+
+	err = cli.Update(context.TODO(), in)
+	if err != nil {
+		e.FailOnError(err, "Failed to get Editor IngressRoute")
+	}
+}
+
 func (editor Editor) deploymentCreate(service *v1.Service) *corev1.Deployment {
 
 	deployment := utils.ParseK8sResource[*corev1.Deployment]("assets/templates/deployment.yaml")
@@ -347,6 +394,10 @@ func (editor Editor) deploymentCreate(service *v1.Service) *corev1.Deployment {
 	ret, _ := clientset.AppsV1().Deployments(editor.namespace).Create(context.TODO(), deployment, metav1.CreateOptions{})
 
 	return ret
+}
+
+func (editor Editor) deploymentDestroy() {
+	clientset.AppsV1().Deployments(editor.namespace).Delete(context.TODO(), editor.id, metav1.DeleteOptions{})
 }
 
 func (editor Editor) Create() (int32, error) {
@@ -377,6 +428,14 @@ func (editor Editor) Config(gitCmd string) error {
 }
 
 func (editor Editor) Destroy(user models.User) error {
-	// TODO delete(store, "code-editor-user1")...
+
+	editor.deploymentDestroy()
+
+	editor.serviceDestroy()
+
+	editor.ruleDelete()
+
+	editor.configsDestroy()
+
 	return nil
 }
