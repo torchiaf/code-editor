@@ -1,5 +1,7 @@
 Todo
 
+- define a way to get username from external authentication payload
+- generate external user id same as local users method (helm chart)
 - errors handling
 - check log errors on destroyRule() call
 - make "code-editor" prefix parametric

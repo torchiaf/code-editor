@@ -2,7 +2,6 @@ package users
 
 import (
 	"context"
-	"encoding/json"
 	"log"
 
 	c "server/config"
@@ -32,7 +31,7 @@ func initStore() map[string]models.User {
 	}
 
 	var users []models.User
-	err = yaml.Unmarshal([]byte(secret.Data["users"]), &users)
+	err = yaml.Unmarshal(secret.Data["users"], &users)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
@@ -55,18 +54,19 @@ func (store store) Set(user models.User) {
 	}
 
 	var users []models.User
-	err = yaml.Unmarshal([]byte(secret.Data["users"]), &users)
+	err = yaml.Unmarshal(secret.Data["users"], &users)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
 	users = append(users, user)
 
-	_byte, err := json.Marshal(users)
+	_byte, err := yaml.Marshal(users)
 	if err != nil {
 		panic(err)
 	}
 
+	secret.Data = make(map[string][]byte)
 	secret.Data["users"] = _byte
 
 	_, err = k.Clientset.CoreV1().Secrets(c.Config.App.Namespace).Update(context.TODO(), secret, metav1.UpdateOptions{})

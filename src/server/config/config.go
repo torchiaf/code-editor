@@ -6,8 +6,9 @@ import (
 	"server/utils"
 )
 
+const LOCAL string = "local"
 const EXTERNAL string = "external"
-const HEADERS_TOKEN string = "headers"
+const TOKEN_TYPE_HEADERS string = "headers"
 
 type authentication struct {
 	IsExternal bool

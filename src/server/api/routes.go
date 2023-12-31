@@ -11,6 +11,11 @@ func Routes(engine *gin.Engine) {
 	g.GET("/ping", Ping)
 	g.POST("/login", Login)
 
+	us := g.Group("user")
+
+	u := User{}
+	us.POST("/register", u.Register)
+
 	ui := g.Group("view")
 
 	ui.Use(JwtAuthMiddleware())

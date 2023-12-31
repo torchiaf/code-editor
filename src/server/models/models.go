@@ -31,3 +31,8 @@ type Git struct {
 type ViewConfig struct {
 	Git Git
 }
+
+type ExternalUserLogin struct {
+	Username string
+	Token    string
+}

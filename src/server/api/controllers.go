@@ -55,6 +55,13 @@ func Login(c *gin.Context) {
 	}))
 }
 
+type UserI interface {
+	Register()
+}
+
+type User struct {
+}
+
 type ViewI interface {
 	Enable()
 	Disable()
@@ -62,6 +69,26 @@ type ViewI interface {
 }
 
 type View struct {
+}
+
+func (user User) Register(c *gin.Context) {
+
+	var ext models.ExternalUserLogin
+	if err := c.ShouldBindJSON(&ext); err != nil {
+		c.JSON(http.StatusBadRequest, ginError(err.Error()))
+		return
+	}
+
+	ret, err := authentication.ExternalLoginCheck(ext.Token)
+	if err != nil {
+		c.JSON(http.StatusNotFound, ginError(err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, ginSuccess("User successfully registered", map[string]interface{}{
+		"username": ret.Username,
+		"token":    ret.Token,
+	}))
 }
 
 func (vw View) Enable(c *gin.Context) {
