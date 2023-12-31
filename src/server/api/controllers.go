@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"server/authentication"
+	"server/config"
 	"server/editor"
 	"server/models"
 
@@ -73,6 +74,11 @@ type View struct {
 
 func (user User) Register(c *gin.Context) {
 
+	if !config.Config.Authentication.IsExternal {
+		c.JSON(http.StatusBadRequest, ginError("External authentication is not enabled"))
+		return
+	}
+
 	var ext models.ExternalUserLogin
 	if err := c.ShouldBindJSON(&ext); err != nil {
 		c.JSON(http.StatusBadRequest, ginError(err.Error()))
@@ -81,7 +87,7 @@ func (user User) Register(c *gin.Context) {
 
 	ret, err := authentication.ExternalLoginCheck(ext.Token)
 	if err != nil {
-		c.JSON(http.StatusNotFound, ginError(err.Error()))
+		c.JSON(http.StatusBadRequest, ginError(err.Error()))
 		return
 	}
 
@@ -100,13 +106,13 @@ func (vw View) Enable(c *gin.Context) {
 	store := e.Store()
 
 	if (store != editor.StoreData{} && store.Status == editor.Enabled) {
-		c.JSON(http.StatusNotFound, ginError("UI instance is already Enabled"))
+		c.JSON(http.StatusBadRequest, ginError("UI instance is already Enabled"))
 		return
 	}
 
 	port, err := e.Create()
 	if err != nil {
-		c.JSON(http.StatusNotFound, ginError("Cannot enable UI instance"))
+		c.JSON(http.StatusBadRequest, ginError("Cannot enable UI instance"))
 		return
 	}
 
