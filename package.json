@@ -15,9 +15,8 @@
     "templates:generate": "sh scripts/generate-templates.sh",
     "dev:code-editor:install": "npm run dev:assets:generate && helm install code-editor helm-charts/code-editor --set dev=true -n code-editor --create-namespace",
     "dev:code-editor:install:dry-run": "npm run dev:assets:generate && helm install code-editor helm-charts/code-editor --set dev=true -n code-editor --create-namespace --dry-run > out.yaml",
-    "dev:assets:generate": "npm run dev:users:generate && npm run dev:templates:generate && npm run cert:generate",
+    "dev:assets:generate": "npm run dev:templates:generate && npm run cert:generate",
     "dev:templates:generate": "sh scripts/generate-templates.sh 1",
-    "dev:users:generate": "sh scripts/generate-users.sh 1",
     "traefik:install": "kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml -f https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml"
   },
   "repository": {

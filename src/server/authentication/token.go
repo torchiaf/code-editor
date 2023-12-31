@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"server/config"
 	"server/models"
+	"server/users"
 	utils "server/utils"
 	"strconv"
 	"strings"
@@ -87,7 +87,7 @@ func GetUser(c *gin.Context) (models.User, error) {
 		return models.User{}, errors.New("User not found")
 	}
 
-	user, ok := config.Config.Users[v.(string)]
+	user, ok := users.Store.Get(v.(string))
 
 	if !ok {
 		return models.User{}, errors.New("User not found")

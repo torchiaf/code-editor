@@ -4,6 +4,7 @@ import (
 	"errors"
 	"server/config"
 	"server/models"
+	"server/users"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -21,7 +22,11 @@ func verifyPassword(password, userPassword string) error {
 
 func LoginCheck(auth models.Auth) (string, error) {
 
-	user, ok := config.Config.Users[auth.Username]
+	if config.Config.Authentication.IsExternal {
+		return "", errors.New("External authentication enabled, must register user first.")
+	}
+
+	user, ok := users.Store.Get(auth.Username)
 
 	if !ok {
 		return "", errors.New("User not found")

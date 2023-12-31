@@ -4,9 +4,17 @@ import (
 	"fmt"
 	"os"
 	"server/utils"
-
-	models "server/models"
 )
+
+const EXTERNAL string = "external"
+const HEADERS_TOKEN string = "headers"
+
+type authentication struct {
+	IsExternal bool
+	Url        string
+	TokenType  string
+	TokenKey   string
+}
 
 type app struct {
 	Name      string
@@ -16,13 +24,14 @@ type app struct {
 type resources struct {
 	IngressName string
 	ConfigName  string
+	UsersName   string
 }
 
 type config struct {
-	IsDev     bool
-	App       app
-	Users     map[string]models.User
-	Resources resources
+	IsDev          bool
+	Authentication authentication
+	App            app
+	Resources      resources
 }
 
 func isDevEnv() bool {
@@ -31,12 +40,6 @@ func isDevEnv() bool {
 		return true
 	}
 	return false
-}
-
-func getUsers() map[string]models.User {
-	users := utils.ParseFile[models.Users]("assets/users/users.yaml").Users
-
-	return utils.Map(users, func(user models.User) string { return user.Name })
 }
 
 func initConfig() config {
@@ -48,11 +51,17 @@ func initConfig() config {
 
 	c := config{
 		IsDev: isDevEnv(),
-		Users: getUsers(),
 		App:   app,
+		Authentication: authentication{
+			IsExternal: os.Getenv("AUTH_TYPE") == EXTERNAL,
+			Url:        os.Getenv("AUTH_URL"),
+			TokenType:  os.Getenv("AUTH_TOKEN_TYPE"),
+			TokenKey:   os.Getenv("AUTH_TOKEN_KEY"),
+		},
 		Resources: resources{
 			IngressName: fmt.Sprintf("%s-ui", app.Name),
 			ConfigName:  fmt.Sprintf("%s-config", app.Name),
+			UsersName:   fmt.Sprintf("%s-users", app.Name),
 		},
 	}
 

@@ -4,7 +4,7 @@ import (
 	"flag"
 	"path/filepath"
 
-	cfg "server/config"
+	c "server/config"
 
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -13,13 +13,10 @@ import (
 )
 
 func initKubeconfig() (*kubernetes.Clientset, *rest.Config) {
-
-	localConfig := cfg.Config
-
 	var config *rest.Config
 	var err error
 
-	if localConfig.IsDev {
+	if c.Config.IsDev {
 		var kubeconfig *string
 		if home := homedir.HomeDir(); home != "" {
 			kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
@@ -48,3 +45,5 @@ func initKubeconfig() (*kubernetes.Clientset, *rest.Config) {
 
 	return clientset, config
 }
+
+var Clientset, RestConfig = initKubeconfig()

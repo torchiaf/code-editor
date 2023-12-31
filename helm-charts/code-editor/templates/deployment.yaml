@@ -27,25 +27,26 @@ spec:
           value: {{ quote .Values.server.server.env.api.secret }}
         - name: API_TOKEN_EXPIRATION
           value: {{ quote .Values.server.server.env.api.tokenExpiration }}
+        - name: AUTH_TYPE
+          value: {{ .Values.authentication.type }}
+        {{- if eq .Values.authentication.type "external" }}
+        - name: AUTH_URL
+          value: {{ .Values.authentication.url }}
+        - name: AUTH_TOKEN_TYPE
+          value: {{ .Values.authentication.token.type }}
+        - name: AUTH_TOKEN_KEY
+          value: {{ .Values.authentication.token.key }}
+        {{- end }}
         image: {{ .Values.server.server.image.repository }}:{{ .Values.server.server.image.tag
           | default .Chart.AppVersion }}
         name: {{ .Release.Name }}-server
         imagePullPolicy: {{ .Values.server.server.image.pullPolicy }}
         resources: {}
         volumeMounts:
-        - name: users
-          mountPath: "/server/assets/users"
-          readOnly: true
         - name: templates
           mountPath: "/server/assets/templates"
           readOnly: true
       volumes:
-        - name: users
-          secret:
-            secretName: {{ .Release.Name }}-users
-            items:
-            - key: users.yaml
-              path: users.yaml
         - name: templates
           configMap:
             name: {{ .Release.Name }}-templates

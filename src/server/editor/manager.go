@@ -15,6 +15,7 @@ import (
 
 	config "server/config"
 	e "server/error"
+	k "server/kube"
 	"server/models"
 	"server/utils"
 
@@ -29,7 +30,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-var clientset, restConfig = initKubeconfig()
 var c = config.Config
 
 type logStreamer struct {
@@ -54,13 +54,13 @@ func execCmdOnPod(label string, command string, stdin io.Reader, stdout io.Write
 		command,
 	}
 
-	pods, err := clientset.CoreV1().Pods(c.App.Namespace).List(context.TODO(), metav1.ListOptions{LabelSelector: label})
+	pods, err := k.Clientset.CoreV1().Pods(c.App.Namespace).List(context.TODO(), metav1.ListOptions{LabelSelector: label})
 	if err != nil || len(pods.Items) == 0 {
 		e.FailOnError(err, "Pod not found")
 		return err
 	}
 
-	req := clientset.CoreV1().RESTClient().Post().Resource("pods").Name(pods.Items[0].Name).Namespace(c.App.Namespace).SubResource("exec")
+	req := k.Clientset.CoreV1().RESTClient().Post().Resource("pods").Name(pods.Items[0].Name).Namespace(c.App.Namespace).SubResource("exec")
 
 	scheme := runtime.NewScheme()
 	if err := v1.AddToScheme(scheme); err != nil {
@@ -77,7 +77,7 @@ func execCmdOnPod(label string, command string, stdin io.Reader, stdout io.Write
 		Command:   cmd,
 	}, parameterCodec)
 	url := req.URL()
-	exec, err := remotecommand.NewSPDYExecutor(restConfig, "POST", url)
+	exec, err := remotecommand.NewSPDYExecutor(k.RestConfig, "POST", url)
 	if err != nil {
 		return err
 	}
@@ -99,7 +99,7 @@ func execCmdOnPod(label string, command string, stdin io.Reader, stdout io.Write
 }
 
 func waitPodRunning(ctx context.Context, label string) error {
-	watcher, err := clientset.CoreV1().Pods(c.App.Namespace).Watch(context.TODO(), metav1.ListOptions{
+	watcher, err := k.Clientset.CoreV1().Pods(c.App.Namespace).Watch(context.TODO(), metav1.ListOptions{
 		LabelSelector: label,
 	})
 
@@ -266,17 +266,17 @@ func (editor Editor) serviceCreate() *v1.Service {
 	service.Labels[INSTANCE_LABEL] = editor.name
 	service.Spec.Selector["app.code-editor/path"] = editor.Store().Path
 
-	ret, _ := clientset.CoreV1().Services(editor.namespace).Create(context.TODO(), service, metav1.CreateOptions{})
+	ret, _ := k.Clientset.CoreV1().Services(editor.namespace).Create(context.TODO(), service, metav1.CreateOptions{})
 
 	return ret
 }
 
 func (editor Editor) serviceDestroy() {
-	clientset.CoreV1().Services(editor.namespace).Delete(context.TODO(), editor.id, metav1.DeleteOptions{})
+	k.Clientset.CoreV1().Services(editor.namespace).Delete(context.TODO(), editor.id, metav1.DeleteOptions{})
 }
 
 func (editor Editor) ruleCreate() error {
-	cli, _ := client.New(restConfig, client.Options{})
+	cli, _ := client.New(k.RestConfig, client.Options{})
 
 	in := &unstructured.Unstructured{}
 	in.SetGroupVersionKind(schema.GroupVersionKind{
@@ -329,7 +329,7 @@ func (editor Editor) ruleCreate() error {
 }
 
 func (editor Editor) ruleDelete() {
-	cli, _ := client.New(restConfig, client.Options{})
+	cli, _ := client.New(k.RestConfig, client.Options{})
 
 	in := &unstructured.Unstructured{}
 	in.SetGroupVersionKind(schema.GroupVersionKind{
@@ -391,13 +391,13 @@ func (editor Editor) deploymentCreate(service *v1.Service) *corev1.Deployment {
 	deployment.Spec.Template.Spec.Containers[0].Env[0].ValueFrom.SecretKeyRef.Name = c.Resources.ConfigName
 	deployment.Spec.Template.Spec.Containers[0].Env[0].ValueFrom.SecretKeyRef.Key = editor.keys.password
 
-	ret, _ := clientset.AppsV1().Deployments(editor.namespace).Create(context.TODO(), deployment, metav1.CreateOptions{})
+	ret, _ := k.Clientset.AppsV1().Deployments(editor.namespace).Create(context.TODO(), deployment, metav1.CreateOptions{})
 
 	return ret
 }
 
 func (editor Editor) deploymentDestroy() {
-	clientset.AppsV1().Deployments(editor.namespace).Delete(context.TODO(), editor.id, metav1.DeleteOptions{})
+	k.Clientset.AppsV1().Deployments(editor.namespace).Delete(context.TODO(), editor.id, metav1.DeleteOptions{})
 }
 
 func (editor Editor) Create() (int32, error) {
