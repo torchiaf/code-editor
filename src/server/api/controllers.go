@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"server/authentication"
+	"server/config"
 	"server/editor"
 	"server/models"
 
@@ -55,6 +56,13 @@ func Login(c *gin.Context) {
 	}))
 }
 
+type UserI interface {
+	Register()
+}
+
+type User struct {
+}
+
 type ViewI interface {
 	Enable()
 	Disable()
@@ -62,6 +70,31 @@ type ViewI interface {
 }
 
 type View struct {
+}
+
+func (user User) Register(c *gin.Context) {
+
+	if !config.Config.Authentication.IsExternal {
+		c.JSON(http.StatusBadRequest, ginError("External authentication is not enabled"))
+		return
+	}
+
+	var ext models.ExternalUserLogin
+	if err := c.ShouldBindJSON(&ext); err != nil {
+		c.JSON(http.StatusBadRequest, ginError(err.Error()))
+		return
+	}
+
+	ret, err := authentication.ExternalLoginCheck(ext.Token)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ginError(err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, ginSuccess("User successfully registered", map[string]interface{}{
+		"username": ret.Username,
+		"token":    ret.Token,
+	}))
 }
 
 func (vw View) Enable(c *gin.Context) {
@@ -73,13 +106,13 @@ func (vw View) Enable(c *gin.Context) {
 	store := e.Store()
 
 	if (store != editor.StoreData{} && store.Status == editor.Enabled) {
-		c.JSON(http.StatusNotFound, ginError("UI instance is already Enabled"))
+		c.JSON(http.StatusBadRequest, ginError("UI instance is already Enabled"))
 		return
 	}
 
 	port, err := e.Create()
 	if err != nil {
-		c.JSON(http.StatusNotFound, ginError("Cannot enable UI instance"))
+		c.JSON(http.StatusBadRequest, ginError("Cannot enable UI instance"))
 		return
 	}
 

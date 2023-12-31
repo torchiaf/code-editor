@@ -1,5 +1,9 @@
 Todo
 
+- complete the external login check; should works fine when external API token expires, url is incorrect or API response is not 200
+- add sanity check on authentication setting from Helm installation
+- define a way to get username from external authentication payload
+- generate external user id same as local users method (helm chart)
 - errors handling
 - check log errors on destroyRule() call
 - make "code-editor" prefix parametric

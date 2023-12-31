@@ -2,6 +2,14 @@ kubernetesClusterDomain: cluster.local
 
 domain: localhost
 
+authentication:
+  type: local
+  # type: external
+  # url: "https://164.92.187.105.sslip.io/v3/users?me=true"
+  # token:
+  #   type: headers
+  #   key: Cookie
+
 users:
   - name: user1
     password: password1

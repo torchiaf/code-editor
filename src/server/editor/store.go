@@ -4,9 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"server/config"
-	"server/models"
-	"server/utils"
+	k "server/kube"
+	"server/users"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -32,14 +31,12 @@ func initStore() map[string]StoreData {
 
 	store := map[string]StoreData{}
 
-	secret, err := clientset.CoreV1().Secrets(config.Config.App.Namespace).Get(context.TODO(), c.Resources.ConfigName, metav1.GetOptions{})
+	secret, err := k.Clientset.CoreV1().Secrets(c.App.Namespace).Get(context.TODO(), c.Resources.ConfigName, metav1.GetOptions{})
 	if err != nil {
 		panic(err)
 	}
 
-	users := utils.Slice[models.User](c.Users)
-
-	for _, user := range users {
+	for _, user := range users.Store.List() {
 		id := fmt.Sprintf("%s-%s", c.App.Name, user.Id)
 
 		if len(secret.Data[fmt.Sprintf("%s_STATUS", id)]) > 0 {
@@ -61,7 +58,7 @@ func (store store) Get(editor Editor) StoreData {
 }
 
 func (store store) Set(editor Editor, data StoreData) {
-	secret, err := clientset.CoreV1().Secrets(editor.namespace).Get(context.TODO(), c.Resources.ConfigName, metav1.GetOptions{})
+	secret, err := k.Clientset.CoreV1().Secrets(editor.namespace).Get(context.TODO(), c.Resources.ConfigName, metav1.GetOptions{})
 	if err != nil {
 		panic(err)
 	}
@@ -72,7 +69,7 @@ func (store store) Set(editor Editor, data StoreData) {
 		editor.keys.password: data.Password,
 	}
 
-	_, err = clientset.CoreV1().Secrets(editor.namespace).Update(context.TODO(), secret, metav1.UpdateOptions{})
+	_, err = k.Clientset.CoreV1().Secrets(editor.namespace).Update(context.TODO(), secret, metav1.UpdateOptions{})
 	if err != nil {
 		panic(err)
 	}
@@ -81,7 +78,7 @@ func (store store) Set(editor Editor, data StoreData) {
 }
 
 func (store store) Del(editor Editor) {
-	secret, err := clientset.CoreV1().Secrets(editor.namespace).Get(context.TODO(), c.Resources.ConfigName, metav1.GetOptions{})
+	secret, err := k.Clientset.CoreV1().Secrets(editor.namespace).Get(context.TODO(), c.Resources.ConfigName, metav1.GetOptions{})
 	if err != nil {
 		panic(err)
 	}
@@ -90,7 +87,7 @@ func (store store) Del(editor Editor) {
 	delete(secret.Data, editor.keys.path)
 	delete(secret.Data, editor.keys.password)
 
-	_, err = clientset.CoreV1().Secrets(editor.namespace).Update(context.TODO(), secret, metav1.UpdateOptions{})
+	_, err = k.Clientset.CoreV1().Secrets(editor.namespace).Update(context.TODO(), secret, metav1.UpdateOptions{})
 	if err != nil {
 		panic(err)
 	}
