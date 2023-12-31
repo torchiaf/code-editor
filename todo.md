@@ -1,5 +1,7 @@
 Todo
 
+- add dynamic k8s client
+- use rule template to create rule
 - complete the external login check; should works fine when external API token expires, url is incorrect or API response is not 200
 - add sanity check on authentication setting from Helm installation
 - define a way to get username from external authentication payload
