@@ -61,7 +61,7 @@ func LoginCheck(auth models.Auth) (string, error) {
 	return token, nil
 }
 
-func ExternalLoginCheck(externalToken string, password string) (string, error) {
+func VerifyExternalUser(externalToken string, password string) (string, error) {
 
 	// Disable tls check
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}

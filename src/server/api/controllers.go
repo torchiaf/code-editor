@@ -91,7 +91,7 @@ func (user User) Register(c *gin.Context) {
 		return
 	}
 
-	username, err := authentication.ExternalLoginCheck(ext.Token, ext.Password)
+	username, err := authentication.VerifyExternalUser(ext.Token, ext.Password)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ginError(err.Error()))
 		return
