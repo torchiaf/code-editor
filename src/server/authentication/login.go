@@ -61,9 +61,7 @@ func LoginCheck(auth models.Auth) (string, error) {
 	return token, nil
 }
 
-func ExternalLoginCheck(externalToken string, password string) (models.ExternalUserLogin, error) {
-
-	ret := models.ExternalUserLogin{}
+func ExternalLoginCheck(externalToken string, password string) (string, error) {
 
 	// Disable tls check
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
@@ -73,7 +71,7 @@ func ExternalLoginCheck(externalToken string, password string) (models.ExternalU
 
 	req, err := http.NewRequest("GET", config.Config.Authentication.Url, &strings.Reader{})
 	if err != nil {
-		return ret, errors.New("External Login, request creation error")
+		return "", errors.New("External Login, request creation error")
 	}
 
 	if config.Config.Authentication.TokenType == config.TOKEN_TYPE_HEADERS {
@@ -83,7 +81,7 @@ func ExternalLoginCheck(externalToken string, password string) (models.ExternalU
 	resp, err := client.Do(req)
 
 	if err != nil {
-		return ret, errors.New("External Login, login response error")
+		return "", errors.New("External Login, login response error")
 	}
 	defer resp.Body.Close()
 
@@ -95,7 +93,7 @@ func ExternalLoginCheck(externalToken string, password string) (models.ExternalU
 
 	// TODO expand error type based on response error: missing Url; missing token; incorrect token; etc.
 	if resp.StatusCode != 200 {
-		return ret, errors.New("External Login check failed. Wrong Url or Token")
+		return "", errors.New("External Login check failed. Wrong Url or Token")
 	}
 
 	// TODO reflection
@@ -110,18 +108,10 @@ func ExternalLoginCheck(externalToken string, password string) (models.ExternalU
 
 	_, ok := users.Store.Get(user.Name)
 	if ok {
-		return ret, errors.New(fmt.Sprintf("External Login, user [%s] is already registered", user.Name))
+		return "", errors.New(fmt.Sprintf("External Login, user [%s] is already registered", user.Name))
 	}
 
 	users.Store.Set(user)
 
-	token, err := GenerateToken(name)
-	if err != nil {
-		return ret, err
-	}
-
-	ret.Username = name
-	ret.Token = token
-
-	return ret, nil
+	return user.Name, nil
 }

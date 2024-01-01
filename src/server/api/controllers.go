@@ -91,15 +91,14 @@ func (user User) Register(c *gin.Context) {
 		return
 	}
 
-	ret, err := authentication.ExternalLoginCheck(ext.Token, ext.Password)
+	username, err := authentication.ExternalLoginCheck(ext.Token, ext.Password)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ginError(err.Error()))
 		return
 	}
 
 	c.JSON(http.StatusOK, ginSuccess("User successfully registered", map[string]interface{}{
-		"username": ret.Username,
-		// "token":    ret.Token,
+		"username": username,
 	}))
 }
 
