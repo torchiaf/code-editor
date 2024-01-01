@@ -85,7 +85,13 @@ func (user User) Register(c *gin.Context) {
 		return
 	}
 
-	ret, err := authentication.ExternalLoginCheck(ext.Token)
+	// TODO add password constraints
+	if len(ext.Password) == 0 {
+		c.JSON(http.StatusBadRequest, ginError("Password is missing"))
+		return
+	}
+
+	ret, err := authentication.ExternalLoginCheck(ext.Token, ext.Password)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ginError(err.Error()))
 		return
@@ -93,7 +99,7 @@ func (user User) Register(c *gin.Context) {
 
 	c.JSON(http.StatusOK, ginSuccess("User successfully registered", map[string]interface{}{
 		"username": ret.Username,
-		"token":    ret.Token,
+		// "token":    ret.Token,
 	}))
 }
 

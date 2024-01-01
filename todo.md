@@ -1,5 +1,6 @@
 Todo
 
+- resolve TODOs in the code
 - add dynamic k8s client
 - use rule template to create rule
 - complete the external login check; should works fine when external API token expires, url is incorrect or API response is not 200

@@ -46,12 +46,10 @@ func LoginCheck(auth models.Auth) (string, error) {
 		return "", errors.New("User not found")
 	}
 
-	if !isExternal(user) {
-		err := verifyPassword(auth.Password, user.Password)
+	err := verifyPassword(auth.Password, user.Password)
 
-		if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
-			return "", errors.New("Password is not correct")
-		}
+	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+		return "", errors.New("Password is not correct")
 	}
 
 	token, err := GenerateToken(user.Name)
@@ -63,7 +61,7 @@ func LoginCheck(auth models.Auth) (string, error) {
 	return token, nil
 }
 
-func ExternalLoginCheck(externalToken string) (models.ExternalUserLogin, error) {
+func ExternalLoginCheck(externalToken string, password string) (models.ExternalUserLogin, error) {
 
 	ret := models.ExternalUserLogin{}
 
@@ -95,6 +93,11 @@ func ExternalLoginCheck(externalToken string) (models.ExternalUserLogin, error) 
 		panic(err)
 	}
 
+	// TODO expand error type based on response error: missing Url; missing token; incorrect token; etc.
+	if resp.StatusCode != 200 {
+		return ret, errors.New("External Login check failed. Wrong Url or Token")
+	}
+
 	// TODO reflection
 	name := v.Data[0].Username
 
@@ -102,7 +105,7 @@ func ExternalLoginCheck(externalToken string) (models.ExternalUserLogin, error) 
 		// TODO generate as helm chart
 		Id:       fmt.Sprintf("ext-%s", utils.RandomString(10, "0123456789")),
 		Name:     name,
-		Password: "ext",
+		Password: password,
 	}
 
 	_, ok := users.Store.Get(user.Name)
