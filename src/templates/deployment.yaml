@@ -83,14 +83,9 @@ spec:
           name: ssh
         - mountPath: /etc/ssh-key
           name: ssh-root
-      - command:
-        - /bin/sh
-        - -c
-        - "chown -R 1000:1000 /etc && echo '[user]\n\temail = francesco.torchia@suse.com\n\tname
-          = Francesco Torchia' > /home/coder/.gitconfig"
+      - name: gitconfig
         image: busybox
         imagePullPolicy: Always
-        name: gitconfig
         resources: {}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
@@ -100,8 +95,7 @@ spec:
       - command:
         - sh
         - -c
-        - |
-          code-server --install-extension hoovercj.vscode-power-mode
+        - code-server --install-extension hoovercj.vscode-power-mode
         env:
         - name: SERVICE_URL
           value: https://open-vsx.org/vscode/gallery

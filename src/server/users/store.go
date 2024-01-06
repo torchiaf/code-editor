@@ -95,7 +95,6 @@ func (store store) Del(username string) {
 			users = append(users[:i], users[i+1:]...)
 			break
 		}
-
 	}
 
 	_byte, err := yaml.Marshal(users)

@@ -183,7 +183,13 @@ func (vw View) Enable(c *gin.Context) {
 		return
 	}
 
-	port, err := e.Create()
+	var enableConfig models.EnableConfig
+	if err := c.ShouldBindJSON(&enableConfig); err != nil {
+		c.JSON(http.StatusBadRequest, ginError(err.Error()))
+		return
+	}
+
+	port, err := e.Create(enableConfig)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ginError("Cannot enable UI instance"))
 		return

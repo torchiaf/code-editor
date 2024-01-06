@@ -15,12 +15,19 @@ type Users struct {
 	Users []User
 }
 
+type ExternalUserLogin struct {
+	Username string
+	Password string
+	Token    string
+	Force    bool
+}
+
 type CodeServerSession struct {
 	Name  string `yaml:"name"`
 	Value string `yaml:"value"`
 }
 
-type Git struct {
+type GitSource struct {
 	Type   string `yaml:"type"`
 	Org    string `yaml:"org"`
 	Repo   string `yaml:"repo"`
@@ -29,12 +36,14 @@ type Git struct {
 }
 
 type ViewConfig struct {
-	Git Git
+	Git GitSource
 }
 
-type ExternalUserLogin struct {
-	Username string
-	Password string
-	Token    string
-	Force    bool
+type GitConfig struct {
+	Name  string `yaml:"name"`
+	Email string `yaml:"email"`
+}
+
+type EnableConfig struct {
+	Git GitConfig
 }

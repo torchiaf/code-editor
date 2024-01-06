@@ -371,12 +371,13 @@ func (editor Editor) ruleDelete() {
 	}
 }
 
-func (editor Editor) deploymentCreate(service *v1.Service) *corev1.Deployment {
+func (editor Editor) deploymentCreate(gitConfig models.GitConfig, service *v1.Service) *corev1.Deployment {
 
 	deployment := utils.ParseK8sResource[*corev1.Deployment]("assets/templates/deployment.yaml")
 
 	deployment.Name = editor.id
 
+	// Labels
 	deployment.Labels[MATCH_LABEL] = editor.Store().Path
 	deployment.Spec.Selector.MatchLabels[MATCH_LABEL] = editor.Store().Path
 	deployment.Spec.Template.Labels[MATCH_LABEL] = editor.Store().Path
@@ -385,11 +386,34 @@ func (editor Editor) deploymentCreate(service *v1.Service) *corev1.Deployment {
 	deployment.Spec.Selector.MatchLabels[INSTANCE_LABEL] = editor.name
 	deployment.Spec.Template.Labels[INSTANCE_LABEL] = editor.name
 
+	// Containers
 	deployment.Spec.Template.Spec.Containers[0].Name = c.App.Name
 	deployment.Spec.Template.Spec.ServiceAccountName = editor.name
 
+	// Password
 	deployment.Spec.Template.Spec.Containers[0].Env[0].ValueFrom.SecretKeyRef.Name = c.Resources.ConfigName
 	deployment.Spec.Template.Spec.Containers[0].Env[0].ValueFrom.SecretKeyRef.Key = editor.keys.password
+
+	// Configs, initContainers
+	initContainers := &deployment.Spec.Template.Spec.InitContainers
+	for i := range *initContainers {
+		if "gitconfig" == (*initContainers)[i].Name {
+			if (gitConfig == models.GitConfig{}) {
+
+				// Remove initConfig initContainer
+				*initContainers = append((*initContainers)[:i], (*initContainers)[i+1:]...)
+			} else {
+
+				// Add git config command
+				(*initContainers)[i].Command = []string{
+					"/bin/sh",
+					"-c",
+					fmt.Sprintf("chown -R 1000:1000 /etc && echo '[user]\n\temail = %s\n\tname = %s' > /home/coder/.gitconfig", gitConfig.Email, gitConfig.Name),
+				}
+			}
+			break
+		}
+	}
 
 	ret, _ := k.Clientset.AppsV1().Deployments(editor.namespace).Create(context.TODO(), deployment, metav1.CreateOptions{})
 
@@ -400,7 +424,7 @@ func (editor Editor) deploymentDestroy() {
 	k.Clientset.AppsV1().Deployments(editor.namespace).Delete(context.TODO(), editor.id, metav1.DeleteOptions{})
 }
 
-func (editor Editor) Create() (int32, error) {
+func (editor Editor) Create(enableConfig models.EnableConfig) (int32, error) {
 
 	editor.configsCreate()
 
@@ -408,7 +432,7 @@ func (editor Editor) Create() (int32, error) {
 
 	editor.ruleCreate()
 
-	editor.deploymentCreate(service)
+	editor.deploymentCreate(enableConfig.Git, service)
 
 	label := matchLabel(editor.Store().Path)
 
