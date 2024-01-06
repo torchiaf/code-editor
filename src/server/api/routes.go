@@ -21,9 +21,6 @@ func Routes(engine *gin.Engine) {
 
 	ui.Use(JwtAuthMiddleware())
 
-	// ui.GET("/user",controllers.CurrentUser)
-	// ui.GET("/status", Status)
-
 	vw := View{}
 	ui.POST("/enable", vw.Enable)
 	ui.POST("/disable", vw.Disable)

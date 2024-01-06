@@ -1,21 +1,19 @@
 Todo
 
 - activate/deactivate option tu create/destroy endpoint 
-- resolve TODOs in the code
 - add dynamic k8s client
 - use rule template to create rule
 - complete the external login check; should works fine when external API token expires, url is incorrect or API response is not 200
-- add sanity check on authentication setting from Helm installation
-- generate external user id same as local users method (helm chart)
+- external user ids should be generate with same algorithm of local users (helm chart)
+- resolve TODOs in the code
 - errors handling
 - check log errors on destroyRule() call
 - make "code-editor" prefix parametric
-- vs-code-settings and extensions must be installed via APis, not hardcoded -> remove them from src/templates
+- vs-code-settings ~~and extensions~~ must be installed via API
 - Write license
 - Add a saved postman endpoints for dev
 - Clean helm charts
 - Add swagger
-- disable telemetry: --disable-telemetry option
 - Investigate kubevirt
 - Investigate, check heartbit file: https://coder.com/docs/code-server/latest/FAQ#where-is-vs-code-configuration-stored
 - Investigate: https://coder.com/docs/code-server/latest/FAQ#where-is-vs-code-configuration-stored
