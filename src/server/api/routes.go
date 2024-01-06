@@ -15,6 +15,7 @@ func Routes(engine *gin.Engine) {
 
 	u := User{}
 	us.POST("/register", u.Register)
+	us.POST("/unregister", u.Unregister)
 
 	ui := g.Group("view")
 

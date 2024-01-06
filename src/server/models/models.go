@@ -36,4 +36,5 @@ type ExternalUserLogin struct {
 	Username string
 	Password string
 	Token    string
+	Force    bool
 }

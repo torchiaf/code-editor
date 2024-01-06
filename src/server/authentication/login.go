@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"server/config"
 	"server/models"
@@ -53,7 +52,7 @@ func LoginCheck(auth models.Auth) (string, error) {
 	return token, nil
 }
 
-func VerifyExternalUser(externalToken string, password string) (string, error) {
+func VerifyExternalUser(token string) (string, error) {
 
 	// Disable tls check
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
@@ -67,7 +66,7 @@ func VerifyExternalUser(externalToken string, password string) (string, error) {
 	}
 
 	if config.Config.Authentication.TokenType == config.TOKEN_TYPE_HEADERS {
-		req.Header.Add(config.Config.Authentication.TokenKey, externalToken)
+		req.Header.Add(config.Config.Authentication.TokenKey, token)
 	}
 
 	resp, err := client.Do(req)
@@ -93,19 +92,5 @@ func VerifyExternalUser(externalToken string, password string) (string, error) {
 		return "", errors.New("External Login check failed. Cannot get username")
 	}
 
-	user := models.User{
-		// TODO generate as helm chart
-		Id:       fmt.Sprintf("ext-%s", utils.RandomString(10, "0123456789")),
-		Name:     name,
-		Password: password,
-	}
-
-	_, ok := users.Store.Get(user.Name)
-	if ok {
-		return "", errors.New(fmt.Sprintf("External Login, user [%s] is already registered", user.Name))
-	}
-
-	users.Store.Set(user)
-
-	return user.Name, nil
+	return name, nil
 }
