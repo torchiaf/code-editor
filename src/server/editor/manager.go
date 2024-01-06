@@ -371,7 +371,7 @@ func (editor Editor) ruleDelete() {
 	}
 }
 
-func (editor Editor) deploymentCreate(gitConfig models.GitConfig, service *v1.Service) *corev1.Deployment {
+func (editor Editor) deploymentCreate(cfg models.EnableConfig, service *v1.Service) *corev1.Deployment {
 
 	deployment := utils.ParseK8sResource[*corev1.Deployment]("assets/templates/deployment.yaml")
 
@@ -394,21 +394,41 @@ func (editor Editor) deploymentCreate(gitConfig models.GitConfig, service *v1.Se
 	deployment.Spec.Template.Spec.Containers[0].Env[0].ValueFrom.SecretKeyRef.Name = c.Resources.ConfigName
 	deployment.Spec.Template.Spec.Containers[0].Env[0].ValueFrom.SecretKeyRef.Key = editor.keys.password
 
-	// Configs, initContainers
 	initContainers := &deployment.Spec.Template.Spec.InitContainers
+
+	// Git config
 	for i := range *initContainers {
 		if "gitconfig" == (*initContainers)[i].Name {
-			if (gitConfig == models.GitConfig{}) {
-
-				// Remove initConfig initContainer
+			if (cfg.Git == models.GitConfig{}) {
 				*initContainers = append((*initContainers)[:i], (*initContainers)[i+1:]...)
 			} else {
-
-				// Add git config command
 				(*initContainers)[i].Command = []string{
 					"/bin/sh",
 					"-c",
-					fmt.Sprintf("chown -R 1000:1000 /etc && echo '[user]\n\temail = %s\n\tname = %s' > /home/coder/.gitconfig", gitConfig.Email, gitConfig.Name),
+					fmt.Sprintf("chown -R 1000:1000 /etc && echo '[user]\n\temail = %s\n\tname = %s' > /home/coder/.gitconfig", cfg.Git.Email, cfg.Git.Name),
+				}
+			}
+			break
+		}
+	}
+
+	// VSCode extensions
+	for i := range *initContainers {
+		if "extensions" == (*initContainers)[i].Name {
+			if len(cfg.Extensions) == 0 {
+				*initContainers = append((*initContainers)[:i], (*initContainers)[i+1:]...)
+			} else {
+				extensionCmd := ""
+				for i, extensionId := range cfg.Extensions {
+					extensionCmd += fmt.Sprintf("code-server --install-extension %s", extensionId)
+					if i < len(cfg.Extensions)-1 {
+						extensionCmd += " && "
+					}
+				}
+				(*initContainers)[i].Command = []string{
+					"/bin/sh",
+					"-c",
+					extensionCmd,
 				}
 			}
 			break
@@ -432,7 +452,7 @@ func (editor Editor) Create(enableConfig models.EnableConfig) (int32, error) {
 
 	editor.ruleCreate()
 
-	editor.deploymentCreate(enableConfig.Git, service)
+	editor.deploymentCreate(enableConfig, service)
 
 	label := matchLabel(editor.Store().Path)
 

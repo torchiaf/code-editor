@@ -45,5 +45,6 @@ type GitConfig struct {
 }
 
 type EnableConfig struct {
-	Git GitConfig
+	Git        GitConfig
+	Extensions []string
 }
