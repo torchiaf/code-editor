@@ -15,6 +15,7 @@ type authentication struct {
 	Url        string
 	TokenType  string
 	TokenKey   string
+	Query      string
 }
 
 type app struct {
@@ -58,6 +59,7 @@ func initConfig() config {
 			Url:        os.Getenv("AUTH_URL"),
 			TokenType:  os.Getenv("AUTH_TOKEN_TYPE"),
 			TokenKey:   os.Getenv("AUTH_TOKEN_KEY"),
+			Query:      os.Getenv("AUTH_QUERY"),
 		},
 		Resources: resources{
 			IngressName: fmt.Sprintf("%s-ui", app.Name),

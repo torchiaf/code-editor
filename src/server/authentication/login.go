@@ -15,14 +15,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type UserPayload struct {
-	Username string `yaml:"username"`
-}
-
-type Payload struct {
-	Data []UserPayload `yaml:"data"`
-}
-
 func isExternal(user models.User) bool {
 	return strings.HasPrefix(user.Id, "ext-")
 }
@@ -85,7 +77,7 @@ func VerifyExternalUser(externalToken string, password string) (string, error) {
 	}
 	defer resp.Body.Close()
 
-	var v Payload
+	var v map[string]interface{}
 	err = json.NewDecoder(resp.Body).Decode(&v)
 	if err != nil {
 		panic(err)
@@ -96,8 +88,10 @@ func VerifyExternalUser(externalToken string, password string) (string, error) {
 		return "", errors.New("External Login check failed. Wrong Url or Token")
 	}
 
-	// TODO reflection
-	name := v.Data[0].Username
+	name, err := utils.JsonQuery[string](v, config.Config.Authentication.Query)
+	if err != nil {
+		return "", errors.New("External Login check failed. Cannot get username")
+	}
 
 	user := models.User{
 		// TODO generate as helm chart

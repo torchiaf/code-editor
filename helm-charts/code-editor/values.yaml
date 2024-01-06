@@ -9,6 +9,8 @@ authentication:
   # token:
   #   type: headers
   #   key: Cookie
+  # # jq syntax
+  # query: ".data[0].username"
 
 users:
   - name: user1

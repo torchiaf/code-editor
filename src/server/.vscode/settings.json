@@ -2,6 +2,7 @@
     "cSpell.words": [
         "clientset",
         "codeserver",
+        "gojq",
         "kubeconfig"
     ],
     "editor.tabSize": 2,

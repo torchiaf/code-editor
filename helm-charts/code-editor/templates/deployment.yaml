@@ -36,6 +36,8 @@ spec:
           value: {{ .Values.authentication.token.type }}
         - name: AUTH_TOKEN_KEY
           value: {{ .Values.authentication.token.key }}
+        - name: AUTH_QUERY
+          value: {{ .Values.authentication.query }}
         {{- end }}
         image: {{ .Values.server.server.image.repository }}:{{ .Values.server.server.image.tag
           | default .Chart.AppVersion }}
