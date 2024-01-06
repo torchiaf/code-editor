@@ -1,6 +1,5 @@
 Todo
 
-- add user/unregistered endpoint
 - activate/deactivate option tu create/destroy endpoint 
 - resolve TODOs in the code
 - add dynamic k8s client
