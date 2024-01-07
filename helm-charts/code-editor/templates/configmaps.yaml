@@ -3,15 +3,15 @@ kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-templates
 data:
-  service.yaml: |
+  service: |
     {{- .Files.Get "assets/service.yaml" | nindent 4 }}
-  traefik-route.yaml: |
+  traefik-route: |
     {{- .Files.Get "assets/traefik-route.yaml" | nindent 4 }}
-  secret.yaml: |
+  secret: |
     {{- .Files.Get "assets/secret.yaml" | nindent 4 }}
-  deployment.yaml: |
+  deployment: |
     {{- .Files.Get "assets/deployment.yaml" | nindent 4 }}
-  containers.json: |
+  containers: |
     {{- .Files.Get "assets/containers.json" | nindent 4 }}
 {{- if $.Values.codeServer.vscodeSettings.enable }}
 ---
