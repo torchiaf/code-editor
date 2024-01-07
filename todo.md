@@ -1,5 +1,6 @@
 Todo
 
+- test code-server version 4.20.0 -> commit main https://github.com/torchiaf/code-editor/commit/74a200b3cb9e25ef331b02baa8ef2af00328b53c
 - activate/deactivate option tu create/destroy endpoint 
 - add dynamic k8s client
 - use rule template to create rule

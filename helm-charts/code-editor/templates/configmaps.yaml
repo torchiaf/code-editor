@@ -11,6 +11,8 @@ data:
     {{- .Files.Get "assets/secret.yaml" | nindent 4 }}
   deployment.yaml: |
     {{- .Files.Get "assets/deployment.yaml" | nindent 4 }}
+  containers.json: |
+    {{- .Files.Get "assets/containers.json" | nindent 4 }}
 {{- if $.Values.codeServer.vscodeSettings.enable }}
 ---
 apiVersion: v1

@@ -61,3 +61,5 @@ spec:
               path: secret.yaml
             - key: deployment.yaml
               path: deployment.yaml
+            - key: containers.json
+              path: containers.json
