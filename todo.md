@@ -1,6 +1,5 @@
 Todo
 
-- move initContainers to separate template files
 - activate/deactivate option tu create/destroy endpoint 
 - add dynamic k8s client
 - use rule template to create rule

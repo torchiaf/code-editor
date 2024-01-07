@@ -394,45 +394,37 @@ func (editor Editor) deploymentCreate(cfg models.EnableConfig, service *v1.Servi
 	deployment.Spec.Template.Spec.Containers[0].Env[0].ValueFrom.SecretKeyRef.Name = c.Resources.ConfigName
 	deployment.Spec.Template.Spec.Containers[0].Env[0].ValueFrom.SecretKeyRef.Key = editor.keys.password
 
-	initContainers := &deployment.Spec.Template.Spec.InitContainers
+	initContainers := utils.ParseJsonFile[map[string]v1.Container]("assets/templates/containers.json")
 
-	// Git config
-	for i := range *initContainers {
-		if "gitconfig" == (*initContainers)[i].Name {
-			if (cfg.Git == models.GitConfig{}) {
-				*initContainers = append((*initContainers)[:i], (*initContainers)[i+1:]...)
-			} else {
-				(*initContainers)[i].Command = []string{
-					"/bin/sh",
-					"-c",
-					fmt.Sprintf("chown -R 1000:1000 /etc && echo '[user]\n\temail = %s\n\tname = %s' > /home/coder/.gitconfig", cfg.Git.Email, cfg.Git.Name),
-				}
-			}
-			break
+	// TODO should comes from API body
+	deployment.Spec.Template.Spec.InitContainers = append(deployment.Spec.Template.Spec.InitContainers, initContainers["ssh"])
+
+	if (cfg.Git != models.GitConfig{}) {
+		ic := initContainers["gitconfig"]
+		ic.Command = []string{
+			"/bin/sh",
+			"-c",
+			fmt.Sprintf("chown -R 1000:1000 /etc && echo '[user]\n\temail = %s\n\tname = %s' > /home/coder/.gitconfig", cfg.Git.Email, cfg.Git.Name),
 		}
+		deployment.Spec.Template.Spec.InitContainers = append(deployment.Spec.Template.Spec.InitContainers, ic)
 	}
 
-	// VSCode extensions
-	for i := range *initContainers {
-		if "extensions" == (*initContainers)[i].Name {
-			if len(cfg.Extensions) == 0 {
-				*initContainers = append((*initContainers)[:i], (*initContainers)[i+1:]...)
-			} else {
-				extensionCmd := ""
-				for i, extensionId := range cfg.Extensions {
-					extensionCmd += fmt.Sprintf("code-server --install-extension %s", extensionId)
-					if i < len(cfg.Extensions)-1 {
-						extensionCmd += " && "
-					}
-				}
-				(*initContainers)[i].Command = []string{
-					"/bin/sh",
-					"-c",
-					extensionCmd,
-				}
+	if len(cfg.Extensions) > 0 {
+		ic := initContainers["extensions"]
+
+		extensionCmd := ""
+		for i, extensionId := range cfg.Extensions {
+			extensionCmd += fmt.Sprintf("code-server --install-extension %s", extensionId)
+			if i < len(cfg.Extensions)-1 {
+				extensionCmd += " && "
 			}
-			break
 		}
+		ic.Command = []string{
+			"/bin/sh",
+			"-c",
+			extensionCmd,
+		}
+		deployment.Spec.Template.Spec.InitContainers = append(deployment.Spec.Template.Spec.InitContainers, ic)
 	}
 
 	ret, _ := k.Clientset.AppsV1().Deployments(editor.namespace).Create(context.TODO(), deployment, metav1.CreateOptions{})

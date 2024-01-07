@@ -1,0 +1,63 @@
+{
+  "ssh": {
+    "name": "ssh",
+    "command": [
+      "/bin/sh",
+      "-c",
+      "cp /ssh/id_ed25519 /etc/ssh-key/id_ed25519 && ssh-keyscan -t ed25519 github.com >> /etc/ssh-key/known_hosts && chown -R 1000:1000 /etc/ssh-key && chmod 700 /etc/ssh-key/id_ed25519"
+    ],
+    "image": "kroniak/ssh-client:latest",
+    "imagePullPolicy": "Always",
+    "resources": {},
+    "terminationMessagePath": "/dev/termination-log",
+    "terminationMessagePolicy": "File",
+    "volumeMounts": [
+      {
+        "mountPath": "/ssh",
+        "name": "ssh"
+      },
+      {
+        "mountPath": "/etc/ssh-key",
+        "name": "ssh-root"
+      }
+    ]
+  },
+  "gitconfig": {
+    "name": "gitconfig",
+    "image": "busybox",
+    "imagePullPolicy": "Always",
+    "resources": {},
+    "terminationMessagePath": "/dev/termination-log",
+    "terminationMessagePolicy": "File",
+    "volumeMounts": [
+      {
+        "mountPath": "/home/coder/",
+        "name": "cfg"
+      }
+    ]
+  },
+  "extensions": {
+    "name": "extensions",
+    "env": [
+      {
+        "name": "SERVICE_URL",
+        "value": "https://open-vsx.org/vscode/gallery"
+      },
+      {
+        "name": "ITEM_URL",
+        "value": "https://open-vsx.org/vscode/item"
+      }
+    ],
+    "image": "codercom/code-server:4.20.0",
+    "imagePullPolicy": "IfNotPresent",
+    "resources": {},
+    "terminationMessagePath": "/dev/termination-log",
+    "terminationMessagePolicy": "File",
+    "volumeMounts": [
+      {
+        "mountPath": "/home/coder",
+        "name": "cfg"
+      }
+    ]
+  }
+}
