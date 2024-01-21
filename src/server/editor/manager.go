@@ -263,8 +263,10 @@ func (editor Editor) configsCreate(enableConfig models.EnableConfig) {
 		maps.Copy(settingsMap, extension.Settings)
 	}
 
-	// TODO handle errors
-	vscodeSettings, _ := json.Marshal(settingsMap)
+	vscodeSettings, err := json.Marshal(settingsMap)
+	if err != nil {
+		panic(err)
+	}
 
 	data := map[string][]byte{
 		editor.keys.status:         []byte(Enabled),

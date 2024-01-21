@@ -47,10 +47,16 @@ func IfNull[T comparable](defValue T, value T) T {
 }
 
 func MapByteToStruct[T comparable](_map map[string][]byte) T {
-	jsonData, _ := json.Marshal(_map)
+	jsonData, err := json.Marshal(_map)
+	if err != nil {
+		panic(err)
+	}
 
 	var storeData T
-	json.Unmarshal(jsonData, &storeData)
+	err = json.Unmarshal(jsonData, &storeData)
+	if err != nil {
+		panic(err)
+	}
 
 	return storeData
 }

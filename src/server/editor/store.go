@@ -6,7 +6,6 @@ import (
 
 	k "server/kube"
 	"server/users"
-	"server/utils"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -42,14 +41,14 @@ func initStore() map[string]StoreData {
 		id := fmt.Sprintf("%s-%s", c.App.Name, user.Id)
 
 		if len(secret.Data[fmt.Sprintf("%s_STATUS", id)]) > 0 {
-			data := map[string][]byte{
-				"Status":         secret.Data[fmt.Sprintf("%s_STATUS", id)],
-				"Path":           secret.Data[fmt.Sprintf("%s_PATH", id)],
-				"Password":       secret.Data[fmt.Sprintf("%s_PASSWORD", id)],
-				"VScodeSettings": secret.Data[fmt.Sprintf("%s_VSCODE_SETTINGS", id)],
+			dataStore := StoreData{
+				Status:         string(secret.Data[fmt.Sprintf("%s_STATUS", id)]),
+				Path:           string(secret.Data[fmt.Sprintf("%s_PATH", id)]),
+				Password:       string(secret.Data[fmt.Sprintf("%s_PASSWORD", id)]),
+				VScodeSettings: string(secret.Data[fmt.Sprintf("%s_VSCODE_SETTINGS", id)]),
 			}
 
-			store[id] = utils.MapByteToStruct[StoreData](data)
+			store[id] = dataStore
 		}
 	}
 
