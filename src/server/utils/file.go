@@ -6,7 +6,7 @@ import (
 )
 
 func ReadFile(path string) []byte {
-	data, err := os.ReadFile("assets/templates/vscode-settings.json")
+	data, err := os.ReadFile(path)
 
 	if err != nil {
 		log.Fatalf("error: %v", err)
