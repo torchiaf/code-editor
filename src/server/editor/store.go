@@ -6,14 +6,16 @@ import (
 
 	k "server/kube"
 	"server/users"
+	"server/utils"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type StoreData struct {
-	Status   string
-	Path     string
-	Password string
+	Status         string
+	Path           string
+	Password       string
+	VScodeSettings string
 }
 
 type storeI interface {
@@ -40,13 +42,14 @@ func initStore() map[string]StoreData {
 		id := fmt.Sprintf("%s-%s", c.App.Name, user.Id)
 
 		if len(secret.Data[fmt.Sprintf("%s_STATUS", id)]) > 0 {
-			data := StoreData{
-				Status:   string(secret.Data[fmt.Sprintf("%s_STATUS", id)]),
-				Path:     string(secret.Data[fmt.Sprintf("%s_PATH", id)]),
-				Password: string(secret.Data[fmt.Sprintf("%s_PASSWORD", id)]),
+			data := map[string][]byte{
+				"Status":         secret.Data[fmt.Sprintf("%s_STATUS", id)],
+				"Path":           secret.Data[fmt.Sprintf("%s_PATH", id)],
+				"Password":       secret.Data[fmt.Sprintf("%s_PASSWORD", id)],
+				"VScodeSettings": secret.Data[fmt.Sprintf("%s_VSCODE_SETTINGS", id)],
 			}
 
-			store[id] = data
+			store[id] = utils.MapByteToStruct[StoreData](data)
 		}
 	}
 
@@ -57,24 +60,27 @@ func (store store) Get(editor Editor) StoreData {
 	return _store[editor.id]
 }
 
-func (store store) Set(editor Editor, data StoreData) {
+func (store store) Set(editor Editor, data map[string][]byte) {
 	secret, err := k.Clientset.CoreV1().Secrets(editor.namespace).Get(context.TODO(), c.Resources.ConfigName, metav1.GetOptions{})
 	if err != nil {
 		panic(err)
 	}
 
-	secret.StringData = map[string]string{
-		editor.keys.status:   data.Status,
-		editor.keys.path:     data.Path,
-		editor.keys.password: data.Password,
-	}
+	secret.Data = data
 
 	_, err = k.Clientset.CoreV1().Secrets(editor.namespace).Update(context.TODO(), secret, metav1.UpdateOptions{})
 	if err != nil {
 		panic(err)
 	}
 
-	_store[editor.id] = data
+	dataStore := StoreData{
+		Status:         string(data[editor.keys.status]),
+		Path:           string(data[editor.keys.path]),
+		Password:       string(data[editor.keys.password]),
+		VScodeSettings: string(data[editor.keys.vscodeSettings]),
+	}
+
+	_store[editor.id] = dataStore
 }
 
 func (store store) Del(editor Editor) {
@@ -86,6 +92,7 @@ func (store store) Del(editor Editor) {
 	delete(secret.Data, editor.keys.status)
 	delete(secret.Data, editor.keys.path)
 	delete(secret.Data, editor.keys.password)
+	delete(secret.Data, editor.keys.vscodeSettings)
 
 	_, err = k.Clientset.CoreV1().Secrets(editor.namespace).Update(context.TODO(), secret, metav1.UpdateOptions{})
 	if err != nil {

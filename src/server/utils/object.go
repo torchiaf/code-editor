@@ -1,6 +1,10 @@
 package utils
 
-import "github.com/fatih/structs"
+import (
+	"encoding/json"
+
+	"github.com/fatih/structs"
+)
 
 func Find[T comparable](items []T, key string, v string) (bool, T) {
 	for _, item := range items {
@@ -40,4 +44,13 @@ func If[T any](cond bool, vtrue, vfalse T) T {
 func IfNull[T comparable](defValue T, value T) T {
 	var nilValue T
 	return If(defValue == nilValue, value, defValue)
+}
+
+func MapByteToStruct[T comparable](_map map[string][]byte) T {
+	jsonData, _ := json.Marshal(_map)
+
+	var storeData T
+	json.Unmarshal(jsonData, &storeData)
+
+	return storeData
 }

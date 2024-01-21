@@ -75,10 +75,13 @@ spec:
       serviceAccountName: "" # app name
       terminationGracePeriodSeconds: 30
       volumes:
-      - configMap:
+      - name: vscode-config
+        secret:
           defaultMode: 420
-          name: vscode-config
-        name: vscode-config
+          secretName: "" # config name
+          items:
+          - key: "" # unique for user
+            path: "settings.json"
       - name: ssh
         secret:
           defaultMode: 420

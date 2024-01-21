@@ -3,10 +3,12 @@ package editor
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"log"
+	"maps"
 	"net/http"
 	"net/url"
 	"os"
@@ -157,9 +159,10 @@ type EditorI interface {
 }
 
 type EditorConfigKeys struct {
-	status   string
-	path     string
-	password string
+	status         string
+	path           string
+	password       string
+	vscodeSettings string
 }
 
 type Editor struct {
@@ -178,9 +181,10 @@ func New(user models.User) Editor {
 		name:      c.App.Name,
 		namespace: c.App.Namespace,
 		keys: EditorConfigKeys{
-			status:   fmt.Sprintf("%s_STATUS", id),
-			path:     fmt.Sprintf("%s_PATH", id),
-			password: fmt.Sprintf("%s_PASSWORD", id),
+			status:         fmt.Sprintf("%s_STATUS", id),
+			path:           fmt.Sprintf("%s_PATH", id),
+			password:       fmt.Sprintf("%s_PASSWORD", id),
+			vscodeSettings: fmt.Sprintf("%s_VSCODE_SETTINGS", id),
 		},
 	}
 }
@@ -243,11 +247,30 @@ func (editor Editor) Login(port int32, password string) (models.CodeServerSessio
 	return session, nil
 }
 
-func (editor Editor) configsCreate() {
-	data := StoreData{
-		Status:   Enabled,
-		Path:     utils.RandomString(13),
-		Password: utils.RandomString(20, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"),
+func (editor Editor) configsCreate(enableConfig models.EnableConfig) {
+
+	defaultSettings := utils.ReadFile("assets/templates/vscode-settings.json")
+
+	var settingsMap map[string]interface{}
+
+	// Merge VSCode settings
+	if err := json.Unmarshal(defaultSettings, &settingsMap); err != nil {
+		panic(err)
+	}
+
+	maps.Copy(settingsMap, enableConfig.VscodeSettings)
+	for _, extension := range enableConfig.Extensions {
+		maps.Copy(settingsMap, extension.Settings)
+	}
+
+	// TODO handle errors
+	vscodeSettings, _ := json.Marshal(settingsMap)
+
+	data := map[string][]byte{
+		editor.keys.status:         []byte(Enabled),
+		editor.keys.path:           []byte(utils.RandomString(13)),
+		editor.keys.password:       []byte(utils.RandomString(20, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")),
+		editor.keys.vscodeSettings: vscodeSettings,
 	}
 
 	Store.Set(editor, data)
@@ -394,6 +417,15 @@ func (editor Editor) deploymentCreate(cfg models.EnableConfig, service *v1.Servi
 	deployment.Spec.Template.Spec.Containers[0].Env[0].ValueFrom.SecretKeyRef.Name = c.Resources.ConfigName
 	deployment.Spec.Template.Spec.Containers[0].Env[0].ValueFrom.SecretKeyRef.Key = editor.keys.password
 
+	// VSCode default settings volume
+	for i, volume := range deployment.Spec.Template.Spec.Volumes {
+		if volume.Name == "vscode-config" {
+			deployment.Spec.Template.Spec.Volumes[i].Secret.SecretName = c.Resources.ConfigName
+			deployment.Spec.Template.Spec.Volumes[i].Secret.Items[0].Key = editor.keys.vscodeSettings
+			break
+		}
+	}
+
 	initContainers := utils.ParseJsonFile[map[string]v1.Container]("assets/templates/containers.json")
 
 	// TODO should comes from API body
@@ -413,8 +445,8 @@ func (editor Editor) deploymentCreate(cfg models.EnableConfig, service *v1.Servi
 		ic := initContainers["extensions"]
 
 		extensionCmd := ""
-		for i, extensionId := range cfg.Extensions {
-			extensionCmd += fmt.Sprintf("code-server --install-extension %s", extensionId)
+		for i, extension := range cfg.Extensions {
+			extensionCmd += fmt.Sprintf("code-server --install-extension %s", extension.Id)
 			if i < len(cfg.Extensions)-1 {
 				extensionCmd += " && "
 			}
@@ -438,7 +470,7 @@ func (editor Editor) deploymentDestroy() {
 
 func (editor Editor) Create(enableConfig models.EnableConfig) (int32, error) {
 
-	editor.configsCreate()
+	editor.configsCreate(enableConfig)
 
 	service := editor.serviceCreate()
 

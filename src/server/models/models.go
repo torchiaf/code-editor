@@ -44,7 +44,13 @@ type GitConfig struct {
 	Email string `yaml:"email"`
 }
 
+type Extension struct {
+	Id       string                 `yaml:"id"`
+	Settings map[string]interface{} `yaml:"settings"`
+}
+
 type EnableConfig struct {
-	Git        GitConfig
-	Extensions []string
+	Git            GitConfig              `json:"git"`
+	Extensions     []Extension            `json:"extensions"`
+	VscodeSettings map[string]interface{} `json:"vscode-settings"`
 }

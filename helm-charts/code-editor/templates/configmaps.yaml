@@ -13,13 +13,5 @@ data:
     {{- .Files.Get "assets/deployment.yaml" | nindent 4 }}
   containers: |
     {{- .Files.Get "assets/containers.json" | nindent 4 }}
-{{- if $.Values.codeServer.vscodeSettings.enable }}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: vscode-config
-data:
-  settings.json: |
+  vscode-config: |
     {{- .Files.Get "assets/vscode-settings.json" | nindent 4 }}
-{{- end }}

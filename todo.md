@@ -10,9 +10,8 @@ Todo
 - errors handling
 - check log errors on destroyRule() call
 - make "code-editor" prefix parametric
-- vs-code-settings ~~and extensions~~ must be installed via API
 - Write license
-- Add a saved postman endpoints for dev
+- Add a postman endpoints collection for dev
 - Clean helm charts
 - Add swagger
 - Investigate kubevirt

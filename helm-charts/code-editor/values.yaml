@@ -62,9 +62,6 @@ codeServer:
         hosts:
           - localhost
 
-  vscodeSettings:
-    enable: true
-
   # Optional additional arguments
   extraArgs:
     - --disable-telemetry
