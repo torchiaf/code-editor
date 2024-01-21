@@ -53,7 +53,7 @@ spec:
         terminationMessagePolicy: File
         volumeMounts:
         - mountPath: /home/coder/.local/share/code-server/User
-          name: vscode-config
+          name: vscode-settings
         - mountPath: /home/coder/.ssh
           name: ssh-root
         - mountPath: /git
@@ -75,7 +75,7 @@ spec:
       serviceAccountName: "" # app name
       terminationGracePeriodSeconds: 30
       volumes:
-      - name: vscode-config
+      - name: vscode-settings
         secret:
           defaultMode: 420
           secretName: "" # config name

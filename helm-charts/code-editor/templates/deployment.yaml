@@ -63,3 +63,5 @@ spec:
               path: deployment.yaml
             - key: containers
               path: containers.json
+            - key: vscode-settings
+              path: vscode-settings.json

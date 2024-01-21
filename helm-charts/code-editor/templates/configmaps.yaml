@@ -13,5 +13,5 @@ data:
     {{- .Files.Get "assets/deployment.yaml" | nindent 4 }}
   containers: |
     {{- .Files.Get "assets/containers.json" | nindent 4 }}
-  vscode-config: |
+  vscode-settings: |
     {{- .Files.Get "assets/vscode-settings.json" | nindent 4 }}

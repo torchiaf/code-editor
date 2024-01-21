@@ -419,7 +419,7 @@ func (editor Editor) deploymentCreate(cfg models.EnableConfig, service *v1.Servi
 
 	// VSCode default settings volume
 	for i, volume := range deployment.Spec.Template.Spec.Volumes {
-		if volume.Name == "vscode-config" {
+		if volume.Name == "vscode-settings" {
 			deployment.Spec.Template.Spec.Volumes[i].Secret.SecretName = c.Resources.ConfigName
 			deployment.Spec.Template.Spec.Volumes[i].Secret.Items[0].Key = editor.keys.vscodeSettings
 			break
