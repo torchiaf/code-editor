@@ -26,7 +26,7 @@ spec:
         - --disable-telemetry
         - --disable-getting-started-override
         - --disable-workspace-trust
-        image: codercom/code-server:4.19.0
+        image: codercom/code-server:4.20.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 5

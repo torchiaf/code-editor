@@ -48,7 +48,7 @@
         "value": "https://open-vsx.org/vscode/item"
       }
     ],
-    "image": "codercom/code-server:4.19.0",
+    "image": "codercom/code-server:4.20.0",
     "imagePullPolicy": "IfNotPresent",
     "resources": {},
     "terminationMessagePath": "/dev/termination-log",
