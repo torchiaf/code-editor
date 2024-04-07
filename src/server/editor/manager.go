@@ -237,8 +237,8 @@ func (editor Editor) Login(port int32, password string) (models.CodeServerSessio
 
 	resp, err := client.Do(req)
 
-	if err != nil {
-		return session, errors.New("Editor, login response error")
+	if err != nil || resp.StatusCode != 302 {
+		return session, errors.New("Editor, code-server login error")
 	}
 	defer resp.Body.Close()
 
