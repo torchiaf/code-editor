@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"log"
 	"maps"
 	"net/http"
@@ -53,9 +52,9 @@ func execCmdOnPod(
 	ctx context.Context,
 	label string,
 	command string,
-	stdin io.Reader,
-	stdout io.Writer,
-	stderr io.Writer,
+	// stdin io.Reader,
+	// stdout io.Writer,
+	// stderr io.Writer,
 ) error {
 	cmd := []string{
 		"sh",
@@ -405,7 +404,7 @@ func (editor Editor) ruleDelete() {
 	}
 }
 
-func (editor Editor) deploymentCreate(cfg models.EnableConfig, service *v1.Service) *corev1.Deployment {
+func (editor Editor) deploymentCreate(cfg models.EnableConfig) *corev1.Deployment {
 
 	deployment := utils.ParseK8sResource[*corev1.Deployment]("assets/templates/deployment.yaml")
 
@@ -487,7 +486,7 @@ func (editor Editor) Create(enableConfig models.EnableConfig) (int32, error) {
 
 	editor.ruleCreate()
 
-	editor.deploymentCreate(enableConfig, service)
+	editor.deploymentCreate(enableConfig)
 
 	label := matchLabel(editor.Store().Path)
 
@@ -501,7 +500,7 @@ func (editor Editor) Create(enableConfig models.EnableConfig) (int32, error) {
 func (editor Editor) Config(gitCmd string) error {
 	label := matchLabel(editor.Store().Path)
 
-	execCmdOnPod(editor.ctx, label, gitCmd, nil, nil, nil)
+	execCmdOnPod(editor.ctx, label, gitCmd)
 
 	return nil
 }
