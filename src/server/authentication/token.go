@@ -4,12 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"server/models"
-	"server/users"
-	utils "server/utils"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/torchiaf/code-editor/server/models"
+	"github.com/torchiaf/code-editor/server/users"
+	utils "github.com/torchiaf/code-editor/server/utils"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -40,7 +41,7 @@ func TokenValid(c *gin.Context) error {
 	tokenString := ExtractToken(c)
 	_, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 		return []byte(tokenSecret), nil
 	})
@@ -66,7 +67,7 @@ func ExtractUser(c *gin.Context) (string, error) {
 	tokenString := ExtractToken(c)
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 		return []byte(tokenSecret), nil
 	})
@@ -84,13 +85,13 @@ func GetUser(c *gin.Context) (models.User, error) {
 
 	v, ok := c.Get("username")
 	if !ok {
-		return models.User{}, errors.New("User not found")
+		return models.User{}, errors.New("user not found")
 	}
 
 	user, ok := users.Store.Get(v.(string))
 
 	if !ok {
-		return models.User{}, errors.New("User not found")
+		return models.User{}, errors.New("user not found")
 	}
 
 	return user, nil

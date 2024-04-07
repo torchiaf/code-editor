@@ -4,10 +4,10 @@ import (
 	"context"
 	"log"
 
-	c "server/config"
-	k "server/kube"
-	"server/models"
-	"server/utils"
+	c "github.com/torchiaf/code-editor/server/config"
+	k "github.com/torchiaf/code-editor/server/kube"
+	"github.com/torchiaf/code-editor/server/models"
+	"github.com/torchiaf/code-editor/server/utils"
 
 	"gopkg.in/yaml.v2"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

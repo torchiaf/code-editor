@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	k "server/kube"
-	"server/users"
+	k "github.com/torchiaf/code-editor/server/kube"
+
+	"github.com/torchiaf/code-editor/server/users"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )

@@ -3,7 +3,8 @@ package config
 import (
 	"fmt"
 	"os"
-	"server/utils"
+
+	"github.com/torchiaf/code-editor/server/utils"
 )
 
 const LOCAL string = "local"

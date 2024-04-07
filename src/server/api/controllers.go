@@ -5,12 +5,12 @@ import (
 	"net/http"
 	"time"
 
-	"server/authentication"
-	"server/config"
-	"server/editor"
-	"server/models"
-	"server/users"
-	"server/utils"
+	"github.com/torchiaf/code-editor/server/authentication"
+	"github.com/torchiaf/code-editor/server/config"
+	"github.com/torchiaf/code-editor/server/editor"
+	"github.com/torchiaf/code-editor/server/models"
+	"github.com/torchiaf/code-editor/server/users"
+	"github.com/torchiaf/code-editor/server/utils"
 
 	"github.com/gin-gonic/gin"
 )

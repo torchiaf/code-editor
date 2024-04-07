@@ -4,7 +4,7 @@ import (
 	"flag"
 	"path/filepath"
 
-	c "server/config"
+	c "github.com/torchiaf/code-editor/server/config"
 
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"

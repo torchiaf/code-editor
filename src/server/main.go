@@ -1,7 +1,7 @@
 package main
 
 import (
-	"server/api"
+	"github.com/torchiaf/code-editor/server/api"
 
 	"github.com/gin-gonic/gin"
 )

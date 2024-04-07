@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	authentication "server/authentication"
+	"github.com/torchiaf/code-editor/server/authentication"
 
 	"github.com/gin-gonic/gin"
 )

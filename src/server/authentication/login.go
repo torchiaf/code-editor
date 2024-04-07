@@ -5,18 +5,15 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"server/config"
-	"server/models"
-	"server/users"
-	utils "server/utils"
 	"strings"
+
+	"github.com/torchiaf/code-editor/server/config"
+	"github.com/torchiaf/code-editor/server/models"
+	"github.com/torchiaf/code-editor/server/users"
+	utils "github.com/torchiaf/code-editor/server/utils"
 
 	"golang.org/x/crypto/bcrypt"
 )
-
-func isExternal(user models.User) bool {
-	return strings.HasPrefix(user.Id, "ext-")
-}
 
 func verifyPassword(password, userPassword string) error {
 
@@ -34,13 +31,13 @@ func LoginCheck(auth models.Auth) (string, error) {
 	user, ok := users.Store.Get(auth.Username)
 
 	if !ok {
-		return "", errors.New("User not found")
+		return "", errors.New("user not found")
 	}
 
 	err := verifyPassword(auth.Password, user.Password)
 
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
-		return "", errors.New("Password is not correct")
+		return "", errors.New("password is not correct")
 	}
 
 	token, err := GenerateToken(user.Name)
@@ -62,7 +59,7 @@ func VerifyExternalUser(token string) (string, error) {
 
 	req, err := http.NewRequest("GET", config.Config.Authentication.Url, &strings.Reader{})
 	if err != nil {
-		return "", errors.New("External Login, request creation error")
+		return "", errors.New("external Login, request creation error")
 	}
 
 	if config.Config.Authentication.TokenType == config.TOKEN_TYPE_HEADERS {
@@ -72,7 +69,7 @@ func VerifyExternalUser(token string) (string, error) {
 	resp, err := client.Do(req)
 
 	if err != nil {
-		return "", errors.New("External Login, login response error")
+		return "", errors.New("external Login, login response error")
 	}
 	defer resp.Body.Close()
 
@@ -84,12 +81,12 @@ func VerifyExternalUser(token string) (string, error) {
 
 	// TODO expand error type based on response error: missing Url; missing token; incorrect token; etc.
 	if resp.StatusCode != 200 {
-		return "", errors.New("External Login check failed. Wrong Url or Token")
+		return "", errors.New("external Login check failed. Wrong Url or Token")
 	}
 
 	name, err := utils.JsonQuery[string](v, config.Config.Authentication.Query)
 	if err != nil {
-		return "", errors.New("External Login check failed. Cannot get username")
+		return "", errors.New("external Login check failed. Cannot get username")
 	}
 
 	return name, nil
