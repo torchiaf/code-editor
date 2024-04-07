@@ -185,7 +185,7 @@ func (vw View) Enable(c *gin.Context) {
 
 	var enableConfig models.EnableConfig
 	if err := c.ShouldBindJSON(&enableConfig); err != nil {
-		c.JSON(http.StatusBadRequest, ginError(err.Error()))
+		c.JSON(http.StatusBadRequest, ginError("Missing configs"))
 		return
 	}
 
