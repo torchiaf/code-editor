@@ -1,16 +1,14 @@
 Todo
 
-- test version 4.22.1
+- upgrade to version 4.22.1
 - activate/deactivate option tu create/destroy endpoint 
 - add dynamic k8s client
 - use rule template to create rule
 - complete the external login check; should works fine when external API token expires, url is incorrect or API response is not 200
 - external user ids should be generate with same algorithm of local users (helm chart)
-- resolve TODOs in the code
 - errors handling
 - check log errors on destroyRule() call
 - make "code-editor" prefix parametric
-- Write license
 - Add a postman endpoints collection for dev
 - Clean helm charts
 - Add swagger
