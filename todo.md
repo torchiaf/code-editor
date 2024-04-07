@@ -1,6 +1,5 @@
 Todo
 
-- upgrade to version 4.22.1
 - activate/deactivate option tu create/destroy endpoint 
 - add dynamic k8s client
 - use rule template to create rule
