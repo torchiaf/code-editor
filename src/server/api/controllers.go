@@ -149,7 +149,7 @@ func (user User) Unregister(c *gin.Context) {
 		return
 	}
 
-	e := editor.New(u)
+	e := editor.New(c, u)
 
 	store := e.Store()
 
@@ -174,7 +174,7 @@ func (vw View) Enable(c *gin.Context) {
 
 	user, _ := authentication.GetUser(c)
 
-	e := editor.New(user)
+	e := editor.New(c, user)
 
 	store := e.Store()
 
@@ -213,7 +213,7 @@ func (vw View) Disable(c *gin.Context) {
 
 	user, _ := authentication.GetUser(c)
 
-	e := editor.New(user)
+	e := editor.New(c, user)
 
 	store := e.Store()
 
@@ -230,7 +230,7 @@ func (vw View) Config(c *gin.Context) {
 
 	user, _ := authentication.GetUser(c)
 
-	editor := editor.New(user)
+	editor := editor.New(c, user)
 
 	var vwConfig models.ViewConfig
 	if err := c.ShouldBindJSON(&vwConfig); err != nil {

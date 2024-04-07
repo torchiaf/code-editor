@@ -13,12 +13,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-type storeI interface {
-	List()
-	Get()
-	Set()
-	Del()
-}
+var ctx = context.Background()
 
 type store struct {
 }
@@ -26,7 +21,7 @@ type store struct {
 var _store = initStore()
 
 func initStore() map[string]models.User {
-	secret, err := k.Clientset.CoreV1().Secrets(c.Config.App.Namespace).Get(context.TODO(), c.Config.Resources.UsersName, metav1.GetOptions{})
+	secret, err := k.Clientset.CoreV1().Secrets(c.Config.App.Namespace).Get(ctx, c.Config.Resources.UsersName, metav1.GetOptions{})
 	if err != nil {
 		panic(err)
 	}
@@ -41,7 +36,7 @@ func initStore() map[string]models.User {
 }
 
 func (store store) List() []models.User {
-	return utils.Slice[models.User](_store)
+	return utils.Slice(_store)
 }
 
 func (store store) Get(username string) (models.User, bool) {
@@ -49,7 +44,7 @@ func (store store) Get(username string) (models.User, bool) {
 }
 
 func (store store) Set(user models.User) {
-	secret, err := k.Clientset.CoreV1().Secrets(c.Config.App.Namespace).Get(context.TODO(), c.Config.Resources.UsersName, metav1.GetOptions{})
+	secret, err := k.Clientset.CoreV1().Secrets(c.Config.App.Namespace).Get(ctx, c.Config.Resources.UsersName, metav1.GetOptions{})
 	if err != nil {
 		panic(err)
 	}
@@ -70,7 +65,7 @@ func (store store) Set(user models.User) {
 	secret.Data = make(map[string][]byte)
 	secret.Data["users"] = _byte
 
-	_, err = k.Clientset.CoreV1().Secrets(c.Config.App.Namespace).Update(context.TODO(), secret, metav1.UpdateOptions{})
+	_, err = k.Clientset.CoreV1().Secrets(c.Config.App.Namespace).Update(ctx, secret, metav1.UpdateOptions{})
 	if err != nil {
 		panic(err)
 	}
@@ -79,7 +74,7 @@ func (store store) Set(user models.User) {
 }
 
 func (store store) Del(username string) {
-	secret, err := k.Clientset.CoreV1().Secrets(c.Config.App.Namespace).Get(context.TODO(), c.Config.Resources.UsersName, metav1.GetOptions{})
+	secret, err := k.Clientset.CoreV1().Secrets(c.Config.App.Namespace).Get(ctx, c.Config.Resources.UsersName, metav1.GetOptions{})
 	if err != nil {
 		panic(err)
 	}
@@ -105,7 +100,7 @@ func (store store) Del(username string) {
 	secret.Data = make(map[string][]byte)
 	secret.Data["users"] = _byte
 
-	_, err = k.Clientset.CoreV1().Secrets(c.Config.App.Namespace).Update(context.TODO(), secret, metav1.UpdateOptions{})
+	_, err = k.Clientset.CoreV1().Secrets(c.Config.App.Namespace).Update(ctx, secret, metav1.UpdateOptions{})
 	if err != nil {
 		panic(err)
 	}

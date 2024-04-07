@@ -11,17 +11,13 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+var ctx = context.Background()
+
 type StoreData struct {
 	Status         string
 	Path           string
 	Password       string
 	VScodeSettings string
-}
-
-type storeI interface {
-	Get()
-	Set()
-	Del()
 }
 
 type store struct {
@@ -33,7 +29,7 @@ func initStore() map[string]StoreData {
 
 	store := map[string]StoreData{}
 
-	secret, err := k.Clientset.CoreV1().Secrets(c.App.Namespace).Get(context.TODO(), c.Resources.ConfigName, metav1.GetOptions{})
+	secret, err := k.Clientset.CoreV1().Secrets(c.App.Namespace).Get(ctx, c.Resources.ConfigName, metav1.GetOptions{})
 	if err != nil {
 		panic(err)
 	}
@@ -61,14 +57,14 @@ func (store store) Get(editor Editor) StoreData {
 }
 
 func (store store) Set(editor Editor, data map[string][]byte) {
-	secret, err := k.Clientset.CoreV1().Secrets(editor.namespace).Get(context.TODO(), c.Resources.ConfigName, metav1.GetOptions{})
+	secret, err := k.Clientset.CoreV1().Secrets(editor.namespace).Get(ctx, c.Resources.ConfigName, metav1.GetOptions{})
 	if err != nil {
 		panic(err)
 	}
 
 	secret.Data = data
 
-	_, err = k.Clientset.CoreV1().Secrets(editor.namespace).Update(context.TODO(), secret, metav1.UpdateOptions{})
+	_, err = k.Clientset.CoreV1().Secrets(editor.namespace).Update(ctx, secret, metav1.UpdateOptions{})
 	if err != nil {
 		panic(err)
 	}
@@ -84,7 +80,7 @@ func (store store) Set(editor Editor, data map[string][]byte) {
 }
 
 func (store store) Del(editor Editor) {
-	secret, err := k.Clientset.CoreV1().Secrets(editor.namespace).Get(context.TODO(), c.Resources.ConfigName, metav1.GetOptions{})
+	secret, err := k.Clientset.CoreV1().Secrets(editor.namespace).Get(ctx, c.Resources.ConfigName, metav1.GetOptions{})
 	if err != nil {
 		panic(err)
 	}
@@ -94,7 +90,7 @@ func (store store) Del(editor Editor) {
 	delete(secret.Data, editor.keys.password)
 	delete(secret.Data, editor.keys.vscodeSettings)
 
-	_, err = k.Clientset.CoreV1().Secrets(editor.namespace).Update(context.TODO(), secret, metav1.UpdateOptions{})
+	_, err = k.Clientset.CoreV1().Secrets(editor.namespace).Update(ctx, secret, metav1.UpdateOptions{})
 	if err != nil {
 		panic(err)
 	}

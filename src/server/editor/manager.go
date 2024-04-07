@@ -45,18 +45,25 @@ func (l *logStreamer) String() string {
 func (l *logStreamer) Write(p []byte) (n int, err error) {
 	a := strings.TrimSpace(string(p))
 	l.b.WriteString(a)
-	log.Printf(a)
+	log.Println(a)
 	return len(p), nil
 }
 
-func execCmdOnPod(label string, command string, stdin io.Reader, stdout io.Writer, stderr io.Writer) error {
+func execCmdOnPod(
+	ctx context.Context,
+	label string,
+	command string,
+	stdin io.Reader,
+	stdout io.Writer,
+	stderr io.Writer,
+) error {
 	cmd := []string{
 		"sh",
 		"-c",
 		command,
 	}
 
-	pods, err := k.Clientset.CoreV1().Pods(c.App.Namespace).List(context.TODO(), metav1.ListOptions{LabelSelector: label})
+	pods, err := k.Clientset.CoreV1().Pods(c.App.Namespace).List(ctx, metav1.ListOptions{LabelSelector: label})
 	if err != nil || len(pods.Items) == 0 {
 		e.FailOnError(err, "Pod not found")
 		return err
@@ -101,7 +108,7 @@ func execCmdOnPod(label string, command string, stdin io.Reader, stdout io.Write
 }
 
 func waitPodRunning(ctx context.Context, label string) error {
-	watcher, err := k.Clientset.CoreV1().Pods(c.App.Namespace).Watch(context.TODO(), metav1.ListOptions{
+	watcher, err := k.Clientset.CoreV1().Pods(c.App.Namespace).Watch(ctx, metav1.ListOptions{
 		LabelSelector: label,
 	})
 
@@ -166,17 +173,19 @@ type EditorConfigKeys struct {
 }
 
 type Editor struct {
+	ctx       context.Context
 	id        string
 	name      string
 	namespace string
 	keys      EditorConfigKeys
 }
 
-func New(user models.User) Editor {
+func New(ctx context.Context, user models.User) Editor {
 
 	id := fmt.Sprintf("%s-%s", c.App.Name, user.Id)
 
 	return Editor{
+		ctx:       ctx,
 		id:        id,
 		name:      c.App.Name,
 		namespace: c.App.Namespace,
@@ -291,13 +300,13 @@ func (editor Editor) serviceCreate() *v1.Service {
 	service.Labels[INSTANCE_LABEL] = editor.name
 	service.Spec.Selector["app.code-editor/path"] = editor.Store().Path
 
-	ret, _ := k.Clientset.CoreV1().Services(editor.namespace).Create(context.TODO(), service, metav1.CreateOptions{})
+	ret, _ := k.Clientset.CoreV1().Services(editor.namespace).Create(editor.ctx, service, metav1.CreateOptions{})
 
 	return ret
 }
 
 func (editor Editor) serviceDestroy() {
-	k.Clientset.CoreV1().Services(editor.namespace).Delete(context.TODO(), editor.id, metav1.DeleteOptions{})
+	k.Clientset.CoreV1().Services(editor.namespace).Delete(editor.ctx, editor.id, metav1.DeleteOptions{})
 }
 
 func (editor Editor) ruleCreate() error {
@@ -345,7 +354,7 @@ func (editor Editor) ruleCreate() error {
 		e.FailOnError(err, "Failed to set Editor rules")
 	}
 
-	err = cli.Update(context.TODO(), in)
+	err = cli.Update(editor.ctx, in)
 	if err != nil {
 		e.FailOnError(err, "Failed to get Editor IngressRoute")
 	}
@@ -390,7 +399,7 @@ func (editor Editor) ruleDelete() {
 		e.FailOnError(err, "Failed to set Editor rules")
 	}
 
-	err = cli.Update(context.TODO(), in)
+	err = cli.Update(editor.ctx, in)
 	if err != nil {
 		e.FailOnError(err, "Failed to get Editor IngressRoute")
 	}
@@ -461,13 +470,13 @@ func (editor Editor) deploymentCreate(cfg models.EnableConfig, service *v1.Servi
 		deployment.Spec.Template.Spec.InitContainers = append(deployment.Spec.Template.Spec.InitContainers, ic)
 	}
 
-	ret, _ := k.Clientset.AppsV1().Deployments(editor.namespace).Create(context.TODO(), deployment, metav1.CreateOptions{})
+	ret, _ := k.Clientset.AppsV1().Deployments(editor.namespace).Create(ctx, deployment, metav1.CreateOptions{})
 
 	return ret
 }
 
 func (editor Editor) deploymentDestroy() {
-	k.Clientset.AppsV1().Deployments(editor.namespace).Delete(context.TODO(), editor.id, metav1.DeleteOptions{})
+	k.Clientset.AppsV1().Deployments(editor.namespace).Delete(editor.ctx, editor.id, metav1.DeleteOptions{})
 }
 
 func (editor Editor) Create(enableConfig models.EnableConfig) (int32, error) {
@@ -482,7 +491,7 @@ func (editor Editor) Create(enableConfig models.EnableConfig) (int32, error) {
 
 	label := matchLabel(editor.Store().Path)
 
-	waitPodRunning(context.TODO(), label)
+	waitPodRunning(editor.ctx, label)
 
 	port := service.Spec.Ports[0].Port
 
@@ -492,7 +501,7 @@ func (editor Editor) Create(enableConfig models.EnableConfig) (int32, error) {
 func (editor Editor) Config(gitCmd string) error {
 	label := matchLabel(editor.Store().Path)
 
-	execCmdOnPod(label, gitCmd, nil, nil, nil)
+	execCmdOnPod(editor.ctx, label, gitCmd, nil, nil, nil)
 
 	return nil
 }
