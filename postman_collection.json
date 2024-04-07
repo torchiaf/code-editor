@@ -1,0 +1,398 @@
+{
+	"info": {
+		"_postman_id": "14c29e0f-797d-42ff-b440-44d2c477d99d",
+		"name": "code-server",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20409873"
+	},
+	"item": [
+		{
+			"name": "login",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true,
+					"accept": true,
+					"user-agent": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Forwarded-For: 10.42.0.1\nX-Forwarded-Prefix: /code-editor/api",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "X-Forwarded-For",
+						"value": "1.1.1.1",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "X-Forwarded-Prefix",
+						"value": "dwawad",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "code-editor-session",
+						"value": "%24argon2id%24v%3D19%24m%3D65536%2Ct%3D3%2Cp%3D4%240Sn1%2BnXbeVaryf%2F4hUR5Vg%24f2Rm9x8H6bkGjared3lGHINtWjXwXogUh6zlHC6PHWs",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"user1\",\n    \"password\": \"password1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost/code-editor/api/v1/login",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"code-editor",
+						"api",
+						"v1",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "view/enable",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true,
+					"accept": true,
+					"user-agent": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTI2MTEyNzUsInVzZXJuYW1lIjoidXNlcjEifQ.PtSY-Eole4JYtRnmb6UBwJ2z4-SmMeydnRuP8lZHMoo",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"git\": {\n        \"name\": \"Francesco Torchia\",\n        \"email\": \"torchia.francesco@gmail.com\"\n    },\n    \"extensions\": [\n        {\n            \"id\": \"hoovercj.vscode-power-mode\",\n            \"settings\": {\n                \"powermode.enabled\": true\n            }\n        }\n        \n    ],\n    \"vscode-settings\": {}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost/code-editor/api/v1/view/enable",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"code-editor",
+						"api",
+						"v1",
+						"view",
+						"enable"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "view/config",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true,
+					"accept": true,
+					"user-agent": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTI2MTEyNzUsInVzZXJuYW1lIjoidXNlcjEifQ.PtSY-Eole4JYtRnmb6UBwJ2z4-SmMeydnRuP8lZHMoo",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"git\": {\n    \"type\": \"gitHub\",\n    \"org\": \"torchiaf\",\n    \"repo\": \"code-editor\",\n    \"branch\": \"main\",\n    \"commit\": \"main\"\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost/code-editor/api/v1/view/config",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"code-editor",
+						"api",
+						"v1",
+						"view",
+						"config"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "view/disable",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true,
+					"accept": true,
+					"user-agent": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTI2MTEyNzUsInVzZXJuYW1lIjoidXNlcjEifQ.PtSY-Eole4JYtRnmb6UBwJ2z4-SmMeydnRuP8lZHMoo",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost/code-editor/api/v1/view/disable",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"code-editor",
+						"api",
+						"v1",
+						"view",
+						"disable"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ping",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true,
+					"accept": true,
+					"user-agent": true
+				},
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Forwarded-For: 10.42.0.1\nX-Forwarded-Prefix: /code-editor/api",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "X-Forwarded-For",
+						"value": "1.1.1.1",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "X-Forwarded-Prefix",
+						"value": "dwawad",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MDIwNjcwNzUsInBhdGgiOiJRZkJSRFhwQXBITGx0IiwidXNlcm5hbWUiOiJ1c2VyMSJ9.78kP4RFkvkrMVUgZ4mn2z10XspXPEcggwkl_ZOhfkpg",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost/code-editor/api/v1/ping",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"code-editor",
+						"api",
+						"v1",
+						"ping"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user/register",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true,
+					"accept": true,
+					"user-agent": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Forwarded-For: 10.42.0.1\nX-Forwarded-Prefix: /code-editor/api",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "X-Forwarded-For",
+						"value": "1.1.1.1",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "X-Forwarded-Prefix",
+						"value": "dwawad",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "code-editor-session",
+						"value": "%24argon2id%24v%3D19%24m%3D65536%2Ct%3D3%2Cp%3D4%240Sn1%2BnXbeVaryf%2F4hUR5Vg%24f2Rm9x8H6bkGjared3lGHINtWjXwXogUh6zlHC6PHWs",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"token\": \"your_application_token\",\n    \"password\": \"pippo\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost/code-editor/api/v1/user/register",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"code-editor",
+						"api",
+						"v1",
+						"user",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user/unregister",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true,
+					"accept": true,
+					"user-agent": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Forwarded-For: 10.42.0.1\nX-Forwarded-Prefix: /code-editor/api",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "X-Forwarded-For",
+						"value": "1.1.1.1",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "X-Forwarded-Prefix",
+						"value": "dwawad",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MDQ2MjcwNDQsInVzZXJuYW1lIjoiYWRtaW4ifQ.zkKdIociBJQeT19ayFGwtn6AFRhlr-X5Abt1l-Mu_VI",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"token\": \"your_application_token\",\n    \"username\": \"admin\",\n    \"force\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost/code-editor/api/v1/user/unregister",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"code-editor",
+						"api",
+						"v1",
+						"user",
+						"unregister"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
