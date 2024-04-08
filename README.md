@@ -34,7 +34,7 @@ code-editor is an open source application to deploy [code-server](https://github
   ```
 - Enable `code-server` instance:
   ```
-  POST http://localhost/code-editor/api/v1/enable
+  POST http://localhost/code-editor/api/v1/view/enable
 
   response:
   {
@@ -44,7 +44,7 @@ code-editor is an open source application to deploy [code-server](https://github
   ```
 - Add `code-server` configs:
   ```
-  POST http://localhost/code-editor/api/v1/enable
+  POST http://localhost/code-editor/api/v1/view/config
 
   response:
   {
