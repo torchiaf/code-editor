@@ -1,0 +1,401 @@
+openapi: 3.0.0
+
+info:
+  title: Code Editor API
+  version: '1.0.0'
+  description: |
+    The Code Editor API allows you to manage users and code-server instances.
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+
+servers:
+  - url: http://localhost/code-editor/api/v1
+    description: ''
+
+paths:
+  /ping:
+    get:
+      tags:
+        - ping
+      summary: Return paolo
+      operationId: ping
+      responses:
+        '200':
+          $ref: '#/components/schemas/MessageResponse'
+  /login:
+    post:
+      tags:
+        - login
+      summary: Return the code-editor authentication token.
+      operationId: login
+      requestBody:
+        description:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequestBody'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /user/register:
+    post:
+      tags:
+        - user
+      summary: Register new user
+      operationId: user-register
+      requestBody:
+        description:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegisterRequestBody'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRegisterResponse'
+        '400':
+          description: Missing configs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: External user not verified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Already Registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: External authentication is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /user/unregister:
+    post:
+      tags:
+        - user
+      summary: Unregister user
+      operationId: user-unregister
+      requestBody:
+        description:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUnregisterRequestBody'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserUnregisterResponse'
+        '400':
+          description: Missing configs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: External user not verified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: code-server instance is enabled for user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: External authentication is not enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /view/enable:
+    post:
+      tags:
+        - view
+      summary: Create a new code-server instance.
+      operationId: view-enable
+      requestBody:
+        description:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ViewEnableRequestBody'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewEnableResponse'
+        '400':
+          description: Missing configs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: code-server login error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: UI instance is already Enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Cannot enable UI instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /view/config:
+    post:
+      tags:
+        - view
+      summary: Update code-server instance with user's configurations
+      operationId: view-config
+      requestBody:
+        description:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ViewConfigRequestBody'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewConfigResponse'
+        '400':
+          description: Missing configs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: code-server pod configuration failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /view/disable:
+    post:
+      tags:
+        - view
+      summary: Destroy the code-server instance.
+      operationId: view-disable
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '404':
+          description: code-server instance is already enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    MessageResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+    LoginResponse:
+      allOf:
+        - $ref: '#/components/schemas/MessageResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              type: object
+              required: 
+                - token
+              properties: 
+                token:
+                  type: string
+    UserRegisterResponse:
+      allOf:
+        - $ref: '#/components/schemas/MessageResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              type: object
+              required:
+                - username
+              properties:
+                username:
+                  type: string
+    UserUnregisterResponse:
+      properties:
+        schemas:
+          $ref: '#/components/schemas/MessageResponse'
+    ViewEnableResponse:
+      allOf:
+        - $ref: '#/components/schemas/MessageResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              type: object
+              required:
+                - code-server-session
+                - path
+              properties:
+                code-server-session:
+                  type: string
+                path:
+                  type: string
+    ViewConfigResponse:
+      allOf:
+        - $ref: '#/components/schemas/MessageResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              type: object
+              required:
+                - query-param
+              properties:
+                query-param:
+                  type: string
+    LoginRequestBody:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    UserRegisterRequestBody:
+      type: object
+      required:
+        - token
+        - password
+      properties:
+        token:
+          type: string
+          description: The external application's token
+        password:
+          type: string
+          description: The password for the new registered user
+    UserUnregisterRequestBody:
+      type: object
+      required:
+        - token
+        - username
+        - force
+      properties:
+        token:
+          type: string
+          description: The external application's token
+        username:
+          type: string
+          description:
+        force:
+          type: string
+          description: if true, destroy the code-server instance before unregister
+    ViewEnableRequestBody:
+      type: object
+      required:
+        - git
+      properties:
+        git:
+          type: object
+          description: Git configurations
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+        extensions:
+          type: string
+          description: vs-code extensions configurations
+          properties:
+            id:
+              type: string
+            settings:
+              type: object
+        vscode-settings:
+          type: object
+          description: vs-code settings
+    ViewConfigRequestBody:
+      type: object
+      required:
+        - git
+      properties:
+        git:
+          type: object
+          description: Git repository to download
+          properties:
+            type:
+              type: string
+            org:
+              type: string
+            repo:
+              type: string
+            branch:
+              type: string
+            commit:
+              type: string

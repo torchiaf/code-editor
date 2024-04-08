@@ -78,13 +78,13 @@ type View struct {
 func (user User) Register(c *gin.Context) {
 
 	if !config.Config.Authentication.IsExternal {
-		c.JSON(http.StatusBadRequest, ginError("External authentication is not enabled"))
+		c.JSON(http.StatusBadGateway, ginError("External authentication is not enabled"))
 		return
 	}
 
 	var ext models.ExternalUserLogin
 	if err := c.ShouldBindJSON(&ext); err != nil {
-		c.JSON(http.StatusBadRequest, ginError(err.Error()))
+		c.JSON(http.StatusBadRequest, ginError("Missing configs"))
 		return
 	}
 
@@ -96,13 +96,13 @@ func (user User) Register(c *gin.Context) {
 
 	username, err := authentication.VerifyExternalUser(ext.Token)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, ginError(err.Error()))
+		c.JSON(http.StatusForbidden, ginError(err.Error()))
 		return
 	}
 
 	_, ok := users.Store.Get(username)
 	if ok {
-		c.JSON(http.StatusBadRequest, ginError(fmt.Sprintf("External Login, user [%s] is already registered", username)))
+		c.JSON(http.StatusConflict, ginError(fmt.Sprintf("External Login, user [%s] is already registered", username)))
 		return
 	}
 
@@ -122,13 +122,13 @@ func (user User) Register(c *gin.Context) {
 
 func (user User) Unregister(c *gin.Context) {
 	if !config.Config.Authentication.IsExternal {
-		c.JSON(http.StatusBadRequest, ginError("External authentication is not enabled"))
+		c.JSON(http.StatusBadGateway, ginError("External authentication is not enabled"))
 		return
 	}
 
 	var ext models.ExternalUserLogin
 	if err := c.ShouldBindJSON(&ext); err != nil {
-		c.JSON(http.StatusBadRequest, ginError(err.Error()))
+		c.JSON(http.StatusBadRequest, ginError("Missing configs"))
 		return
 	}
 
@@ -139,13 +139,13 @@ func (user User) Unregister(c *gin.Context) {
 
 	username, err := authentication.VerifyExternalUser(ext.Token)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, ginError(err.Error()))
+		c.JSON(http.StatusForbidden, ginError(err.Error()))
 		return
 	}
 
 	u, ok := users.Store.Get(ext.Username)
 	if !ok {
-		c.JSON(http.StatusBadRequest, ginError("User not found"))
+		c.JSON(http.StatusNotFound, ginError("User not found"))
 		return
 	}
 
@@ -160,7 +160,7 @@ func (user User) Unregister(c *gin.Context) {
 			e.Destroy(u)
 			details = ", UI instance destroyed"
 		} else {
-			c.JSON(http.StatusBadRequest, ginError(fmt.Sprintf("UI instance is Enabled for user [%s], cannot unregister", ext.Username)))
+			c.JSON(http.StatusConflict, ginError(fmt.Sprintf("UI instance is Enabled for user [%s], cannot unregister", ext.Username)))
 			return
 		}
 	}
@@ -179,7 +179,7 @@ func (vw View) Enable(c *gin.Context) {
 	store := e.Store()
 
 	if (store != editor.StoreData{} && store.Status == editor.Enabled) {
-		c.JSON(http.StatusBadRequest, ginError("UI instance is already Enabled"))
+		c.JSON(http.StatusForbidden, ginError("UI instance is already Enabled"))
 		return
 	}
 
@@ -191,7 +191,7 @@ func (vw View) Enable(c *gin.Context) {
 
 	port, err := e.Create(enableConfig)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, ginError("Cannot enable UI instance"))
+		c.JSON(http.StatusConflict, ginError("Cannot enable UI instance"))
 		return
 	}
 
@@ -234,7 +234,7 @@ func (vw View) Config(c *gin.Context) {
 
 	var vwConfig models.ViewConfig
 	if err := c.ShouldBindJSON(&vwConfig); err != nil {
-		c.JSON(http.StatusBadRequest, ginError(err.Error()))
+		c.JSON(http.StatusBadRequest, ginError("Missing configs"))
 		return
 	}
 
@@ -252,7 +252,7 @@ func (vw View) Config(c *gin.Context) {
 	err := editor.Config(gitCmd)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, ginError(fmt.Sprintf("Pod Configuration failed; %s", err.Error())))
+		c.JSON(http.StatusForbidden, ginError(fmt.Sprintf("code-server pod configuration failed; %s", err.Error())))
 		return
 	}
 
