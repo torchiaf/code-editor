@@ -30,7 +30,7 @@ paths:
       summary: Return the code-editor authentication token.
       operationId: login
       requestBody:
-        description:
+        description: ''
         required: true
         content:
           application/json:
@@ -56,7 +56,7 @@ paths:
       summary: Register new user
       operationId: user-register
       requestBody:
-        description:
+        description: ''
         required: true
         content:
           application/json:
@@ -100,7 +100,7 @@ paths:
       summary: Unregister user
       operationId: user-unregister
       requestBody:
-        description:
+        description: ''
         required: true
         content:
           application/json:
@@ -150,7 +150,7 @@ paths:
       summary: Create a new code-server instance.
       operationId: view-enable
       requestBody:
-        description:
+        description: ''
         required: true
         content:
           application/json:
@@ -194,7 +194,7 @@ paths:
       summary: Update code-server instance with user's configurations
       operationId: view-config
       requestBody:
-        description:
+        description: ''
         required: true
         content:
           application/json:
@@ -352,7 +352,7 @@ components:
           description: The external application's token
         username:
           type: string
-          description:
+          description: ''
         force:
           type: string
           description: if true, destroy the code-server instance before unregister
