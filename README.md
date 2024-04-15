@@ -48,7 +48,7 @@ code-editor is an open source application to deploy [code-server](https://github
 
   response:
   {
-    "query-param": path to a cloned repo + other params
+    "query-param": path to a cloned repo
   }
   ```
 
