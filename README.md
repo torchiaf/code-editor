@@ -30,11 +30,11 @@ code-editor is an open source application to deploy [code-server](https://github
   
 - Login:
   ```
-  POST http://localhost/code-editor/api/v1/login
+  POST https://localhost/code-editor/api/v1/login
   ```
 - Enable `code-server` instance:
   ```
-  POST http://localhost/code-editor/api/v1/view/enable
+  POST https://localhost/code-editor/api/v1/view/enable
 
   response:
   {
@@ -44,11 +44,11 @@ code-editor is an open source application to deploy [code-server](https://github
   ```
 - Add `code-server` configs:
   ```
-  POST http://localhost/code-editor/api/v1/view/config
+  POST https://localhost/code-editor/api/v1/view/config
 
   response:
   {
-    "query-param": some query params to access the git repository
+    "query-param": path to a cloned repo + other params
   }
   ```
 
