@@ -70,7 +70,7 @@
 			"response": []
 		},
 		{
-			"name": "view/enable",
+			"name": "views/create",
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
 					"connection": true,
@@ -84,7 +84,7 @@
 				"header": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTI2MTEyNzUsInVzZXJuYW1lIjoidXNlcjEifQ.PtSY-Eole4JYtRnmb6UBwJ2z4-SmMeydnRuP8lZHMoo",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTU1OTYxMjgsInVzZXJuYW1lIjoidXNlcjEifQ.nke0nAssEhd4tj-YVk_l0sDYH1cFiwbfBCnSgz4-aco",
 						"type": "text"
 					}
 				],
@@ -98,7 +98,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost/code-editor/api/v1/view/enable",
+					"raw": "https://localhost/code-editor/api/v1/views/create",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -107,15 +107,15 @@
 						"code-editor",
 						"api",
 						"v1",
-						"view",
-						"enable"
+						"views",
+						"create"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "view/config",
+			"name": "views/config",
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
 					"connection": true,
@@ -143,7 +143,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost/code-editor/api/v1/view/config",
+					"raw": "https://localhost/code-editor/api/v1/views/config",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -152,7 +152,7 @@
 						"code-editor",
 						"api",
 						"v1",
-						"view",
+						"views",
 						"config"
 					]
 				}
@@ -160,7 +160,7 @@
 			"response": []
 		},
 		{
-			"name": "view/disable",
+			"name": "views/destroy",
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
 					"connection": true,
@@ -188,7 +188,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost/code-editor/api/v1/view/disable",
+					"raw": "https://localhost/code-editor/api/v1/views/destroy",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -197,8 +197,8 @@
 						"code-editor",
 						"api",
 						"v1",
-						"view",
-						"disable"
+						"views",
+						"destroy"
 					]
 				}
 			},

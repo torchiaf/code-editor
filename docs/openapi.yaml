@@ -132,7 +132,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '409':
-          description: code-server instance is enabled for user
+          description: A View instance is enabled for user
           content:
             application/json:
               schema:
@@ -143,26 +143,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /view/enable:
+  /views/create:
     post:
       tags:
         - view
       summary: Create a new code-server instance.
-      operationId: view-enable
+      operationId: view-create
       requestBody:
         description: ''
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ViewEnableRequestBody'
+              $ref: '#/components/schemas/ViewCreateRequestBody'
       responses:
         '200':
           description: Ok
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ViewEnableResponse'
+                $ref: '#/components/schemas/ViewCreateResponse'
         '400':
           description: Missing configs
           content:
@@ -176,18 +176,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '403':
-          description: UI instance is already Enabled
+          description: View instance already exists
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '409':
-          description: Cannot enable UI instance
+          description: Cannot create View instance
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /view/config:
+  /views/config:
     post:
       tags:
         - view
@@ -219,12 +219,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /view/disable:
+  /views/destroy:
     post:
       tags:
         - view
-      summary: Destroy the code-server instance.
-      operationId: view-disable
+      summary: Destroy a code-server instance.
+      operationId: view-destroy
       responses:
         '200':
           description: Ok
@@ -233,7 +233,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
         '404':
-          description: code-server instance is already enabled
+          description: View instance not found
           content:
             application/json:
               schema:
@@ -287,7 +287,7 @@ components:
       properties:
         schemas:
           $ref: '#/components/schemas/MessageResponse'
-    ViewEnableResponse:
+    ViewCreateResponse:
       allOf:
         - $ref: '#/components/schemas/MessageResponse'
         - type: object
@@ -355,8 +355,8 @@ components:
           description: ''
         force:
           type: string
-          description: if true, destroy the code-server instance before unregister
-    ViewEnableRequestBody:
+          description: if true, destroy a code-server instance before unregister
+    ViewCreateRequestBody:
       type: object
       required:
         - git

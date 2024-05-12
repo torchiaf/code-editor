@@ -67,9 +67,9 @@ type User struct {
 }
 
 type ViewI interface {
-	Enable()
-	Disable()
+	Create()
 	Config()
+	Destroy()
 }
 
 type View struct {
@@ -170,7 +170,7 @@ func (user User) Unregister(c *gin.Context) {
 	c.JSON(http.StatusOK, ginSuccess("User successfully unregistered"+details))
 }
 
-func (vw View) Enable(c *gin.Context) {
+func (vw View) Create(c *gin.Context) {
 
 	user, _ := authentication.GetUser(c)
 
@@ -179,7 +179,7 @@ func (vw View) Enable(c *gin.Context) {
 	store := e.Store()
 
 	if (store != editor.StoreData{} && store.Status == editor.Enabled) {
-		c.JSON(http.StatusForbidden, ginError("UI instance is already Enabled"))
+		c.JSON(http.StatusForbidden, ginError("View instance already exists"))
 		return
 	}
 
@@ -191,7 +191,7 @@ func (vw View) Enable(c *gin.Context) {
 
 	port, err := e.Create(enableConfig)
 	if err != nil {
-		c.JSON(http.StatusConflict, ginError("Cannot enable UI instance"))
+		c.JSON(http.StatusConflict, ginError("Cannot create View instance"))
 		return
 	}
 
@@ -203,13 +203,13 @@ func (vw View) Enable(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, ginSuccess("View enabled", map[string]interface{}{
+	c.JSON(http.StatusOK, ginSuccess("View created", map[string]interface{}{
 		session.Name: session.Value,
 		"path":       fmt.Sprintf("/code-editor/%s/", e.Store().Path),
 	}))
 }
 
-func (vw View) Disable(c *gin.Context) {
+func (vw View) Destroy(c *gin.Context) {
 
 	user, _ := authentication.GetUser(c)
 
@@ -218,12 +218,12 @@ func (vw View) Disable(c *gin.Context) {
 	store := e.Store()
 
 	if (store == editor.StoreData{} || store.Status == editor.Disabled) {
-		c.JSON(http.StatusNotFound, ginError("UI instance is already Disabled"))
+		c.JSON(http.StatusNotFound, ginError("View instance not found"))
 		return
 	}
 
 	e.Destroy(user)
-	c.JSON(http.StatusOK, ginSuccess("View disabled"))
+	c.JSON(http.StatusOK, ginSuccess("View destroyed"))
 }
 
 func (vw View) Config(c *gin.Context) {
