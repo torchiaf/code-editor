@@ -8,8 +8,8 @@ type Auth struct {
 type User struct {
 	Id       string `yaml:"id"`
 	Name     string `yaml:"name"`
-	Password string `yaml:"password"`
-	IsAdmin  bool   `yaml:"isAdmin"`
+	Password string `yaml:"password,omitempty"`
+	IsAdmin  bool   `yaml:"isAdmin,omitempty"`
 }
 
 type Users struct {
@@ -21,7 +21,7 @@ type View struct {
 	UserId         string `yaml:"userId"`
 	Status         string `yaml:"status"`
 	Path           string `yaml:"path"`
-	Password       string `yaml:"password"`
+	Password       string `yaml:"password,omitempty"`
 	VScodeSettings string `yaml:"vscode-settings"`
 }
 

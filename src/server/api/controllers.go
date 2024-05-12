@@ -59,6 +59,7 @@ func Login(c *gin.Context) {
 }
 
 type UserI interface {
+	List()
 	Register()
 	Unregister()
 }
@@ -73,6 +74,28 @@ type ViewI interface {
 }
 
 type View struct {
+}
+
+func (user User) List(c *gin.Context) {
+	u, _ := authentication.GetUser(c)
+
+	if !u.IsAdmin {
+		c.JSON(http.StatusConflict, ginError("User unauthorized"))
+		return
+	}
+
+	var list []models.User
+
+	for _, u := range users.Store.List() {
+		if !u.IsAdmin {
+			list = append(list, models.User{
+				Id:   u.Id,
+				Name: u.Name,
+			})
+		}
+	}
+
+	c.JSON(http.StatusOK, ginSuccess("Users list", list))
 }
 
 func (user User) Register(c *gin.Context) {

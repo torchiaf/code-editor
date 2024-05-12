@@ -49,7 +49,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /user/register:
+  /users:
+    get:
+      tags:
+        - user
+      summary: Return the list of Users
+      operationId: user-list
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+  /users/register:
     post:
       tags:
         - user
@@ -93,7 +106,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /user/unregister:
+  /users/unregister:
     post:
       tags:
         - user
@@ -319,6 +332,24 @@ components:
       properties:
         schemas:
           $ref: '#/components/schemas/MessageResponse'
+    UserResponse:
+      allOf:
+        - $ref: '#/components/schemas/MessageResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              type: array
+              items:
+                required:
+                  - id
+                  - name
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
     ViewResponse:
       allOf:
         - $ref: '#/components/schemas/MessageResponse'

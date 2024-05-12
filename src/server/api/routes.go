@@ -12,8 +12,9 @@ func Routes(engine *gin.Engine) {
 	g.POST("/login", Login)
 
 	u := User{}
-	userGroup := g.Group("user")
+	userGroup := g.Group("users")
 
+	userGroup.GET("", JwtAuthMiddleware(), u.List)
 	userGroup.POST("/register", u.Register)
 	userGroup.POST("/unregister", u.Unregister)
 
