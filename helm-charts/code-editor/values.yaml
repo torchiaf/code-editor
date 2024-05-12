@@ -13,6 +13,9 @@ authentication:
   # query: ".data[0].username"
 
 users:
+  - name: admin
+    password: password1234
+    isAdmin: true
   - name: user1
     password: password1
   - name: user2

@@ -9,6 +9,7 @@ type User struct {
 	Id       string `yaml:"id"`
 	Name     string `yaml:"name"`
 	Password string `yaml:"password"`
+	IsAdmin  bool   `yaml:"isAdmin"`
 }
 
 type Users struct {
