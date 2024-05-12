@@ -143,6 +143,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /views:
+    get:
+      tags:
+        - view
+      summary: Return the list of View instances
+      operationId: view-list
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewResponse'
+  /views/:id:
+    get:
+      tags:
+        - view
+      summary: Return the View instance
+      operationId: view-get
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewResponse'
+        '404':
+          description: View not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /views/create:
     post:
       tags:
@@ -287,6 +319,36 @@ components:
       properties:
         schemas:
           $ref: '#/components/schemas/MessageResponse'
+    ViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/MessageResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              type: array
+              items:
+                required:
+                  - id
+                  - userId
+                  - status
+                  - path
+                  - password
+                  - vscode-settings
+                properties:
+                  id:
+                    type: string
+                  userId:
+                    type: string
+                  status:
+                    type: string
+                  path:
+                    type: string
+                  password:
+                    type: string
+                  vscode-settings:
+                    type: object
     ViewCreateResponse:
       allOf:
         - $ref: '#/components/schemas/MessageResponse'

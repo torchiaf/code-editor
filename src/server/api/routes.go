@@ -22,6 +22,8 @@ func Routes(engine *gin.Engine) {
 
 	viewsGroup.Use(JwtAuthMiddleware())
 
+	viewsGroup.GET("", vw.List)
+	viewsGroup.GET("/:id", vw.Get)
 	viewsGroup.POST("/create", vw.Create)
 	viewsGroup.POST("/config", vw.Config)
 	viewsGroup.POST("/destroy", vw.Destroy)

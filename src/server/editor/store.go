@@ -54,7 +54,7 @@ func initStore() map[string]StoreData {
 }
 
 func (store store) Get(editor Editor) StoreData {
-	return _store[editor.id]
+	return _store[editor.Id]
 }
 
 func (store store) Set(editor Editor, data map[string][]byte) {
@@ -81,7 +81,7 @@ func (store store) Set(editor Editor, data map[string][]byte) {
 		VScodeSettings: string(data[editor.keys.vscodeSettings]),
 	}
 
-	_store[editor.id] = dataStore
+	_store[editor.Id] = dataStore
 }
 
 func (store store) Del(editor Editor) {
@@ -100,7 +100,7 @@ func (store store) Del(editor Editor) {
 		panic(err)
 	}
 
-	delete(_store, editor.id)
+	delete(_store, editor.Id)
 }
 
 var Store = store{}

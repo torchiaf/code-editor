@@ -173,7 +173,7 @@ type EditorConfigKeys struct {
 
 type Editor struct {
 	ctx       context.Context
-	id        string
+	Id        string
 	name      string
 	namespace string
 	keys      EditorConfigKeys
@@ -185,7 +185,7 @@ func New(ctx context.Context, user models.User) Editor {
 
 	return Editor{
 		ctx:       ctx,
-		id:        id,
+		Id:        id,
 		name:      c.App.Name,
 		namespace: c.App.Namespace,
 		keys: EditorConfigKeys{
@@ -211,7 +211,7 @@ func (editor Editor) Login(port int32, password string) (models.CodeServerSessio
 	if config.Config.IsDev {
 		loginUrl = fmt.Sprintf("http://localhost/code-editor/%s/login", editor.Store().Path)
 	} else {
-		loginUrl = fmt.Sprintf("http://%s:%d/login", editor.id, port)
+		loginUrl = fmt.Sprintf("http://%s:%d/login", editor.Id, port)
 	}
 
 	// JSON body
@@ -294,8 +294,8 @@ func (editor Editor) serviceCreate() *v1.Service {
 
 	service := utils.ParseK8sResource[*v1.Service]("assets/templates/service.yaml")
 
-	service.Name = editor.id
-	service.Labels[NAME_LABEL] = editor.id
+	service.Name = editor.Id
+	service.Labels[NAME_LABEL] = editor.Id
 	service.Labels[INSTANCE_LABEL] = editor.name
 	service.Spec.Selector["app.code-editor/path"] = editor.Store().Path
 
@@ -305,7 +305,7 @@ func (editor Editor) serviceCreate() *v1.Service {
 }
 
 func (editor Editor) serviceDestroy() {
-	k.Clientset.CoreV1().Services(editor.namespace).Delete(editor.ctx, editor.id, metav1.DeleteOptions{})
+	k.Clientset.CoreV1().Services(editor.namespace).Delete(editor.ctx, editor.Id, metav1.DeleteOptions{})
 }
 
 func (editor Editor) ruleCreate() error {
@@ -337,7 +337,7 @@ func (editor Editor) ruleCreate() error {
 			},
 			"services": []interface{}{
 				map[string]interface{}{
-					"name": editor.id,
+					"name": editor.Id,
 					"port": "http",
 				},
 			},
@@ -384,7 +384,7 @@ func (editor Editor) ruleDelete() {
 
 		name, _, _ := unstructured.NestedString(services[0].(map[string]interface{}), "name")
 
-		if name == editor.id {
+		if name == editor.Id {
 			routes = append(routes[:i], routes[i+1:]...)
 			break
 		}
@@ -405,7 +405,7 @@ func (editor Editor) deploymentCreate(cfg models.EnableConfig) *corev1.Deploymen
 
 	deployment := utils.ParseK8sResource[*corev1.Deployment]("assets/templates/deployment.yaml")
 
-	deployment.Name = editor.id
+	deployment.Name = editor.Id
 
 	// Labels
 	deployment.Labels[MATCH_LABEL] = editor.Store().Path
@@ -472,7 +472,7 @@ func (editor Editor) deploymentCreate(cfg models.EnableConfig) *corev1.Deploymen
 }
 
 func (editor Editor) deploymentDestroy() {
-	k.Clientset.AppsV1().Deployments(editor.namespace).Delete(editor.ctx, editor.id, metav1.DeleteOptions{})
+	k.Clientset.AppsV1().Deployments(editor.namespace).Delete(editor.ctx, editor.Id, metav1.DeleteOptions{})
 }
 
 func (editor Editor) Create(enableConfig models.EnableConfig) (int32, error) {

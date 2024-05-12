@@ -16,6 +16,15 @@ type Users struct {
 	Users []User
 }
 
+type View struct {
+	Id             string `yaml:"id"`
+	UserId         string `yaml:"userId"`
+	Status         string `yaml:"status"`
+	Path           string `yaml:"path"`
+	Password       string `yaml:"password"`
+	VScodeSettings string `yaml:"vscode-settings"`
+}
+
 type ExternalUserLogin struct {
 	Username string
 	Password string

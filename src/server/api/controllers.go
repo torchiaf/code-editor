@@ -15,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ginSuccess(message string, data ...map[string]any) gin.H {
+func ginSuccess(message string, data ...any) gin.H {
 	ret := gin.H{
 		"message": message,
 	}
@@ -168,6 +168,50 @@ func (user User) Unregister(c *gin.Context) {
 	users.Store.Del(username)
 
 	c.JSON(http.StatusOK, ginSuccess("User successfully unregistered"+details))
+}
+
+func (vw View) List(c *gin.Context) {
+
+	user, _ := authentication.GetUser(c)
+
+	if !user.IsAdmin {
+		c.JSON(http.StatusConflict, ginError("User unauthorized"))
+		return
+	}
+
+	var list []models.View
+
+	for _, user := range users.Store.List() {
+		e := editor.New(c, user)
+
+		store := e.Store()
+
+		if len(store.Status) > 0 {
+			list = append(list, models.View{
+				Id:             e.Id,
+				UserId:         user.Id,
+				Status:         store.Status,
+				Path:           store.Path,
+				Password:       store.Password,
+				VScodeSettings: store.VScodeSettings,
+			})
+		}
+	}
+
+	c.JSON(http.StatusOK, ginSuccess("View list", list))
+}
+
+func (vw View) Get(c *gin.Context) {
+
+	user, _ := authentication.GetUser(c)
+
+	if !user.IsAdmin {
+		c.JSON(http.StatusConflict, ginError("User unauthorized"))
+		return
+	}
+
+	// TODO
+	c.JSON(http.StatusOK, ginSuccess("View get", ""))
 }
 
 func (vw View) Create(c *gin.Context) {
