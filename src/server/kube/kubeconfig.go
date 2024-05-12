@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 
 	c "github.com/torchiaf/code-editor/server/config"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -12,7 +13,7 @@ import (
 	"k8s.io/client-go/util/homedir"
 )
 
-func initKubeconfig() (*kubernetes.Clientset, *rest.Config) {
+func initKubeconfig() (*kubernetes.Clientset, client.Client, *rest.Config) {
 	var config *rest.Config
 	var err error
 
@@ -43,7 +44,12 @@ func initKubeconfig() (*kubernetes.Clientset, *rest.Config) {
 		panic(err.Error())
 	}
 
-	return clientset, config
+	runtimeClient, err := client.New(config, client.Options{})
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return clientset, runtimeClient, config
 }
 
-var Clientset, RestConfig = initKubeconfig()
+var Clientset, RuntimeClient, RestConfig = initKubeconfig()

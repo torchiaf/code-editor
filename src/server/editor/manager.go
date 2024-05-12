@@ -309,7 +309,6 @@ func (editor Editor) serviceDestroy() {
 }
 
 func (editor Editor) ruleCreate() error {
-	cli, _ := client.New(k.RestConfig, client.Options{})
 
 	in := &unstructured.Unstructured{}
 	in.SetGroupVersionKind(schema.GroupVersionKind{
@@ -318,7 +317,7 @@ func (editor Editor) ruleCreate() error {
 		Version: "traefik.containo.us/v1alpha1",
 	})
 
-	err := cli.Get(context.Background(), client.ObjectKey{
+	err := k.RuntimeClient.Get(context.Background(), client.ObjectKey{
 		Namespace: editor.namespace,
 		Name:      c.Resources.IngressName,
 	}, in)
@@ -353,7 +352,7 @@ func (editor Editor) ruleCreate() error {
 		e.FailOnError(err, "Failed to set Editor rules")
 	}
 
-	err = cli.Update(editor.ctx, in)
+	err = k.RuntimeClient.Update(editor.ctx, in)
 	if err != nil {
 		e.FailOnError(err, "Failed to get Editor IngressRoute")
 	}
@@ -362,8 +361,6 @@ func (editor Editor) ruleCreate() error {
 }
 
 func (editor Editor) ruleDelete() {
-	cli, _ := client.New(k.RestConfig, client.Options{})
-
 	in := &unstructured.Unstructured{}
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "",
@@ -371,7 +368,7 @@ func (editor Editor) ruleDelete() {
 		Version: "traefik.containo.us/v1alpha1",
 	})
 
-	err := cli.Get(context.Background(), client.ObjectKey{
+	err := k.RuntimeClient.Get(context.Background(), client.ObjectKey{
 		Namespace: editor.namespace,
 		Name:      c.Resources.IngressName,
 	}, in)
@@ -398,7 +395,7 @@ func (editor Editor) ruleDelete() {
 		e.FailOnError(err, "Failed to set Editor rules")
 	}
 
-	err = cli.Update(editor.ctx, in)
+	err = k.RuntimeClient.Update(editor.ctx, in)
 	if err != nil {
 		e.FailOnError(err, "Failed to get Editor IngressRoute")
 	}

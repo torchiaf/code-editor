@@ -3,6 +3,7 @@ package editor
 import (
 	"context"
 	"fmt"
+	"maps"
 
 	k "github.com/torchiaf/code-editor/server/kube"
 
@@ -62,7 +63,11 @@ func (store store) Set(editor Editor, data map[string][]byte) {
 		panic(err)
 	}
 
-	secret.Data = data
+	if secret.Data == nil {
+		secret.Data = data
+	} else {
+		maps.Copy(secret.Data, data)
+	}
 
 	_, err = k.Clientset.CoreV1().Secrets(editor.namespace).Update(ctx, secret, metav1.UpdateOptions{})
 	if err != nil {
