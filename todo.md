@@ -1,5 +1,9 @@
 Todo
 
+- write commands to get code-server password for each users
+  #users: echo $(kubectl get secret code-editor-users --namespace code-editor -o jsonpath="{.data.users}" | base64 --decode)
+  #password: echo $(kubectl get secret code-editor-config --namespace code-editor -o jsonpath="{.data.code-editor-local-0000_PASSWORD}" | base64 --decode)
+
 - activate/deactivate option tu create/destroy endpoint 
 - add dynamic k8s client
 - use rule template to create rule

@@ -107,7 +107,7 @@ func (user User) Register(c *gin.Context) {
 	}
 
 	u := models.User{
-		// TODO generate as helm chart
+		// TODO generate in helm chart
 		Id:       fmt.Sprintf("ext-%s", utils.RandomString(10, "0123456789")),
 		Name:     username,
 		Password: ext.Password,

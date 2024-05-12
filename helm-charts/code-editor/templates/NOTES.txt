@@ -18,7 +18,3 @@
   echo "Visit http://127.0.0.1:3000 to use your application"
   kubectl port-forward --namespace {{ .Release.Namespace }} service/{{ include "code-editor.fullname" . }} 3000:http
 {{- end }}
-
-Administrator credentials:
-
-  Password: echo $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "code-editor.fullname" . }} -o jsonpath="{.data.password}" | base64 --decode)
