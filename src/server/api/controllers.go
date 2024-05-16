@@ -300,12 +300,12 @@ func (vw View) Destroy(c *gin.Context) {
 	e := editor.New(c, user)
 
 	store := e.Store()
-
 	if (store == editor.StoreData{} || store.Status == editor.Disabled) {
 		c.JSON(http.StatusNotFound, ginError("View instance not found"))
 		return
 	}
 
+	// TODO error handling
 	e.Destroy(user)
 	c.JSON(http.StatusOK, ginSuccess("View destroyed"))
 }
@@ -314,7 +314,30 @@ func (vw View) Config(c *gin.Context) {
 
 	user, _ := authentication.GetUser(c)
 
-	editor := editor.New(c, user)
+	e := editor.New(c, user)
+
+	var username string
+	if user.IsAdmin {
+		username = c.Query("username")
+		if username == "" {
+			c.JSON(http.StatusBadRequest, ginError("Missing 'username' param"))
+			return
+		}
+
+		user, ok := users.Store.Get(username)
+		if !ok {
+			c.JSON(http.StatusNotFound, ginError("User not found"))
+			return
+		}
+
+		e = editor.New(c, user)
+	}
+
+	store := e.Store()
+	if (store == editor.StoreData{} || store.Status == editor.Disabled) {
+		c.JSON(http.StatusNotFound, ginError("View instance not found"))
+		return
+	}
 
 	var vwConfig models.ViewConfig
 	if err := c.ShouldBindJSON(&vwConfig); err != nil {
@@ -333,7 +356,7 @@ func (vw View) Config(c *gin.Context) {
 		git.Commit,
 	)
 
-	err := editor.Config(gitCmd)
+	err := e.Config(gitCmd)
 
 	if err != nil {
 		c.JSON(http.StatusForbidden, ginError(fmt.Sprintf("code-server pod configuration failed; %s", err.Error())))
