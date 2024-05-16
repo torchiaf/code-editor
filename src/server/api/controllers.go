@@ -292,23 +292,6 @@ func (vw View) Create(c *gin.Context) {
 	}))
 }
 
-func (vw View) Destroy(c *gin.Context) {
-
-	user, _ := authentication.GetUser(c)
-
-	e := editor.New(c, user)
-
-	store := e.Store()
-	if (store == editor.StoreData{} || store.Status == editor.Disabled) {
-		c.JSON(http.StatusNotFound, ginError("View instance not found"))
-		return
-	}
-
-	// TODO error handling
-	e.Destroy(user)
-	c.JSON(http.StatusOK, ginSuccess("View destroyed"))
-}
-
 func (vw View) Config(c *gin.Context) {
 
 	viewId := c.Param("id")
@@ -350,4 +333,21 @@ func (vw View) Config(c *gin.Context) {
 	c.JSON(http.StatusOK, ginSuccess("Configurations saved", map[string]interface{}{
 		"query-param": queryParam,
 	}))
+}
+
+func (vw View) Destroy(c *gin.Context) {
+
+	viewId := c.Param("id")
+
+	e := editor.New(c).ById(viewId)
+
+	store := e.Store()
+	if (store == editor.StoreData{} || store.Status == editor.Disabled) {
+		c.JSON(http.StatusNotFound, ginError("View instance not found"))
+		return
+	}
+
+	// TODO error handling
+	e.Destroy()
+	c.JSON(http.StatusOK, ginSuccess("View instance destroyed"))
 }
