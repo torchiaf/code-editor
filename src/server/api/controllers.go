@@ -172,7 +172,7 @@ func (user User) Unregister(c *gin.Context) {
 		return
 	}
 
-	e := editor.New(c, u)
+	e := editor.New(c).ByUser(u)
 
 	store := e.Store()
 
@@ -180,7 +180,7 @@ func (user User) Unregister(c *gin.Context) {
 	if (store != editor.StoreData{} && store.Status == editor.Enabled) {
 		if ext.Force {
 			// TODO add error handling, destroy could fail
-			e.Destroy(u)
+			e.Destroy()
 			details = ", UI instance destroyed"
 		} else {
 			c.JSON(http.StatusConflict, ginError(fmt.Sprintf("UI instance is Enabled for user [%s], cannot unregister", ext.Username)))
@@ -205,7 +205,7 @@ func (vw View) List(c *gin.Context) {
 	var list []models.View
 
 	for _, user := range users.Store.List() {
-		e := editor.New(c, user)
+		e := editor.New(c).ByUser(user)
 
 		store := e.Store()
 
@@ -241,11 +241,10 @@ func (vw View) Create(c *gin.Context) {
 
 	user, _ := authentication.GetUser(c)
 
-	e := editor.New(c, user)
+	e := editor.New(c).ByUser(user)
 
-	var username string
 	if user.IsAdmin {
-		username = c.Query("username")
+		username := c.Query("username")
 		if username == "" {
 			c.JSON(http.StatusBadRequest, ginError("Missing 'username' param"))
 			return
@@ -257,7 +256,7 @@ func (vw View) Create(c *gin.Context) {
 			return
 		}
 
-		e = editor.New(c, user)
+		e = editor.New(c).ByUser(user)
 	}
 
 	store := e.Store()
@@ -312,26 +311,9 @@ func (vw View) Destroy(c *gin.Context) {
 
 func (vw View) Config(c *gin.Context) {
 
-	user, _ := authentication.GetUser(c)
+	viewId := c.Param("id")
 
-	e := editor.New(c, user)
-
-	var username string
-	if user.IsAdmin {
-		username = c.Query("username")
-		if username == "" {
-			c.JSON(http.StatusBadRequest, ginError("Missing 'username' param"))
-			return
-		}
-
-		user, ok := users.Store.Get(username)
-		if !ok {
-			c.JSON(http.StatusNotFound, ginError("User not found"))
-			return
-		}
-
-		e = editor.New(c, user)
-	}
+	e := editor.New(c).ById(viewId)
 
 	store := e.Store()
 	if (store == editor.StoreData{} || store.Status == editor.Disabled) {

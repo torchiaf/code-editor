@@ -12,20 +12,20 @@ func Routes(engine *gin.Engine) {
 	g.POST("/login", Login)
 
 	u := User{}
-	userGroup := g.Group("users")
+	users := g.Group("users")
 
-	userGroup.GET("", JwtAuthMiddleware(), u.List)
-	userGroup.POST("/register", u.Register)
-	userGroup.POST("/unregister", u.Unregister)
+	users.GET("", JwtAuthMiddleware(), u.List)
+	users.POST("/register", u.Register)
+	users.POST("/unregister", u.Unregister)
 
 	vw := View{}
-	viewsGroup := g.Group("views")
+	views := g.Group("views")
 
-	viewsGroup.Use(JwtAuthMiddleware())
+	views.Use(JwtAuthMiddleware())
 
-	viewsGroup.GET("", vw.List)
-	viewsGroup.GET("/:id", vw.Get)
-	viewsGroup.POST("/create", vw.Create)
-	viewsGroup.POST("/config", vw.Config)
-	viewsGroup.POST("/destroy", vw.Destroy)
+	views.GET("", vw.List)
+	views.GET("/:id", vw.Get)
+	views.POST("", vw.Create)
+	views.PUT("/:id", vw.Config)
+	views.DELETE("/:id", vw.Destroy)
 }

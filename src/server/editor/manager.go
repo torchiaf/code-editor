@@ -179,10 +179,12 @@ type Editor struct {
 	keys      EditorConfigKeys
 }
 
-func New(ctx context.Context, user models.User) Editor {
+type EditorConstructor struct {
+	ById   func(id string) Editor
+	ByUser func(user models.User) Editor
+}
 
-	id := fmt.Sprintf("%s-%s", c.App.Name, user.Id)
-
+func newEditor(ctx context.Context, id string) Editor {
 	return Editor{
 		ctx:       ctx,
 		Id:        id,
@@ -193,6 +195,19 @@ func New(ctx context.Context, user models.User) Editor {
 			path:           fmt.Sprintf("%s_PATH", id),
 			password:       fmt.Sprintf("%s_PASSWORD", id),
 			vscodeSettings: fmt.Sprintf("%s_VSCODE_SETTINGS", id),
+		},
+	}
+}
+
+func New(ctx context.Context) EditorConstructor {
+	return EditorConstructor{
+		ById: func(id string) Editor {
+			return newEditor(ctx, id)
+		},
+		ByUser: func(user models.User) Editor {
+			id := fmt.Sprintf("%s-%s", c.App.Name, user.Id)
+
+			return newEditor(ctx, id)
 		},
 	}
 }
@@ -502,7 +517,7 @@ func (editor Editor) Config(gitCmd string) error {
 	return nil
 }
 
-func (editor Editor) Destroy(user models.User) error {
+func (editor Editor) Destroy() error {
 
 	editor.deploymentDestroy()
 
