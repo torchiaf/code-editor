@@ -294,9 +294,16 @@ func (vw View) Create(c *gin.Context) {
 
 func (vw View) Config(c *gin.Context) {
 
+	user, _ := authentication.GetUser(c)
+
 	viewId := c.Param("id")
 
 	e := editor.New(c).ById(viewId)
+
+	if !user.IsAdmin && e.Id != editor.New(c).ByUser(user).Id {
+		c.JSON(http.StatusConflict, ginError("User unauthorized"))
+		return
+	}
 
 	store := e.Store()
 	if (store == editor.StoreData{} || store.Status == editor.Disabled) {
@@ -337,9 +344,16 @@ func (vw View) Config(c *gin.Context) {
 
 func (vw View) Destroy(c *gin.Context) {
 
+	user, _ := authentication.GetUser(c)
+
 	viewId := c.Param("id")
 
 	e := editor.New(c).ById(viewId)
+
+	if !user.IsAdmin && e.Id != editor.New(c).ByUser(user).Id {
+		c.JSON(http.StatusConflict, ginError("User unauthorized"))
+		return
+	}
 
 	store := e.Store()
 	if (store == editor.StoreData{} || store.Status == editor.Disabled) {
