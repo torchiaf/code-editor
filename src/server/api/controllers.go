@@ -243,8 +243,24 @@ func (vw View) Create(c *gin.Context) {
 
 	e := editor.New(c, user)
 
-	store := e.Store()
+	var username string
+	if user.IsAdmin {
+		username = c.Query("username")
+		if username == "" {
+			c.JSON(http.StatusBadRequest, ginError("Missing 'username' param"))
+			return
+		}
 
+		user, ok := users.Store.Get(username)
+		if !ok {
+			c.JSON(http.StatusNotFound, ginError("User not found"))
+			return
+		}
+
+		e = editor.New(c, user)
+	}
+
+	store := e.Store()
 	if (store != editor.StoreData{} && store.Status == editor.Enabled) {
 		c.JSON(http.StatusForbidden, ginError("View instance already exists"))
 		return
@@ -271,6 +287,7 @@ func (vw View) Create(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, ginSuccess("View created", map[string]interface{}{
+		"viewId":     e.Id,
 		session.Name: session.Value,
 		"path":       fmt.Sprintf("/code-editor/%s/", e.Store().Path),
 	}))
