@@ -62,6 +62,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResponse'
+        '403':
+          description: User unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /users/register:
     post:
       tags:
@@ -169,26 +175,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ViewResponse'
-  /views/:id:
-    get:
-      tags:
-        - view
-      summary: Return the View instance
-      operationId: view-get
-      responses:
-        '200':
-          description: Ok
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ViewResponse'
-        '404':
-          description: View not found
+        '403':
+          description: User unauthorized
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /views/create:
     post:
       tags:
         - view
@@ -209,7 +201,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ViewCreateResponse'
         '400':
-          description: Missing configs
+          description: Missing configs / Missing username param
           content:
             application/json:
               schema:
@@ -226,14 +218,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '409':
           description: Cannot create View instance
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /views/config:
-    post:
+    put:
       tags:
         - view
       summary: Update code-server instance with user's configurations
@@ -258,14 +255,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: User unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: View instance not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '409':
           description: code-server pod configuration failed
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /views/destroy:
-    post:
+    delete:
       tags:
         - view
       summary: Destroy a code-server instance.
@@ -277,8 +285,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
+        '403':
+          description: User unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: View instance not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /views/:id:
+    get:
+      tags:
+        - view
+      summary: Return the View instance
+      operationId: view-get
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewResponse'
+        '404':
+          description: View not found
           content:
             application/json:
               schema:
@@ -392,10 +425,13 @@ components:
               required:
                 - code-server-session
                 - path
+                - viewId
               properties:
                 code-server-session:
                   type: string
                 path:
+                  type: string
+                viewId:
                   type: string
     ViewConfigResponse:
       allOf:

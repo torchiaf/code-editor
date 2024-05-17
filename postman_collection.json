@@ -260,7 +260,7 @@
 			"response": []
 		},
 		{
-			"name": "views/create",
+			"name": "views",
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
 					"connection": true,
@@ -274,7 +274,7 @@
 				"header": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTU1OTYxMjgsInVzZXJuYW1lIjoidXNlcjEifQ.nke0nAssEhd4tj-YVk_l0sDYH1cFiwbfBCnSgz4-aco",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTU2MTk0NjEsInVzZXJuYW1lIjoiYWRtaW4ifQ.pC5jluflUxRVw29wQsXbpdxfwDUfXJ1vjyEWMvy_dGQ",
 						"type": "text"
 					}
 				],
@@ -288,7 +288,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost/code-editor/api/v1/views/create",
+					"raw": "https://localhost/code-editor/api/v1/views",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -297,15 +297,14 @@
 						"code-editor",
 						"api",
 						"v1",
-						"views",
-						"create"
+						"views"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "views/config",
+			"name": "views",
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
 					"connection": true,
@@ -315,11 +314,11 @@
 				}
 			},
 			"request": {
-				"method": "POST",
+				"method": "PUT",
 				"header": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTI2MTEyNzUsInVzZXJuYW1lIjoidXNlcjEifQ.PtSY-Eole4JYtRnmb6UBwJ2z4-SmMeydnRuP8lZHMoo",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTU2MTkwMDgsInVzZXJuYW1lIjoidXNlcjEifQ.fazEA9_xWFkzv0lw0LhL7uhSHHCnc5DtBMUxMVoWEvo",
 						"type": "text"
 					}
 				],
@@ -333,7 +332,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost/code-editor/api/v1/views/config",
+					"raw": "https://localhost/code-editor/api/v1/views",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -342,15 +341,14 @@
 						"code-editor",
 						"api",
 						"v1",
-						"views",
-						"config"
+						"views"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "views/destroy",
+			"name": "views",
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
 					"connection": true,
@@ -360,11 +358,11 @@
 				}
 			},
 			"request": {
-				"method": "POST",
+				"method": "DELETE",
 				"header": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTI2MTEyNzUsInVzZXJuYW1lIjoidXNlcjEifQ.PtSY-Eole4JYtRnmb6UBwJ2z4-SmMeydnRuP8lZHMoo",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTU2MTkwMDgsInVzZXJuYW1lIjoidXNlcjEifQ.fazEA9_xWFkzv0lw0LhL7uhSHHCnc5DtBMUxMVoWEvo",
 						"type": "text"
 					}
 				],
@@ -378,7 +376,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost/code-editor/api/v1/views/destroy",
+					"raw": "https://localhost/code-editor/api/v1/views",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -387,8 +385,7 @@
 						"code-editor",
 						"api",
 						"v1",
-						"views",
-						"destroy"
+						"views"
 					]
 				}
 			},

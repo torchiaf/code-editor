@@ -32,19 +32,20 @@ code-editor is an open source application to deploy [code-server](https://github
   ```
   POST https://localhost/code-editor/api/v1/login
   ```
-- Enable `code-server` instance:
+- Create `code-server` instance:
   ```
-  POST https://localhost/code-editor/api/v1/view/enable
+  POST https://localhost/code-editor/api/v1/views
 
   response:
   {
     "code-server-session": code-server instance token to use in the browser,
     "path": path for the code-server instance,
+    "viewId": "0001"
   }
   ```
 - Add `code-server` configs:
   ```
-  POST https://localhost/code-editor/api/v1/view/config
+  PUT https://localhost/code-editor/api/v1/views
 
   response:
   {

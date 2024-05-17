@@ -80,7 +80,7 @@ func (user User) List(c *gin.Context) {
 	u, _ := authentication.GetUser(c)
 
 	if !u.IsAdmin {
-		c.JSON(http.StatusConflict, ginError("User unauthorized"))
+		c.JSON(http.StatusForbidden, ginError("User unauthorized"))
 		return
 	}
 
@@ -198,7 +198,7 @@ func (vw View) List(c *gin.Context) {
 	user, _ := authentication.GetUser(c)
 
 	if !user.IsAdmin {
-		c.JSON(http.StatusConflict, ginError("User unauthorized"))
+		c.JSON(http.StatusForbidden, ginError("User unauthorized"))
 		return
 	}
 
@@ -229,7 +229,7 @@ func (vw View) Get(c *gin.Context) {
 	user, _ := authentication.GetUser(c)
 
 	if !user.IsAdmin {
-		c.JSON(http.StatusConflict, ginError("User unauthorized"))
+		c.JSON(http.StatusForbidden, ginError("User unauthorized"))
 		return
 	}
 
@@ -301,7 +301,7 @@ func (vw View) Config(c *gin.Context) {
 	e := editor.New(c).ById(viewId)
 
 	if !user.IsAdmin && e.Id != editor.New(c).ByUser(user).Id {
-		c.JSON(http.StatusConflict, ginError("User unauthorized"))
+		c.JSON(http.StatusForbidden, ginError("User unauthorized"))
 		return
 	}
 
@@ -351,7 +351,7 @@ func (vw View) Destroy(c *gin.Context) {
 	e := editor.New(c).ById(viewId)
 
 	if !user.IsAdmin && e.Id != editor.New(c).ByUser(user).Id {
-		c.JSON(http.StatusConflict, ginError("User unauthorized"))
+		c.JSON(http.StatusForbidden, ginError("User unauthorized"))
 		return
 	}
 
