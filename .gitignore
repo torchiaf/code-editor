@@ -1,5 +1,6 @@
 # dev
 out.yaml
+dev-*
 
 # node
 node_modules
