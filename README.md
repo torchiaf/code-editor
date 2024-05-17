@@ -38,14 +38,14 @@ code-editor is an open source application to deploy [code-server](https://github
 
   response:
   {
+    "viewId": "0001",
     "code-server-session": code-server instance token to use in the browser,
-    "path": path for the code-server instance,
-    "viewId": "0001"
+    "path": path for the code-server instance
   }
   ```
 - Add `code-server` configs:
   ```
-  PUT https://localhost/code-editor/api/v1/views
+  PUT https://localhost/code-editor/api/v1/views/0001
 
   response:
   {
