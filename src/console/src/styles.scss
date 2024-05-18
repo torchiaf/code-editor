@@ -1,0 +1,76 @@
+@import './theme/custom-theme';
+
+.mat-toolbar.mat-primary,
+.mat-raised-button.mat-primary,
+.mat-button-base,
+.mat-btn-card {
+  background: #30ba78;
+  color: #fff;
+}
+
+.mat-menu-trigger {
+  background-color: #fff;
+  color: #30ba78;
+}
+
+.mat-form-field-label * {
+  color: #30ba78;
+}
+
+.mat-progress-spinner * {
+  stroke: #30ba78 !important;
+}
+
+h1 {
+  text-align: center;
+}
+html, body { height: 100%; }
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif, "Helvetica Neue", sans-serif;
+}
+
+mat-form-field {
+  margin: 1em;
+  display: block;
+}
+
+mat-dialog-container {
+  margin: 0;
+  padding: 10px !important;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+}
+
+.btn-close {
+  float: right;
+}
+
+.icon-button {
+  opacity: 1;
+  cursor: pointer;
+  :active {
+    color: none;
+  }
+}
+
+.icon-button.leave {
+  color: #ea0e2f;
+}
+
+.icon-button.enter {
+  color: #30ba78;
+}
+
+.icon-button-disabled {
+  cursor: auto !important;
+  opacity: 0.3;
+}
+
+.empty-table-message {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.mat-form-field.mat-focused .mat-form-field-ripple {
+  background-color: #30ba78 !important;
+}

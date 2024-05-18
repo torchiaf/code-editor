@@ -1,0 +1,3 @@
+<div [ngSwitch]="authService.loggedUser?.role" class="dashboard-container">
+  <app-admin *ngSwitchCase="'Admin'"></app-admin>
+</div>

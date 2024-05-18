@@ -1,0 +1,5 @@
+<h1 mat-dialog-title>{{data.message | translate}}</h1>
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="center none">
+  <button mat-button cdkFocusInitial (click)="reject()">{{'REJECT' | translate}}</button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'CONFIRM' | translate}}</button>
+</div>

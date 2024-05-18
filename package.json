@@ -23,7 +23,7 @@
     "type": "git",
     "url": "git+https://github.com/torchiaf/code-editor.git"
   },
-  "author": "torchiaf",
+  "author": "Francesco Torchia",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/torchiaf/code-editor/issues"

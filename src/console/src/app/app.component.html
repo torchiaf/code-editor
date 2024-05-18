@@ -1,0 +1,52 @@
+<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center">
+
+  <div fxLayout="row">
+    <button mat-button (click)="goHome()" [disabled]="!authService.isAuthenticated">
+      <mat-icon>home</mat-icon>
+    </button>
+    <button mat-button class="label" (click)="gitHubHome()">{{'CODE_EDITOR' | translate}}</button>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="space-around center" fxShow="false" fxShow.gt-sm>
+
+    <span *ngIf="authService.isAuthenticated && currentUrl !== '/' + Route.login" class="username label">
+      {{'WELCOME' | translate}}, {{(authService.loggedUser?.name || '' | split : ' ')[0]}}
+    </span>
+
+    <div class="lang-button-container">
+      <button mat-mini-fab color="" class="lang-mini-fab" aria-label="Icon button" [matMenuTriggerFor]="langMenu">
+        <span>{{translate.currentLang}}</span>
+      </button>
+      <mat-menu #langMenu="matMenu" yPosition="below">
+        <button *ngFor="let item of languages" class="mini-fab-btn" mat-menu-item (click)="switchTranslations(item)">
+          <mat-icon>language</mat-icon>
+          <span>{{item}}</span>
+        </button>
+      </mat-menu>
+    </div>
+
+    <button *ngIf="authService.isAuthenticated && currentUrl !== '/' + Route.login" mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item [disabled]="!authService.isAuthenticated" (click)="showProfile()">
+        <mat-icon>account_box</mat-icon>
+        <span>{{'MENU_PROFILE' | translate}}</span>
+      </button>
+      <button mat-menu-item disabled>
+        <mat-icon>notifications_off</mat-icon>
+        <span>{{'NOTIFICATIONS' | translate}}</span>
+      </button>
+      <button mat-menu-item [disabled]="!authService.isAuthenticated" (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>{{'LOGOUT' | translate}}</span>
+      </button>
+    </mat-menu>
+  </div>
+
+  <button mat-button [mat-menu-trigger-for]="userMenu" fxHide="false" fxHide.gt-sm>
+    <mat-icon>menu</mat-icon>
+  </button>
+</mat-toolbar>
+
+<router-outlet></router-outlet>

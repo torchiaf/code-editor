@@ -1,0 +1,24 @@
+<mat-card login-card class="animated">
+  <mat-card-content>
+    <form #loginForm="ngForm" (ngSubmit)="login()">
+      <mat-icon mat-list-icon class="material-icons color_def">account_circle</mat-icon>
+      <mat-error *ngIf="loginError">{{loginError | translate}}</mat-error>
+      <mat-form-field>
+        <input matInput placeholder="Username" [(ngModel)]="username" name="username" required>
+        <!-- <mat-error>{{'ERROR_LOGIN_MISSING_USER' | translate}}</mat-error> -->
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="password" placeholder="Password" [(ngModel)]="password" name="password" required>
+        <!-- <mat-error>{{'ERROR_LOGIN_MISSING_PASS' | translate}}</mat-error> -->
+      </mat-form-field>
+      <div class="button-container">
+        <div class="spinner-container" *ngIf="inProgressLogin">
+          <mat-spinner diameter="24"></mat-spinner>
+        </div>
+        <button mat-raised-button color="primary" class="height-fixed" [disabled]="inProgressLogin || !loginForm.form.valid">
+          <ng-container *ngIf="!inProgressLogin">{{'LOGIN' | translate}}</ng-container>
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,25 @@
+{
+  "CODE_EDITOR": "Code Editor",
+  "GITHUB": "GitHub",
+  "LOGIN": "Accedi",
+  "LOGOUT": "Esci",
+  "USER": "Utente",
+  "WELCOME": "Ciao",
+  "MENU_PROFILE": "Profilo",
+  "NOTIFICATIONS": "Notifiche",
+
+  "EDIT_TABLE_ROW": "Modifica",
+  "DELETE_TABLE_ROW": "Cancella",
+
+  "SAVE": "Salva",
+  "REJECT": "No",
+  "CONFIRM": "Si",
+
+  "ERROR_LOGIN_INVALID": "Username o Password errati",
+  "ERROR_LOGIN_CONN": "Errore di connessione",
+  "ERROR_LOGIN_MISSING_USER": "Username non valido",
+  "ERROR_LOGIN_MISSING_PASS": "Password non valida",
+
+  "ADMIN_CARD": "Card Admin",
+  "ROLE": "Ruolo"
+}

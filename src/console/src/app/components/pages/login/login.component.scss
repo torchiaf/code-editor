@@ -1,0 +1,57 @@
+h2 {
+  margin-bottom:20px;
+}
+
+mat-card {
+  max-width: 400px;
+  margin: 15% auto;
+  text-align: center;
+  border: 1px solid #30ba78;
+  box-shadow: none !important;
+}
+
+mat-form-field {
+  margin: 1em;
+  display: block;
+}
+
+mat-icon {
+  transform: scale(1.5);
+}
+
+mat-error {
+  margin-top: 10px;
+}
+
+// #login-tab {
+// 	transition: opacity 1s ease-in-out;
+//   -webkit-transition: opacity 1s ease-in-out;
+//   -moz-transition:opacity 1s ease-in-out;
+// }
+// #myBox:checked ~ .animated {
+//   opacity: 0;
+// }
+// #myBox ~ .animated {
+//    opacity: 1;
+// }
+
+.spinner-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-container {
+  display: inline-block;
+  position: relative;
+}
+
+.height-fixed {
+  height: 36px !important;
+}
