@@ -72,6 +72,8 @@ export class RestClientService {
 
     getUser: (id: string) => this.http.get<UserDetails>(`user/${id}`),
 
+    ping: () => this.http.get<UserDetails>('ping'),
+
   } as const;
 
 

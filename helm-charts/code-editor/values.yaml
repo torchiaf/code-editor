@@ -226,3 +226,8 @@ server:
     targetPort: 8082
   replicas: 1
   type: ClusterIP
+
+console:
+  enabled: true
+  dev:
+    url: http://localhost:4200

@@ -37,15 +37,17 @@ spec:
       - "OPTIONS"
       - "PUT"
       - "POST"
+      - "DELETE"
       - "HEADER"
     accessControlAllowHeaders:
       - "*"
     accessControlAllowOriginList:
+      {{- if .Values.console.enabled }}
+      - {{ .Values.console.dev.url }}
+      {{- end }}
       {{- if .Values.dev }}
-      - "http://localhost:8005"
       - "http://{{ $.Values.domain }}"
       {{- else }}
-      - "https://localhost:8005"
       - "https://{{ $.Values.domain }}"
       {{- end }}
     addVaryHeader: true
