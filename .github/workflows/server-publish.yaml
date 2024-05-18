@@ -1,4 +1,4 @@
-name: Create and publish a Docker image of the server
+name: Publish server
 
 on:
   push:
@@ -6,32 +6,14 @@ on:
     - main
     - develop
 
-defaults:
-  run:
-    working-directory: src/server
-
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: server
 
 jobs:
-  build-and-push-image:
-    runs-on: ubuntu-latest
+  build-and-push-docker-image:
+    uses: ./.github/workflows/docker-push.yaml
+    with:
+      image-name: server
     permissions:
       contents: read
       packages: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Log in to the Container registry
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push Docker image
-        run: |
-          docker build . --tag ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ env.IMAGE_NAME }}:latest
-          docker push ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ env.IMAGE_NAME }}:latest
