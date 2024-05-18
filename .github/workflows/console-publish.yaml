@@ -1,4 +1,4 @@
-name: Create and publish a Docker image of server
+name: Create and publish a Docker image of the web console
 
 on:
   push:
@@ -8,11 +8,11 @@ on:
 
 defaults:
   run:
-    working-directory: src/server
+    working-directory: src/console
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: server
+  IMAGE_NAME: console
 
 jobs:
   build-and-push-image:
