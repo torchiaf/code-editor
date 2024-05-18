@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  restURL: 'http://localhost:8080',
+  restURL: 'https://localhost/code-editor/api',
   apiVersion: 'v1',
   jwtToken: 'token',
   languages: ['en', 'it'],

@@ -6,7 +6,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "dev": "",
+    "local": "ng serve -c local",
+    "cluster-dev": "ng serve -c cluster-dev",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "eslint -c .eslintrc.json --ext .ts ./src"

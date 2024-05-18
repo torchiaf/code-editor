@@ -64,6 +64,34 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
+            },
+            "local": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
+                }
+              ]
+            },
+            "cluster-dev": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.cluster-dev.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -76,6 +104,12 @@
             },
             "development": {
               "browserTarget": "console:build:development"
+            },
+            "local": {
+              "browserTarget": "console:build:local"
+            },
+            "cluster-dev": {
+              "browserTarget": "console:build:cluster-dev"
             }
           },
           "defaultConfiguration": "development"
