@@ -90,6 +90,7 @@ spec:
         - name: headers-manage
         - name: strip-prefix
         - name: cors
+{{- if .Values.console.enabled }}
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -108,3 +109,4 @@ spec:
       services:
         - name: {{ .Release.Name }}-console
           port: 8083
+{{- end }}

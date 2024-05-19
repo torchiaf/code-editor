@@ -65,6 +65,7 @@ spec:
               path: containers.json
             - key: vscode-settings
               path: vscode-settings.json
+{{- if .Values.console.enabled }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -94,3 +95,4 @@ spec:
         env:
         - name: BASE_HREF
           value: {{ quote .Values.console.env.baseHref }}
+{{- end }}

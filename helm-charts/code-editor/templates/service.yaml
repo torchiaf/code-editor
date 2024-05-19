@@ -10,6 +10,7 @@ spec:
     app: {{ .Release.Name }}-server
   ports:
 	{{- .Values.server.ports | toYaml | nindent 2 }}
+{{- if .Values.console.enabled }}
 ---
 apiVersion: v1
 kind: Service
@@ -23,3 +24,4 @@ spec:
     app: {{ .Release.Name }}-console
   ports:
 	{{- .Values.console.ports | toYaml | nindent 2 }}
+{{- end }}
