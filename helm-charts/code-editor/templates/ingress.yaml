@@ -90,3 +90,21 @@ spec:
         - name: headers-manage
         - name: strip-prefix
         - name: cors
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}-console
+spec:
+  entryPoints:
+    {{- if .Values.dev }}
+    - web
+    {{- else }}
+    - websecure
+    {{- end }}
+  routes:
+    - match: Host(`{{ $.Values.domain }}`)
+      kind: Rule
+      services:
+        - name: {{ .Release.Name }}-console
+          port: 8083

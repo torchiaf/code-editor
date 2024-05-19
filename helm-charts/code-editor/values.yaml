@@ -231,3 +231,16 @@ console:
   enabled: true
   dev:
     url: http://localhost:4200
+  replicas: 1
+  type: ClusterIP
+  image:
+    repository: ghcr.io/torchiaf/code-editor/console
+    tag: latest
+    pullPolicy: Always
+  env:
+    baseHref: "/code-editor/console/"
+  ports:
+  - port: 8083
+    protocol: TCP
+    targetPort: 80
+

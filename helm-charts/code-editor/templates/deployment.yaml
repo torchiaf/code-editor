@@ -65,3 +65,32 @@ spec:
               path: containers.json
             - key: vscode-settings
               path: vscode-settings.json
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-console
+  labels:
+    app: {{ .Release.Name }}-console
+spec:
+  replicas: {{ .Values.console.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-console
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-console
+    spec:
+      serviceAccountName: {{ .Release.Name }}-console
+      containers:
+      - image: {{ .Values.console.image.repository }}:{{ .Values.console.image.tag
+          | default .Chart.AppVersion }}
+        name: {{ .Release.Name }}-console
+        imagePullPolicy: {{ .Values.console.image.pullPolicy }}
+        resources: {}
+        ports:
+        - containerPort: 80
+        env:
+        - name: BASE_HREF
+          value: {{ quote .Values.console.env.baseHref }}
