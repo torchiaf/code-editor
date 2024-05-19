@@ -10,6 +10,15 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
+  name: strip-prefix-console
+spec:
+  stripPrefix:
+    prefixes:
+      - "/code-editor/console"
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
   name: headers-manage
 spec:
   headers:
@@ -104,9 +113,11 @@ spec:
     - websecure
     {{- end }}
   routes:
-    - match: Host(`{{ $.Values.domain }}`)
+    - match: Host(`{{ $.Values.domain }}`) && PathPrefix(`/code-editor/console`)
       kind: Rule
       services:
         - name: {{ .Release.Name }}-console
           port: 8083
+      middlewares:
+        - name: strip-prefix-console
 {{- end }}

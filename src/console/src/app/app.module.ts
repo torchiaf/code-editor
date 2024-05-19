@@ -36,7 +36,7 @@ import { ProfileDialogComponent } from './components/dialogs/profile-dialog/prof
 
 // Required during AOT compilation
 export function httpTranslateLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http);
+  return new TranslateHttpLoader(http, './code-editor/console/assets/i18n/');
 }
 
 @NgModule({

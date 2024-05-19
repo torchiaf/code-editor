@@ -20,6 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "baseHref": "/code-editor/console/",
             "outputPath": "dist/console",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -27,7 +28,7 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              { "glob": "**/*", "input": "src/assets", "output": "code-editor/console/assets" }
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
@@ -37,6 +38,11 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/code-editor/console/",
+              "assets": [
+                "src/favicon.ico",
+                { "glob": "**/*", "input": "src/assets", "output": "code-editor/console/assets" }
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -63,7 +69,8 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "baseHref": "/"
             },
             "local": {
               "buildOptimizer": false,
