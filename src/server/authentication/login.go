@@ -40,7 +40,7 @@ func LoginCheck(auth models.Auth) (string, error) {
 		return "", errors.New("password is not correct")
 	}
 
-	token, err := GenerateToken(user.Name)
+	token, err := GenerateToken(user)
 
 	if err != nil {
 		return "", err

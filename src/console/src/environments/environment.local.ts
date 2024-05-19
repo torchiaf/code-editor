@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  restURL: 'https://localhost:8080',
+  restURL: 'http://localhost:8080',
   apiVersion: 'v1',
   jwtToken: 'token',
   languages: ['en', 'it'],

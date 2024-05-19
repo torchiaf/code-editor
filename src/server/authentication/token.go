@@ -19,7 +19,7 @@ import (
 var tokenSecret = utils.IfNull(os.Getenv("API_SECRET"), "francesco")
 var tokenExpiration = utils.IfNull(os.Getenv("API_TOKEN_EXPIRATION"), "24")
 
-func GenerateToken(username string) (string, error) {
+func GenerateToken(user models.User) (string, error) {
 
 	token_lifespan, err := strconv.Atoi(tokenExpiration)
 
@@ -29,7 +29,15 @@ func GenerateToken(username string) (string, error) {
 
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
-	claims["username"] = username
+	claims["id"] = user.Id
+	claims["username"] = user.Name
+
+	if user.IsAdmin {
+		claims["role"] = "Admin"
+	} else {
+		claims["role"] = "User"
+	}
+
 	claims["exp"] = time.Now().Add(time.Hour * time.Duration(token_lifespan)).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
