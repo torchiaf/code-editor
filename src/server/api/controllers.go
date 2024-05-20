@@ -84,7 +84,7 @@ func (user User) List(c *gin.Context) {
 		return
 	}
 
-	var list []models.User
+	list := []models.User{}
 
 	for _, u := range users.Store.List() {
 		if !u.IsAdmin {
@@ -202,7 +202,7 @@ func (vw View) List(c *gin.Context) {
 		return
 	}
 
-	var list []models.View
+	list := []models.View{}
 
 	for _, user := range users.Store.List() {
 		e := editor.New(c).ByUser(user)

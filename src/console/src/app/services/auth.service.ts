@@ -25,8 +25,8 @@ export class AuthService {
     const user: UserDetails & { exp: number } = jwt_decode(jwtToken);
     const expirationDate = new Date(Math.floor(new Date().getTime() + user.exp));
     return {
-      id: user.id,
-      name: user.username,
+      Id: user.Id,
+      Name: user.username,
       role: user.role,
       expirationDate
     };

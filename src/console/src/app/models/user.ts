@@ -5,7 +5,7 @@ export interface UserDetails extends User {
 }
 
 export interface User {
-  id: string;
-  name?: string;
+  Id: string;
+  Name?: string;
   username?: string;
 }

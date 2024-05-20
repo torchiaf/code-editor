@@ -1,0 +1,137 @@
+<mat-card>
+  <div class="header" fxLayout="row" fxLayoutAlign="space-between center">
+    <mat-card-title>{{'VIEWS' | translate}}</mat-card-title>
+    <button mat-icon-button
+      [disabled]="collapseDisabled"
+      (click)="toggleCollapse()">
+      <mat-icon>format_line_spacing</mat-icon>
+    </button>
+  </div>
+
+  <table *ngIf="dataSource?.data?.length; else emptyTable" mat-table
+    [dataSource]="dataSource"
+    multiTemplateDataRows
+    class="mat-elevation-z8">
+
+    <!-- Id Column -->
+    <ng-container matColumnDef="Id">
+      <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_ID' | translate }} </th>
+      <td mat-cell *matCellDef="let element"> {{element.Id}} </td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="Name">
+      <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_NAME' | translate }} </th>
+      <td mat-cell *matCellDef="let element"> {{element.Name}} </td>
+    </ng-container>
+
+    <!-- Email Column -->
+    <ng-container matColumnDef="Email">
+      <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_EMAIL' | translate }} </th>
+      <td mat-cell *matCellDef="let element"> {{element.Email}} </td>
+    </ng-container>
+
+    <!-- Phone Column -->
+    <ng-container matColumnDef="Phone">
+      <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_PHONE' | translate }} </th>
+      <td mat-cell *matCellDef="let element"> {{element.Phone}} </td>
+    </ng-container>
+
+    <!-- Status Column -->
+    <ng-container matColumnDef="Status">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element">
+        <div *ngIf="element.Id === creating"
+          #spinnerDiv class="spinner-container-creating">
+          <mat-spinner [diameter]="25"></mat-spinner>
+        </div>
+        <mat-icon
+          *ngIf="element.Enabled"
+          class="mat-icon-enabled"
+          matTooltip="{{'VIEW_CHECK' | translate}}"
+          [matTooltipPosition]="'right'">
+          view_list
+        </mat-icon>
+        <button
+          *ngIf="!element.Enabled && (!creating || creating !== element.Id)"
+          mat-icon-button
+          class="mat-icon-disabled"
+          (click)="addView(element)"
+          matTooltip="{{'VIEW_ADD' | translate}}"
+          [matTooltipPosition]="'right'"
+          [disabled]="creating">
+          <mat-icon>play_arrow</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+        <div class="element-detail" *ngIf="element.Views?.data.length" [@detailExpand]="expandedElements[element.Id] ? 'expanded' : 'collapsed'">
+          <div class="inner-table mat-elevation-z8" *ngIf="expandedElements[element.Id]">
+            <table #innerTables mat-table [dataSource]="element.Views">
+
+              <!-- Id Column -->
+              <ng-container matColumnDef="Id">
+                <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_ID' | translate }} </th>
+                <td mat-cell *matCellDef="let element"> {{element.Id}} </td>
+              </ng-container>
+
+              <!-- Path Column -->
+              <ng-container matColumnDef="Path">
+                <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_PATH' | translate }} </th>
+                <td mat-cell *matCellDef="let element"> {{element.Path}} </td>
+              </ng-container>
+
+              <!-- VScodeSettings Column -->
+              <ng-container matColumnDef="VScodeSettings">
+                <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_VSCODE_SETTINGS' | translate }} </th>
+                <td mat-cell *matCellDef="let element"> {{element.VScodeSettings}} </td>
+              </ng-container>
+
+              <!-- Delete Column -->
+              <ng-container matColumnDef="Delete">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element">
+                  <button
+                    *ngIf="deleting !== element.Id"
+                    [disabled]="deleting"
+                    mat-mini-fab color="primary"
+                    class="delete"
+                    matTooltip="{{'DELETE' | translate}}"
+                    [matTooltipPosition]="'right'"
+                    (click)="deleteView(element)">
+                    <mat-icon>delete_forever</mat-icon>
+                  </button>
+                  <div
+                    *ngIf="deleting === element.Id"
+                    class="spinner-container">
+                    <mat-spinner diameter="24"></mat-spinner>
+                  </div>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="innerDisplayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: innerDisplayedColumns;"></tr>
+            </table>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedColumns;"
+      [class.element-row]="element.Views?.data?.length"
+      [class.expanded-row]="expandedElements[element.Id]"
+      (click)="toggleRow(element)">
+    </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+  </table>
+</mat-card>
+
+<ng-template #emptyTable>
+  <span class="empty-table-message">
+    {{'VIEWS_EMPTY' | translate}}
+  </span>
+</ng-template>

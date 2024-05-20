@@ -4,7 +4,8 @@ import { lastValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Login } from '../models/login';
-import { Role, UserDetails } from '../models/user';
+import { UserDetails } from '../models/user';
+import { View, ViewCreate } from '../models/view';
 
 interface HttpGetOptionParams {
   headers?: HttpHeaders | {
@@ -62,17 +63,27 @@ export class RestClientService {
 
   public api = {
 
+    ping: () => this.http.get<UserDetails>('ping'),
+
     /** Login */
 
     login: (username: string, password: string) => this.http.post<Login>('login', { username, password }),
 
     /** User */
 
-    getUsers: (role?: Role) => this.http.get<Array<UserDetails>>('users', role ? { params: { role } } : undefined),
+    getUsers: () => this.http.get<Array<UserDetails>>('users'),
 
-    getUser: (id: string) => this.http.get<UserDetails>(`user/${id}`),
+    getUser: (name: string) => this.http.get<UserDetails>(`user/${name}`),
 
-    ping: () => this.http.get<UserDetails>('ping'),
+    /** Views */
+
+    getViews: () => this.http.get<Array<View>>('views'),
+
+    getView: (viewId: string) => this.http.get<View>(`views/${viewId}`),
+
+    createView: (username: string, view: ViewCreate) => this.http.post<void>(`views?username=${username}`, view),
+
+    deleteView: (viewId: string) => this.http.delete<void>(`views/${viewId}`),
 
   } as const;
 

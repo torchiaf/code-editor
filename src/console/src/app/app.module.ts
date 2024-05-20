@@ -33,6 +33,10 @@ import { ConfirmDialogComponent } from './components/dialogs/confirm-dialog/conf
 import { ErrorHandlerInterceptor } from './services/error-handler.interceptor';
 import { ErrorDialogComponent } from './components/dialogs/error-dialog/error-dialog.component';
 import { ProfileDialogComponent } from './components/dialogs/profile-dialog/profile-dialog.component';
+import { ViewsComponent } from './components/cards/views/views.component';
+import { UserComponent } from './components/dashboard/user/user.component';
+import { DummyCardComponent } from './components/cards/dummy-card/dummy-card.component';
+import { CreateViewDialogComponent } from './components/dialogs/create-view-dialog/create-view-dialog.component';
 
 // Required during AOT compilation
 export function httpTranslateLoaderFactory(http: HttpClient) {
@@ -42,6 +46,7 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
 @NgModule({
   declarations: [
     AppComponent,
+    DummyCardComponent,
     LoginComponent,
     SplitPipe,
     DashboardComponent,
@@ -49,6 +54,9 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
     ConfirmDialogComponent,
     ErrorDialogComponent,
     ProfileDialogComponent,
+    ViewsComponent,
+    UserComponent,
+    CreateViewDialogComponent,
   ],
   imports: [
     BrowserModule,

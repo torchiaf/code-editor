@@ -10,7 +10,7 @@
   <div fxLayout="row" fxLayoutAlign="space-around center" fxShow="false" fxShow.gt-sm>
 
     <span *ngIf="authService.isAuthenticated && currentUrl !== '/' + Route.login" class="username label">
-      {{'WELCOME' | translate}}, {{(authService.loggedUser?.name || '' | split : ' ')[0]}}
+      {{'WELCOME' | translate}}, {{(authService.loggedUser?.Name || '' | split : ' ')[0]}}
     </span>
 
     <div class="lang-button-container">
