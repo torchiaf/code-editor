@@ -214,9 +214,12 @@ func (vw View) List(c *gin.Context) {
 				Id:             e.Id,
 				UserId:         user.Id,
 				Status:         store.Status,
-				Path:           store.Path,
-				Password:       store.Password,
+				Path:           fmt.Sprintf("/code-editor/%s/", store.Path),
+				Password:       "",
 				VScodeSettings: store.VScodeSettings,
+				Session:        store.Session,
+				RepoType:       store.RepoType,
+				Repo:           store.Repo,
 			})
 		}
 	}
@@ -287,7 +290,7 @@ func (vw View) Create(c *gin.Context) {
 
 	c.JSON(http.StatusOK, ginSuccess("View created", map[string]interface{}{
 		"viewId":     e.Id,
-		session.Name: session.Value,
+		session.Name: e.Store().Session,
 		"path":       fmt.Sprintf("/code-editor/%s/", e.Store().Path),
 	}))
 }
@@ -336,6 +339,8 @@ func (vw View) Config(c *gin.Context) {
 	}
 
 	queryParam := fmt.Sprintf("folder=/git/%s", git.Repo)
+
+	editor.Store.Upd(e, "", git.Type, queryParam)
 
 	c.JSON(http.StatusOK, ginSuccess("Configurations saved", map[string]interface{}{
 		"query-param": queryParam,

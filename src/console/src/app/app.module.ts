@@ -36,7 +36,9 @@ import { ProfileDialogComponent } from './components/dialogs/profile-dialog/prof
 import { ViewsComponent } from './components/cards/views/views.component';
 import { UserComponent } from './components/dashboard/user/user.component';
 import { DummyCardComponent } from './components/cards/dummy-card/dummy-card.component';
-import { CreateViewDialogComponent } from './components/dialogs/create-view-dialog/create-view-dialog.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { ViewCreateFormComponent } from './components/forms/view-create-form/view-create-form.component';
+import { CookieModule } from 'ngx-cookie';
 
 // Required during AOT compilation
 export function httpTranslateLoaderFactory(http: HttpClient) {
@@ -56,10 +58,11 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
     ProfileDialogComponent,
     ViewsComponent,
     UserComponent,
-    CreateViewDialogComponent,
+    ViewCreateFormComponent,
   ],
   imports: [
     BrowserModule,
+    CookieModule,
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
@@ -79,6 +82,7 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
     MatSelectModule,
     MatOptionModule,
     MatProgressSpinnerModule,
+    MatTabsModule,
     MatTooltipModule,
     TranslateModule.forRoot({
       loader: {

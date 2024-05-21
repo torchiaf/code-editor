@@ -10,7 +10,9 @@ import { UserDetails } from 'src/app/models/user';
 import { View, ViewCreate } from 'src/app/models/view';
 import { AuthService } from 'src/app/services/auth.service';
 import { RestClientService } from 'src/app/services/rest-client.service';
-import { CreateViewDialogComponent } from '../../dialogs/create-view-dialog/create-view-dialog.component';
+import { FormControl } from '@angular/forms';
+import { environment } from 'src/environments/environment';
+import { CookieService } from 'ngx-cookie';
 
 type Row = UserDetails & { Enabled: boolean, Views: View[] | MatTableDataSource<View> };
 
@@ -32,12 +34,15 @@ export class ViewsComponent implements OnInit, OnDestroy {
   @ViewChildren('innerSort') innerSort: QueryList<MatSort> | undefined;
   @ViewChildren('innerTables') innerTables: QueryList<MatTable<View>> | undefined;
 
+  selectedTab = new FormControl(0);
+  createView = false;
+
   readonly tableRefresh$: Subject<void> = new Subject<void>();
 
   dataSource: MatTableDataSource<Row> = new MatTableDataSource();
 
   displayedColumns = ['Id', 'Name', 'Email', 'Phone', 'Status'];
-  innerDisplayedColumns = ['Id', 'Path', 'VScodeSettings', 'Delete'];
+  innerDisplayedColumns = ['Id', 'Path', 'VScodeSettings', 'Delete', 'GoTo'];
 
   expandedElements: Record<string, boolean> = {};
   collapseDisabled = false;
@@ -45,11 +50,14 @@ export class ViewsComponent implements OnInit, OnDestroy {
   creating: string | null = null;
   deleting: string | null = null;
 
+  createViewData: any;
+
   constructor(
     private cd: ChangeDetectorRef,
     public dialog: MatDialog,
     private restClient: RestClientService,
     public authService: AuthService,
+    private cookieService: CookieService,
   ) {
   }
 
@@ -98,26 +106,39 @@ export class ViewsComponent implements OnInit, OnDestroy {
     this.cd.detectChanges();
   }
 
-  public async addView(row: Row) {
-    const dialogRef = this.dialog.open(CreateViewDialogComponent, {
-      width: '700px',
-      height: '600px',
-      data: {view: { git: {}}},
-      disableClose: true
-    });
-    const res: ViewCreate = await lastValueFrom(dialogRef.afterClosed());
+  public goToCreateView(element: Row) {
+    this.createView = true;
+    this.createViewData = element;
+
+    this.selectedTab.setValue(1);
+  }
+
+  public goToViews() {
+    this.createView = false;
+    this.createViewData = null;
+
+    this.selectedTab.setValue(0);
+  }
+
+  public async createViewDone(res: boolean | ViewCreate) {
     if (res) {
-      // TODO fix model
-      (res as any)['vscode-settings'] = JSON.parse(res.vscodeSettings || '{}');
-      res.vscodeSettings = undefined;
+      this.creating = this.createViewData.Id;
 
-      this.creating = row.Id;
+      const row = this.dataSource.data.find((row) => row.Id === this.creating);
 
-      await this.restClient.api.createView(row.Name || '', res);
+      if (row) {
+        this.goToViews();
 
-      this.creating = null;
-      this.tableRefresh$.next();
+        const created = await this.restClient.api.createView(row.Name || '', (res as ViewCreate).general);
+
+        await this.restClient.api.updateView(created.viewId || '', (res as ViewCreate).repo);
+
+        this.creating = null;
+        this.tableRefresh$.next();
+      }
     }
+
+    this.goToViews();
   }
 
   public async deleteView(view: Row) {
@@ -136,5 +157,18 @@ export class ViewsComponent implements OnInit, OnDestroy {
 
       this.tableRefresh$.next();
     }
+  }
+
+  public goToView(element: View) {
+    this.cookieService.get('code-server-session');
+    this.cookieService.put('code-server-session', element.Session, {
+      path: '/',
+      secure: false,
+      storeUnencoded: true
+    });
+
+    const url = `${environment.baseUrl}${element.Path}?${element.Repo}`;
+
+    window.open(url, "_blank");
   }
 }

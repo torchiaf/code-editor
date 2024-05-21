@@ -169,6 +169,9 @@ type EditorConfigKeys struct {
 	path           string
 	password       string
 	vscodeSettings string
+	session        string
+	repoType       string
+	repo           string
 }
 
 type Editor struct {
@@ -195,6 +198,9 @@ func newEditor(ctx context.Context, id string) Editor {
 			path:           fmt.Sprintf("%s_PATH", id),
 			password:       fmt.Sprintf("%s_PASSWORD", id),
 			vscodeSettings: fmt.Sprintf("%s_VSCODE_SETTINGS", id),
+			session:        fmt.Sprintf("%s_SESSION", id),
+			repoType:       fmt.Sprintf("%s_REPO_TYPE", id),
+			repo:           fmt.Sprintf("%s_REPO", id),
 		},
 	}
 }
@@ -266,6 +272,8 @@ func (editor Editor) Login(port int32, password string) (models.CodeServerSessio
 
 	session.Name = cookie.Name
 	session.Value = cookie.Value
+
+	Store.Upd(editor, session.Value, "", "")
 
 	return session, nil
 }
@@ -512,9 +520,7 @@ func (editor Editor) Create(enableConfig models.EnableConfig) (int32, error) {
 func (editor Editor) Config(gitCmd string) error {
 	label := matchLabel(editor.Store().Path)
 
-	execCmdOnPod(editor.ctx, label, gitCmd)
-
-	return nil
+	return execCmdOnPod(editor.ctx, label, gitCmd)
 }
 
 func (editor Editor) Destroy() error {

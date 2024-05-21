@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Login } from '../models/login';
 import { UserDetails } from '../models/user';
-import { View, ViewCreate } from '../models/view';
+import { View, ViewCreate, ViewCreateGeneral, ViewCreateRepo } from '../models/view';
 
 interface HttpGetOptionParams {
   headers?: HttpHeaders | {
@@ -81,7 +81,9 @@ export class RestClientService {
 
     getView: (viewId: string) => this.http.get<View>(`views/${viewId}`),
 
-    createView: (username: string, view: ViewCreate) => this.http.post<void>(`views?username=${username}`, view),
+    createView: (username: string, viewGeneral: ViewCreateGeneral) => this.http.post<{ viewId: string }>(`views?username=${username}`, viewGeneral),
+
+    updateView: (viewId: string, viewRepo: ViewCreateRepo) => this.http.put<void>(`views/${viewId}`, viewRepo),
 
     deleteView: (viewId: string) => this.http.delete<void>(`views/${viewId}`),
 

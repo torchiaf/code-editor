@@ -23,6 +23,9 @@ type View struct {
 	Path           string `yaml:"path"`
 	Password       string `yaml:"password,omitempty"`
 	VScodeSettings string `yaml:"vscode-settings"`
+	Session        string `yaml:"session"`
+	RepoType       string `yaml:"repoType"`
+	Repo           string `yaml:"repo"`
 }
 
 type ExternalUserLogin struct {

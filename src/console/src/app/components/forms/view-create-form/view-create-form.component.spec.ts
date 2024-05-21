@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CreateViewDialogComponent } from './create-view-dialog.component';
+import { ViewCreateFormComponent } from './view-create-form.component';
 
-describe('CreateViewDialogComponent', () => {
-  let component: CreateViewDialogComponent;
-  let fixture: ComponentFixture<CreateViewDialogComponent>;
+describe('ViewCreateFormComponent', () => {
+  let component: ViewCreateFormComponent;
+  let fixture: ComponentFixture<ViewCreateFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CreateViewDialogComponent ]
+      declarations: [ ViewCreateFormComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CreateViewDialogComponent);
+    fixture = TestBed.createComponent(ViewCreateFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

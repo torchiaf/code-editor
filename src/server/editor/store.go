@@ -19,6 +19,9 @@ type StoreData struct {
 	Path           string
 	Password       string
 	VScodeSettings string
+	Session        string
+	RepoType       string
+	Repo           string
 }
 
 type store struct {
@@ -44,6 +47,9 @@ func initStore() map[string]StoreData {
 				Path:           string(secret.Data[fmt.Sprintf("%s_PATH", id)]),
 				Password:       string(secret.Data[fmt.Sprintf("%s_PASSWORD", id)]),
 				VScodeSettings: string(secret.Data[fmt.Sprintf("%s_VSCODE_SETTINGS", id)]),
+				Session:        string(secret.Data[fmt.Sprintf("%s_SESSION", id)]),
+				RepoType:       string(secret.Data[fmt.Sprintf("%s_REPO_TYPE", id)]),
+				Repo:           string(secret.Data[fmt.Sprintf("%s_REPO", id)]),
 			}
 
 			store[id] = dataStore
@@ -79,9 +85,44 @@ func (store store) Set(editor Editor, data map[string][]byte) {
 		Path:           string(data[editor.keys.path]),
 		Password:       string(data[editor.keys.password]),
 		VScodeSettings: string(data[editor.keys.vscodeSettings]),
+		Session:        string(data[editor.keys.session]),
+		RepoType:       string(data[editor.keys.repoType]),
+		Repo:           string(data[editor.keys.repo]),
 	}
 
 	_store[editor.Id] = dataStore
+}
+
+func (store store) Upd(editor Editor, session string, repoType string, repo string) {
+
+	data := store.Get(editor)
+	m := make(map[string][]byte)
+
+	m[editor.keys.status] = []byte(data.Status)
+	m[editor.keys.path] = []byte(data.Path)
+	m[editor.keys.password] = []byte(data.Password)
+	m[editor.keys.vscodeSettings] = []byte(data.VScodeSettings)
+
+	sessionValue := data.Session
+	if session != "" {
+		sessionValue = session
+	}
+
+	repoTypeValue := data.RepoType
+	if repoType != "" {
+		repoTypeValue = repoType
+	}
+
+	repoValue := data.Repo
+	if repo != "" {
+		repoValue = repo
+	}
+
+	m[editor.keys.session] = []byte(sessionValue)
+	m[editor.keys.repoType] = []byte(repoTypeValue)
+	m[editor.keys.repo] = []byte(repoValue)
+
+	store.Set(editor, m)
 }
 
 func (store store) Del(editor Editor) {
@@ -94,6 +135,9 @@ func (store store) Del(editor Editor) {
 	delete(secret.Data, editor.keys.path)
 	delete(secret.Data, editor.keys.password)
 	delete(secret.Data, editor.keys.vscodeSettings)
+	delete(secret.Data, editor.keys.session)
+	delete(secret.Data, editor.keys.repoType)
+	delete(secret.Data, editor.keys.repo)
 
 	_, err = k.Clientset.CoreV1().Secrets(editor.namespace).Update(ctx, secret, metav1.UpdateOptions{})
 	if err != nil {

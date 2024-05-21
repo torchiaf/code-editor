@@ -18,7 +18,9 @@
 }
 
 .mat-column-Delete {
-  padding-right: 10px !important;
+  padding-right: 0;
+  padding-left: 0;
+  // padding-right: 10px !important;
 }
 
 .mat-column-Status {
@@ -30,8 +32,17 @@
   }
 }
 
+.mat-column-GoTo {
+  padding-right: 0;
+  padding-left: 0;
+}
+
 .delete {
   background-color: #ea0e2f;
+  transform: scale(0.7);
+}
+
+.goto {
   transform: scale(0.7);
 }
 

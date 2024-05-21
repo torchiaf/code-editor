@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/pages/login/login.component';
 import { AuthGuard } from './guards/auth.guard';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { CookieModule } from 'ngx-cookie';
 
 export const Route = {
   home: '',
@@ -30,6 +31,7 @@ const routes: Routes = [
   declarations: [],
   imports: [
     CommonModule,
+    CookieModule.forRoot(),
     RouterModule.forRoot(routes)
   ],
   exports: [RouterModule]
