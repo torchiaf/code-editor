@@ -57,5 +57,6 @@
   "FIELD_VIEW_ADVANCED_ENABLED": "Repository",
   "FIELD_VIEW_ADVANCED_DISABLED": "Aggiungi Repository",
 
-  "DELETE_VIEW_CONFIRM_MSG": "Sei sicuro/a?"
+  "DELETE_VIEW_CONFIRM_MSG": "Sei sicuro/a?",
+  "GOTO_DISABLED": "Impossible accedere ai dati sessione"
 }

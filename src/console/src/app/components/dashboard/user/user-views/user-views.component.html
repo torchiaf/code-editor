@@ -31,8 +31,9 @@
           <td mat-cell *matCellDef="let element">
             <button
               class="goto"
+              [disabled]="element.Session?.length === 0"
               mat-mini-fab color="primary"
-              matTooltip="{{'VIEW_URL' | translate}}"
+              matTooltip="{{(element.Session?.length > 0 ? 'VIEW_URL' : 'GOTO_DISABLED') | translate}}"
               (click)="goToView(element)">
               <mat-icon>launch</mat-icon>
             </button>
