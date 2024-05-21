@@ -60,3 +60,7 @@ code-editor is an open source application to deploy [code-server](https://github
   The web-gui console is accessible here: https://localhost/code-editor/console .
   - Admin users can assign new Code Editor instances to the standard users.
   - Standard Users can use it to access to their code instances.
+
+  ![image](https://github.com/torchiaf/code-editor/assets/26394656/3b0a7911-e0e6-4706-8ba6-d8e4a384f9af)
+
+
