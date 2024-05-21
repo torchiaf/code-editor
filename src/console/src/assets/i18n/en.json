@@ -12,6 +12,7 @@
   "DELETE_TABLE_ROW": "Delete",
 
   "SAVE": "Save",
+  "CANCEL": "Cancel",
   "REJECT": "No",
   "CONFIRM": "Yes",
 
@@ -21,5 +22,33 @@
   "ERROR_LOGIN_MISSING_PASS": "Please provide a valid password",
 
   "ADMIN_CARD": "Admin Card",
-  "ROLE": "Role"
+  "ROLE": "Role",
+
+  "CODE-EDITOR": "Code Editor",
+  "USERS": "Users",
+  "COLUMN_ID": "Id",
+  "COLUMN_NAME": "Name",
+  "COLUMN_EMAIL": "Email",
+  "COLUMN_PHONE": "Phone",
+  "VIEW_CHECK": "Details",
+  "VIEW_ADD": "New",
+  "COLUMN_PATH": "Path",
+  "COLUMN_VSCODE_SETTINGS": "VSCodeSettings",
+  "VIEW_URL": "Open VSCode",
+  "DELETE": "Delete",
+  "VIEWS_EMPTY": "There are no enabled Views",
+  "CREATE_VIEW": "New",
+  "CREATE_VIEW_TITLE": "View Settings",
+  "FIELD_VIEW_EXTENSIONS": "Extensions",
+  "FIELD_VIEW_VSCODE_SETTINGS": "VSCodeSettings",
+  "FIELD_VIEW_VSCODE_PLACEHOLDER": "empty",
+  "FIELD_VIEW_GIT_NAME": "Name",
+  "FIELD_VIEW_GIT_PLACEHOLDER": "foo",
+  "FIELD_VIEW_GITHUB_TYPE": "Git Type",
+  "FIELD_VIEW_GITHUB_ACCOUNT": "Org",
+  "FIELD_VIEW_GITHUB_REPO": "Repository",
+  "FIELD_VIEW_GITHUB_BRANCH": "Branch",
+  "FIELD_VIEW_GIT_EMAIL": "Email",
+  "VIEW_COLLAPSE_BTN": "Collapse all",
+  "VIEW_TABLE_HEADER": "View list"
 }

@@ -1,6 +1,6 @@
 <div class="container" fxLayout="column">
-  <div fxLayout="row" fxLayoutAlign="center none">
-    <h1 mat-dialog-title>{{'CREATE_VIEW' | translate}}</h1>
+  <div fxLayout="row" fxLayoutAlign="start none">
+    <h4 mat-title>{{'CREATE_VIEW_TITLE' | translate}}</h4>
   </div>
   <form #viewForm="ngForm">
     <div fxLayout="row" fxLayoutAlign="center none" class="view-form">
@@ -55,8 +55,7 @@
         </p>
         <p class="form-btn" fxLayout="row" fxLayoutAlign="end end">
           <button
-            mat-raised-button
-            color="primary"
+            mat-stroked-button color="primary"
             class="cancel-btn"
             (click)="cancel()">
             <ng-container>{{'CANCEL' | translate}}</ng-container>

@@ -1,3 +1,9 @@
+H4 {
+  padding: 20px;
+  padding-bottom: 0;
+  color: rgba(0,0,0,.54);
+}
+
 .view-form {
   margin-top: 30px;
 }
@@ -18,4 +24,9 @@
 .form-btn {
   margin-left: auto;
   margin-right: 20px;
+}
+
+.mat-stroked-button {
+  background-color: transparent;
+  color: #0cbd0f;
 }

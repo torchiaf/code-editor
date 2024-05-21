@@ -12,6 +12,7 @@
   "DELETE_TABLE_ROW": "Cancella",
 
   "SAVE": "Salva",
+  "CANCEL": "Cancella",
   "REJECT": "No",
   "CONFIRM": "Si",
 
@@ -21,5 +22,33 @@
   "ERROR_LOGIN_MISSING_PASS": "Password non valida",
 
   "ADMIN_CARD": "Card Admin",
-  "ROLE": "Ruolo"
+  "ROLE": "Ruolo",
+
+  "CODE-EDITOR": "Code Editor",
+  "USERS": "Utenti",
+  "COLUMN_ID": "Id",
+  "COLUMN_NAME": "Nome",
+  "COLUMN_EMAIL": "Email",
+  "COLUMN_PHONE": "Telefono",
+  "VIEW_CHECK": "Dettaglio",
+  "VIEW_ADD": "Crea",
+  "COLUMN_PATH": "Path",
+  "COLUMN_VSCODE_SETTINGS": "VSCodeSettings",
+  "VIEW_URL": "Vai su VSCode",
+  "DELETE": "Cancella",
+  "VIEWS_EMPTY": "Non ci sono Views attive",
+  "CREATE_VIEW": "Crea",
+  "CREATE_VIEW_TITLE": "Impostazioni",
+  "FIELD_VIEW_EXTENSIONS": "Extensions",
+  "FIELD_VIEW_VSCODE_SETTINGS": "VSCodeSettings",
+  "FIELD_VIEW_VSCODE_PLACEHOLDER": "vuoto",
+  "FIELD_VIEW_GIT_NAME": "Nome",
+  "FIELD_VIEW_GIT_PLACEHOLDER": "pippo",
+  "FIELD_VIEW_GITHUB_TYPE": "Git Type",
+  "FIELD_VIEW_GITHUB_ACCOUNT": "Org",
+  "FIELD_VIEW_GITHUB_REPO": "Repository",
+  "FIELD_VIEW_GITHUB_BRANCH": "Branch",
+  "FIELD_VIEW_GIT_EMAIL": "Email",
+  "VIEW_COLLAPSE_BTN": "Espandi",
+  "VIEW_TABLE_HEADER": "View lista"
 }

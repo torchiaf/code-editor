@@ -74,6 +74,11 @@ export class ViewsComponent implements OnInit, OnDestroy {
 
         return {
           ...user,
+
+          // TODO hardcoded
+          Email: 'foo@gmail.com',
+          Phone: '1234',
+
           Enabled: userViews.length > 0,
           Views: new MatTableDataSource(userViews)
         };
@@ -169,6 +174,6 @@ export class ViewsComponent implements OnInit, OnDestroy {
 
     const url = `${environment.baseUrl}${element.Path}?${element.Repo}`;
 
-    window.open(url, "_blank");
+    window.open(url, '_blank');
   }
 }

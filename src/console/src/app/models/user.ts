@@ -8,4 +8,6 @@ export interface User {
   Id: string;
   Name?: string;
   username?: string;
+  Email?: string;
+  Phone?: string;
 }
