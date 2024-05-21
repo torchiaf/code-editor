@@ -39,6 +39,8 @@ import { DummyCardComponent } from './components/cards/dummy-card/dummy-card.com
 import { MatTabsModule } from '@angular/material/tabs';
 import { ViewCreateFormComponent } from './components/forms/view-create-form/view-create-form.component';
 import { CookieModule } from 'ngx-cookie';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 // Required during AOT compilation
 export function httpTranslateLoaderFactory(http: HttpClient) {
@@ -68,12 +70,14 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
     FormsModule,
     FlexLayoutModule,
     BrowserAnimationsModule,
+    MatExpansionModule,
     MatDialogModule,
     MatRadioModule,
     MatFormFieldModule,
     MatToolbarModule,
     MatInputModule,
     MatCardModule,
+    MatCheckboxModule,
     MatMenuModule,
     MatIconModule,
     MatButtonModule,

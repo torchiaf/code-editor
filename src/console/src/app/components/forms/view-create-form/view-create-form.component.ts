@@ -1,15 +1,17 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Extension, ViewCreate } from 'src/app/models/view';
 
 @Component({
   selector: 'app-view-create-form',
   templateUrl: './view-create-form.component.html',
-  styleUrls: ['./view-create-form.component.scss']
+  styleUrls: ['./view-create-form.component.scss'],
 })
 export class ViewCreateFormComponent {
 
   @Input() data!: any;
   @Output() done = new EventEmitter<boolean | ViewCreate>();
+
+  repositoryInfo = true;
 
   // TODO hardcoded
   extensions: Extension[] = [{
@@ -26,7 +28,7 @@ export class ViewCreateFormComponent {
   repositories: string[] = ['code-editor'];
   branches: string[] = ['develop', 'main'];
 
-  view: ViewCreate = {
+  view: any = {
     general: {
       git: {
         name: 'Foo Bar',
@@ -55,7 +57,13 @@ export class ViewCreateFormComponent {
     (this.view as any)['vscode-settings'] = JSON.parse(this.view.general.vscodeSettings || '{}');
     this.view.general.vscodeSettings = undefined;
 
-    this.view.repo.git.commit = this.view.repo.git.branch;
+    if (this.repositoryInfo) {
+      if (this.view.repo) {
+        this.view.repo.git.commit = this.view.repo.git.branch;
+      }
+    } else {
+      this.view.repo = undefined;
+    }
 
     this.done.emit(this.view);
   }

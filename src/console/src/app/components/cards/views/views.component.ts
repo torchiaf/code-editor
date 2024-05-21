@@ -77,7 +77,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
 
           // TODO hardcoded
           Email: 'foo@gmail.com',
-          Phone: '1234',
+          Phone: '123456789',
 
           Enabled: userViews.length > 0,
           Views: new MatTableDataSource(userViews)
@@ -136,7 +136,10 @@ export class ViewsComponent implements OnInit, OnDestroy {
 
         const created = await this.restClient.api.createView(row.Name || '', (res as ViewCreate).general);
 
-        await this.restClient.api.updateView(created.viewId || '', (res as ViewCreate).repo);
+        const repoInfo = (res as ViewCreate).repo;
+        if(repoInfo) {
+          await this.restClient.api.updateView(created.viewId || '', repoInfo);
+        }
 
         this.creating = null;
         this.tableRefresh$.next();

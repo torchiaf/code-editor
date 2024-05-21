@@ -7,6 +7,16 @@
       <div fxLayout="column" fxLayoutAlign="space-around start">
         <p fxLayout="row" fxLayoutAlign="space-around center">
           <mat-form-field>
+            <mat-label>{{'FIELD_VIEW_GIT_NAME' | translate}}</mat-label>
+            <input matInput placeholder="{{'FIELD_VIEW_GIT_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.git.name" name="name">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>{{'FIELD_VIEW_GIT_EMAIL' | translate}}</mat-label>
+            <input matInput placeholder="{{'FIELD_VIEW_GIT_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.git.email" name="email">
+          </mat-form-field>
+        </p>
+        <p fxLayout="row" fxLayoutAlign="space-around center">
+          <mat-form-field>
             <mat-label>{{'FIELD_VIEW_EXTENSIONS' | translate}}</mat-label>
             <mat-select [(ngModel)]="view.general.extensions" name="extension" multiple>
               <mat-option *ngFor="let ext of extensions" [value]="ext">{{ext.name}}</mat-option>
@@ -17,17 +27,10 @@
             <input matInput placeholder="{{'FIELD_VIEW_VSCODE_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.vscodeSettings" name="vscodeSettings">
           </mat-form-field>
         </p>
-        <p fxLayout="row" fxLayoutAlign="space-around center">
-          <mat-form-field>
-            <mat-label>{{'FIELD_VIEW_GIT_NAME' | translate}}</mat-label>
-            <input matInput placeholder="{{'FIELD_VIEW_GIT_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.git.name" name="name">
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>{{'FIELD_VIEW_GIT_EMAIL' | translate}}</mat-label>
-            <input matInput placeholder="{{'FIELD_VIEW_GIT_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.git.email" name="email">
-          </mat-form-field>
-        </p>
-        <p fxLayout="row" fxLayoutAlign="space-around center">
+
+        <mat-checkbox class="repository-info" name="repositoryInfo" [(ngModel)]="repositoryInfo">{{ (repositoryInfo ? 'FIELD_VIEW_ADVANCED_ENABLED' : 'FIELD_VIEW_ADVANCED_DISABLED') | translate}}</mat-checkbox>
+
+        <p *ngIf="repositoryInfo" fxLayout="row" fxLayoutAlign="space-around center">
           <mat-form-field>
             <mat-label>{{'FIELD_VIEW_GITHUB_TYPE' | translate}}</mat-label>
             <mat-select [(ngModel)]="view.repo.git.type" name="type">
@@ -53,6 +56,7 @@
             </mat-select>
           </mat-form-field>
         </p>
+
         <p class="form-btn" fxLayout="row" fxLayoutAlign="end end">
           <button
             mat-stroked-button color="primary"

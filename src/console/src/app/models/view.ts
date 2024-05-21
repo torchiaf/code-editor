@@ -36,6 +36,6 @@ export interface ViewCreateRepo {
 
 export interface ViewCreate {
   general: ViewCreateGeneral,
-  repo: ViewCreateRepo
+  repo?: ViewCreateRepo
 }
 
