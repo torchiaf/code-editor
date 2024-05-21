@@ -33,7 +33,7 @@ import { ConfirmDialogComponent } from './components/dialogs/confirm-dialog/conf
 import { ErrorHandlerInterceptor } from './services/error-handler.interceptor';
 import { ErrorDialogComponent } from './components/dialogs/error-dialog/error-dialog.component';
 import { ProfileDialogComponent } from './components/dialogs/profile-dialog/profile-dialog.component';
-import { ViewsComponent } from './components/cards/views/views.component';
+import { AdminViewsComponent } from './components/dashboard/admin/admin-views/admin-views.component';
 import { UserComponent } from './components/dashboard/user/user.component';
 import { DummyCardComponent } from './components/cards/dummy-card/dummy-card.component';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -58,7 +58,7 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
     ConfirmDialogComponent,
     ErrorDialogComponent,
     ProfileDialogComponent,
-    ViewsComponent,
+    AdminViewsComponent,
     UserComponent,
     ViewCreateFormComponent,
   ],

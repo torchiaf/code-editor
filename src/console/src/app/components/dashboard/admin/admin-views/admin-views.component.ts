@@ -17,9 +17,9 @@ import { CookieService } from 'ngx-cookie';
 type Row = UserDetails & { Enabled: boolean, Views: View[] | MatTableDataSource<View> };
 
 @Component({
-  selector: 'app-views',
-  templateUrl: './views.component.html',
-  styleUrls: ['./views.component.scss'],
+  selector: 'app-admin-views',
+  templateUrl: './admin-views.component.html',
+  styleUrls: ['./admin-views.component.scss'],
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({ height: '0px', minHeight: '0' })),
@@ -28,7 +28,7 @@ type Row = UserDetails & { Enabled: boolean, Views: View[] | MatTableDataSource<
     ]),
   ],
 })
-export class ViewsComponent implements OnInit, OnDestroy {
+export class AdminViewsComponent implements OnInit, OnDestroy {
 
   @ViewChild('outerSort', { static: true }) sort: MatSort | undefined;
   @ViewChildren('innerSort') innerSort: QueryList<MatSort> | undefined;
