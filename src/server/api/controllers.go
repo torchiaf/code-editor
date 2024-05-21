@@ -197,14 +197,16 @@ func (vw View) List(c *gin.Context) {
 
 	user, _ := authentication.GetUser(c)
 
+	var usersList []models.User
 	if !user.IsAdmin {
-		c.JSON(http.StatusForbidden, ginError("User unauthorized"))
-		return
+		usersList = []models.User{user}
+	} else {
+		usersList = users.Store.List()
 	}
 
 	list := []models.View{}
 
-	for _, user := range users.Store.List() {
+	for _, user := range usersList {
 		e := editor.New(c).ByUser(user)
 
 		store := e.Store()

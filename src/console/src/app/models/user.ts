@@ -7,6 +7,7 @@ export interface UserDetails extends User {
 export interface User {
   Id: string;
   Name?: string;
+  id?: string;
   username?: string;
   Email?: string;
   Phone?: string;

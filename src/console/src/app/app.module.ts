@@ -41,6 +41,7 @@ import { ViewCreateFormComponent } from './components/forms/view-create-form/vie
 import { CookieModule } from 'ngx-cookie';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { UserViewsComponent } from './components/dashboard/user/user-views/user-views.component';
 
 // Required during AOT compilation
 export function httpTranslateLoaderFactory(http: HttpClient) {
@@ -61,6 +62,7 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
     AdminViewsComponent,
     UserComponent,
     ViewCreateFormComponent,
+    UserViewsComponent,
   ],
   imports: [
     BrowserModule,
