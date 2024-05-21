@@ -1,5 +1,13 @@
 <h1 mat-dialog-title>{{data.message | translate}}</h1>
 <div mat-dialog-actions fxLayout="row" fxLayoutAlign="center none" fxLayoutGap="15px">
-  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{'CONFIRM' | translate}}</button>
-  <button mat-stroked-button color="primary" (click)="reject()">{{'REJECT' | translate}}</button>
+  <button mat-stroked-button color="primary"
+    (click)="reject()">{{'REJECT' | translate}}
+  </button>
+  <button mat-button
+    [mat-dialog-close]="true"
+    cdkFocusInitial
+    [class.confirm]="data.type === 'confirm'"
+    [class.delete]="data.type === 'delete'">
+    {{'CONFIRM' | translate}}
+  </button>
 </div>

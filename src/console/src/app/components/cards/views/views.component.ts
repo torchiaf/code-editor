@@ -134,11 +134,15 @@ export class ViewsComponent implements OnInit, OnDestroy {
       if (row) {
         this.goToViews();
 
-        const created = await this.restClient.api.createView(row.Name || '', (res as ViewCreate).general);
+        try {
+          const created = await this.restClient.api.createView(row.Name || '', (res as ViewCreate).general);
 
-        const repoInfo = (res as ViewCreate).repo;
-        if(repoInfo) {
-          await this.restClient.api.updateView(created.viewId || '', repoInfo);
+          const repoInfo = (res as ViewCreate).repo;
+          if(repoInfo) {
+            await this.restClient.api.updateView(created.viewId || '', repoInfo);
+          }    
+        } catch (error) {
+          this.creating = null;
         }
 
         this.creating = null;
@@ -153,7 +157,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '300px',
       height: '150px',
-      data: { message: 'DELETE_VIEW_CONFIRM_MSG' },
+      data: { message: 'DELETE_VIEW_CONFIRM_MSG', type: 'delete' },
     });
     const res = await lastValueFrom(dialogRef.afterClosed());
     if (res) {
