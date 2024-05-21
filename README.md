@@ -54,3 +54,9 @@ code-editor is an open source application to deploy [code-server](https://github
   ```
 
 - Go to https://localhost/code-editor/$path/?folder=$query-param and enjoy the power of VSCode in your web browser!
+
+### Console
+
+  The web-gui console is accessible here: https://localhost/code-editor/console .
+  - Admin users can assign new Code Editor instances to the standard users.
+  - Standard Users can use it to access to their code instances.

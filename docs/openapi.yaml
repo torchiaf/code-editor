@@ -175,12 +175,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ViewResponse'
-        '403':
-          description: User unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
     post:
       tags:
         - view
@@ -400,6 +394,9 @@ components:
                   - path
                   - password
                   - vscode-settings
+                  - session
+                  - repoType
+                  - repo
                 properties:
                   id:
                     type: string
@@ -413,6 +410,12 @@ components:
                     type: string
                   vscode-settings:
                     type: object
+                  session:
+                    type: string
+                  repoType:
+                    type: string
+                  repo:
+                    type: string
     ViewCreateResponse:
       allOf:
         - $ref: '#/components/schemas/MessageResponse'
