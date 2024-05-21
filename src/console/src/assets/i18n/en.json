@@ -50,5 +50,6 @@
   "FIELD_VIEW_GITHUB_BRANCH": "Branch",
   "FIELD_VIEW_GIT_EMAIL": "Email",
   "VIEW_COLLAPSE_BTN": "Collapse all",
-  "VIEW_TABLE_HEADER": "View list"
+  "VIEW_TABLE_HEADER": "View list",
+  "VIEW_SPINNER_TOOLTIP": "Creation in progress"
 }

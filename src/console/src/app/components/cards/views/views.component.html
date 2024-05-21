@@ -46,7 +46,9 @@
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let element">
             <div *ngIf="element.Id === creating"
-              #spinnerDiv class="spinner-container-creating">
+              #spinnerDiv
+              class="spinner-container-creating"
+              matTooltip="{{'VIEW_SPINNER_TOOLTIP' | translate}}">
               <mat-spinner [diameter]="25"></mat-spinner>
             </div>
             <mat-icon
