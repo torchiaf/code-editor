@@ -23,6 +23,7 @@ type View struct {
 	Path           string `yaml:"path"`
 	Password       string `yaml:"password,omitempty"`
 	VScodeSettings string `yaml:"vscode-settings"`
+	GitAuth        bool   `yaml:"gitAuth"`
 	Session        string `yaml:"session"`
 	RepoType       string `yaml:"repoType"`
 	Repo           string `yaml:"repo"`
@@ -66,4 +67,5 @@ type EnableConfig struct {
 	Git            GitConfig              `json:"git"`
 	Extensions     []Extension            `json:"extensions"`
 	VscodeSettings map[string]interface{} `json:"vscode-settings"`
+	SshKey         string                 `json:"sshKey"`
 }

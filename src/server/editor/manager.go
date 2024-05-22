@@ -169,6 +169,7 @@ type EditorConfigKeys struct {
 	path           string
 	password       string
 	vscodeSettings string
+	gitAuth        string
 	session        string
 	repoType       string
 	repo           string
@@ -198,6 +199,7 @@ func newEditor(ctx context.Context, id string) Editor {
 			path:           fmt.Sprintf("%s_PATH", id),
 			password:       fmt.Sprintf("%s_PASSWORD", id),
 			vscodeSettings: fmt.Sprintf("%s_VSCODE_SETTINGS", id),
+			gitAuth:        fmt.Sprintf("%s_GIT_AUTH", id),
 			session:        fmt.Sprintf("%s_SESSION", id),
 			repoType:       fmt.Sprintf("%s_REPO_TYPE", id),
 			repo:           fmt.Sprintf("%s_REPO", id),
@@ -299,11 +301,14 @@ func (editor Editor) configsCreate(enableConfig models.EnableConfig) {
 		panic(err)
 	}
 
+	sshKey, _ := utils.Base64Decode(enableConfig.SshKey)
+
 	data := map[string][]byte{
 		editor.keys.status:         []byte(Enabled),
 		editor.keys.path:           []byte(utils.RandomString(13)),
 		editor.keys.password:       []byte(utils.RandomString(20, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")),
 		editor.keys.vscodeSettings: vscodeSettings,
+		editor.keys.gitAuth:        []byte(sshKey),
 	}
 
 	Store.Set(editor, data)
@@ -322,6 +327,7 @@ func (editor Editor) serviceCreate() *v1.Service {
 	service.Labels[INSTANCE_LABEL] = editor.name
 	service.Spec.Selector["app.code-editor/path"] = editor.Store().Path
 
+	// TODO error handling
 	ret, _ := k.Clientset.CoreV1().Services(editor.namespace).Create(editor.ctx, service, metav1.CreateOptions{})
 
 	return ret
@@ -461,6 +467,15 @@ func (editor Editor) deploymentCreate(cfg models.EnableConfig) *corev1.Deploymen
 		}
 	}
 
+	// SSH Key configs
+	for i, volume := range deployment.Spec.Template.Spec.Volumes {
+		if volume.Name == "ssh" {
+			deployment.Spec.Template.Spec.Volumes[i].Secret.SecretName = c.Resources.ConfigName
+			deployment.Spec.Template.Spec.Volumes[i].Secret.Items[0].Key = editor.keys.gitAuth
+			break
+		}
+	}
+
 	initContainers := utils.ParseJsonFile[map[string]v1.Container]("assets/templates/containers.json")
 
 	// TODO should comes from API body
@@ -476,6 +491,7 @@ func (editor Editor) deploymentCreate(cfg models.EnableConfig) *corev1.Deploymen
 		deployment.Spec.Template.Spec.InitContainers = append(deployment.Spec.Template.Spec.InitContainers, ic)
 	}
 
+	// Extensions
 	if len(cfg.Extensions) > 0 {
 		ic := initContainers["extensions"]
 

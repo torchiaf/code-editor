@@ -219,6 +219,7 @@ func (vw View) List(c *gin.Context) {
 				Path:           fmt.Sprintf("/code-editor/%s/", store.Path),
 				Password:       "",
 				VScodeSettings: store.VScodeSettings,
+				GitAuth:        store.GitAuth != "",
 				Session:        store.Session,
 				RepoType:       store.RepoType,
 				Repo:           store.Repo,
@@ -324,8 +325,14 @@ func (vw View) Config(c *gin.Context) {
 
 	git := vwConfig.Git
 
+	gitProtocol := "https://github.com/"
+	if e.Store().GitAuth != "" {
+		gitProtocol = "git@github.com:"
+	}
+
 	gitCmd := fmt.Sprintf(
-		"cd /git && rm -rf * && git clone https://github.com/%s/%s -b %s && cd %s && git checkout %s",
+		"cd /git && rm -rf * && git clone %s%s/%s -b %s && cd %s && git checkout %s",
+		gitProtocol,
 		git.Org,
 		git.Repo,
 		git.Branch,

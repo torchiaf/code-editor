@@ -85,7 +85,10 @@ spec:
       - name: ssh
         secret:
           defaultMode: 420
-          secretName: secret-ssh-auth
+          secretName: "" # config name
+          items:
+          - key: "" # unique for user
+            path: "id_ed25519"
       - emptyDir: {}
         name: ssh-root
       - emptyDir: {}

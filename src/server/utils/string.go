@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"math/rand"
@@ -41,4 +42,12 @@ func ToString(v any) string {
 	}
 
 	return string(data)
+}
+
+func Base64Decode(str string) (string, bool) {
+	data, err := base64.StdEncoding.DecodeString(str)
+	if err != nil {
+		return "", false
+	}
+	return string(data), true
 }

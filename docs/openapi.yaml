@@ -394,6 +394,7 @@ components:
                   - path
                   - password
                   - vscode-settings
+                  - gitAuth
                   - session
                   - repoType
                   - repo
@@ -410,6 +411,8 @@ components:
                     type: string
                   vscode-settings:
                     type: object
+                  gitAuth:
+                    type: boolean
                   session:
                     type: string
                   repoType:
@@ -512,6 +515,9 @@ components:
         vscode-settings:
           type: object
           description: vs-code settings
+        sshKey:
+          type: string
+          description: SSH key for git authentication
     ViewConfigRequestBody:
       type: object
       required:

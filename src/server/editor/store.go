@@ -19,6 +19,7 @@ type StoreData struct {
 	Path           string
 	Password       string
 	VScodeSettings string
+	GitAuth        string
 	Session        string
 	RepoType       string
 	Repo           string
@@ -47,6 +48,7 @@ func initStore() map[string]StoreData {
 				Path:           string(secret.Data[fmt.Sprintf("%s_PATH", id)]),
 				Password:       string(secret.Data[fmt.Sprintf("%s_PASSWORD", id)]),
 				VScodeSettings: string(secret.Data[fmt.Sprintf("%s_VSCODE_SETTINGS", id)]),
+				GitAuth:        string(secret.Data[fmt.Sprintf("%s_GIT_AUTH", id)]),
 				Session:        string(secret.Data[fmt.Sprintf("%s_SESSION", id)]),
 				RepoType:       string(secret.Data[fmt.Sprintf("%s_REPO_TYPE", id)]),
 				Repo:           string(secret.Data[fmt.Sprintf("%s_REPO", id)]),
@@ -85,6 +87,7 @@ func (store store) Set(editor Editor, data map[string][]byte) {
 		Path:           string(data[editor.keys.path]),
 		Password:       string(data[editor.keys.password]),
 		VScodeSettings: string(data[editor.keys.vscodeSettings]),
+		GitAuth:        string(data[editor.keys.gitAuth]),
 		Session:        string(data[editor.keys.session]),
 		RepoType:       string(data[editor.keys.repoType]),
 		Repo:           string(data[editor.keys.repo]),
@@ -102,6 +105,7 @@ func (store store) Upd(editor Editor, session string, repoType string, repo stri
 	m[editor.keys.path] = []byte(data.Path)
 	m[editor.keys.password] = []byte(data.Password)
 	m[editor.keys.vscodeSettings] = []byte(data.VScodeSettings)
+	m[editor.keys.gitAuth] = []byte(data.GitAuth)
 
 	sessionValue := data.Session
 	if session != "" {
@@ -135,6 +139,7 @@ func (store store) Del(editor Editor) {
 	delete(secret.Data, editor.keys.path)
 	delete(secret.Data, editor.keys.password)
 	delete(secret.Data, editor.keys.vscodeSettings)
+	delete(secret.Data, editor.keys.gitAuth)
 	delete(secret.Data, editor.keys.session)
 	delete(secret.Data, editor.keys.repoType)
 	delete(secret.Data, editor.keys.repo)
