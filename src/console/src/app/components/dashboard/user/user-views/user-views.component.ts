@@ -33,10 +33,7 @@ export class UserViewsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.tableRefresh$.pipe(startWith(null)).subscribe(async () => {
-
       const views = await this.restClient.api.getViews();
-
-      console.log(this.authService.loggedUser)
 
       const rows: Row[] = views.filter((v) => v.UserId === this.authService.loggedUser?.Id).sort((a, b) => a.Id.localeCompare(b.Id));
 
@@ -56,7 +53,7 @@ export class UserViewsComponent implements OnInit, OnDestroy {
       storeUnencoded: true
     });
 
-    const url = `${environment.baseUrl}${element.Path}?${element.Repo}`;
+    const url = `${environment.protocol}://${window.location.hostname}${element.Path}?${element.Repo}`;
 
     window.open(url, '_blank');
   }

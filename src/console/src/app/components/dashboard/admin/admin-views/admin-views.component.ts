@@ -11,8 +11,8 @@ import { View, ViewCreate } from 'src/app/models/view';
 import { AuthService } from 'src/app/services/auth.service';
 import { RestClientService } from 'src/app/services/rest-client.service';
 import { FormControl } from '@angular/forms';
-import { environment } from 'src/environments/environment';
 import { CookieService } from 'ngx-cookie';
+import { environment } from 'src/environments/environment';
 
 type Row = UserDetails & { Enabled: boolean, Views: View[] | MatTableDataSource<View> };
 
@@ -140,7 +140,7 @@ export class AdminViewsComponent implements OnInit, OnDestroy {
           const repoInfo = (res as ViewCreate).repo;
           if(repoInfo) {
             await this.restClient.api.updateView(created.viewId || '', repoInfo);
-          }    
+          }
         } catch (error) {
           this.creating = null;
         }
@@ -179,7 +179,7 @@ export class AdminViewsComponent implements OnInit, OnDestroy {
       storeUnencoded: true
     });
 
-    const url = `${environment.baseUrl}${element.Path}?${element.Repo}`;
+    const url = `${environment.protocol}://${window.location.hostname}${element.Path}?${element.Repo}`;
 
     window.open(url, '_blank');
   }

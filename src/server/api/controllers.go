@@ -282,7 +282,7 @@ func (vw View) Create(c *gin.Context) {
 		return
 	}
 
-	time.Sleep(2000 * time.Millisecond)
+	time.Sleep(3000 * time.Millisecond)
 
 	session, err := e.Login(port, e.Store().Password)
 	if err != nil {
@@ -325,7 +325,7 @@ func (vw View) Config(c *gin.Context) {
 	git := vwConfig.Git
 
 	gitCmd := fmt.Sprintf(
-		"cd /git && rm -rf * && git clone git@github.com:%s/%s -b %s && cd %s && git checkout %s",
+		"cd /git && rm -rf * && git clone https://github.com/%s/%s -b %s && cd %s && git checkout %s",
 		git.Org,
 		git.Repo,
 		git.Branch,

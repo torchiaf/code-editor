@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Login } from '../models/login';
 import { UserDetails } from '../models/user';
-import { View, ViewCreate, ViewCreateGeneral, ViewCreateRepo } from '../models/view';
+import { View, ViewCreateGeneral, ViewCreateRepo } from '../models/view';
 
 interface HttpGetOptionParams {
   headers?: HttpHeaders | {
@@ -31,7 +31,7 @@ interface ResponseApi<T> {
 })
 export class RestClientService {
 
-  private readonly url = `${environment.restURL}/${environment.apiVersion}`;
+  private readonly url = `${environment.protocol}://${window.location.hostname}${environment.restPath}/${environment.apiVersion}`;
 
   // private headers: Headers;
 

@@ -32,6 +32,7 @@ type resources struct {
 
 type config struct {
 	IsDev          bool
+	HostDomain     string
 	Authentication authentication
 	App            app
 	Resources      resources
@@ -39,10 +40,8 @@ type config struct {
 
 func isDevEnv() bool {
 	env := os.Getenv("DEV_ENV")
-	if len(env) > 0 {
-		return true
-	}
-	return false
+
+	return len(env) > 0
 }
 
 func initConfig() config {
@@ -53,8 +52,9 @@ func initConfig() config {
 	}
 
 	c := config{
-		IsDev: isDevEnv(),
-		App:   app,
+		IsDev:      isDevEnv(),
+		App:        app,
+		HostDomain: os.Getenv("HOST_DOMAIN"),
 		Authentication: authentication{
 			IsExternal: os.Getenv("AUTH_TYPE") == EXTERNAL,
 			Url:        os.Getenv("AUTH_URL"),

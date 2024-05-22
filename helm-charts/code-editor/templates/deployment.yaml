@@ -17,6 +17,8 @@ spec:
       serviceAccountName: {{ .Release.Name }}-server
       containers:
       - env:
+        - name: HOST_DOMAIN
+          value: {{ .Values.domain }}
         - name: PORT
           value: {{ quote .Values.server.server.env.port }}
         - name: APP_NAME

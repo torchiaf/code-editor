@@ -348,11 +348,16 @@ func (editor Editor) ruleCreate() error {
 		e.FailOnError(err, "Failed to get Editor IngressRoute")
 	}
 
+	hostDomain := c.HostDomain
+	if c.IsDev {
+		hostDomain = "localhost"
+	}
+
 	routeUnstructured := &unstructured.Unstructured{
 		Object: map[string]interface{}{
 			"apiVersion": "traefik.containo.us/v1alpha1",
 			"kind":       "Rule",
-			"match":      fmt.Sprintf("Host(`localhost`) && PathPrefix(`/code-editor/%s/`)", editor.Store().Path),
+			"match":      fmt.Sprintf("Host(`%s`) && PathPrefix(`/code-editor/%s/`)", hostDomain, editor.Store().Path),
 			"middlewares": []interface{}{
 				map[string]interface{}{
 					"name": "strip-prefix",
