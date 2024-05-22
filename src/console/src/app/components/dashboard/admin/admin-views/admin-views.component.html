@@ -124,7 +124,7 @@
                     <td mat-cell *matCellDef="let element">
                       <button
                         *ngIf="deleting !== element.Id"
-                        [disabled]="deleting"
+                        [disabled]="deleting || creating"
                         mat-mini-fab color="primary"
                         class="delete"
                         matTooltip="{{'DELETE' | translate}}"
