@@ -33,7 +33,7 @@
   "COLUMN_PHONE": "Phone",
   "VIEW_CHECK": "Details",
   "VIEW_ADD": "New",
-  "COLUMN_PATH": "Path",
+  "COLUMN_PATH": "Repository",
   "COLUMN_VSCODE_SETTINGS": "VSCodeSettings",
   "VIEW_URL": "Open VSCode",
   "DELETE": "Delete",

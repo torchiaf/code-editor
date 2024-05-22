@@ -347,9 +347,10 @@ func (vw View) Config(c *gin.Context) {
 		return
 	}
 
+	repoInfo := fmt.Sprintf("https://github.com/%s/%s/%s", git.Org, git.Repo, git.Branch)
 	queryParam := fmt.Sprintf("folder=/git/%s", git.Repo)
 
-	editor.Store.Upd(e, "", git.Type, queryParam)
+	editor.Store.Upd(e, "", git.Type, repoInfo)
 
 	c.JSON(http.StatusOK, ginSuccess("Configurations saved", map[string]interface{}{
 		"query-param": queryParam,
