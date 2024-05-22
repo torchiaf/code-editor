@@ -21,6 +21,7 @@ type View struct {
 	UserId         string `yaml:"userId"`
 	Status         string `yaml:"status"`
 	Path           string `yaml:"path"`
+	Query          string `yaml:"query"`
 	Password       string `yaml:"password,omitempty"`
 	VScodeSettings string `yaml:"vscode-settings"`
 	GitAuth        bool   `yaml:"gitAuth"`

@@ -2,6 +2,7 @@ export interface View {
   Id: string;
   UserId?: string;
   Path: string;
+  Query: string;
   Status: string;
   VScodeSettings: string;
   GitAuth: boolean;

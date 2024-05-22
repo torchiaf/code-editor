@@ -392,6 +392,7 @@ components:
                   - userId
                   - status
                   - path
+                  - query
                   - password
                   - vscode-settings
                   - gitAuth
@@ -406,6 +407,8 @@ components:
                   status:
                     type: string
                   path:
+                    type: string
+                  query:
                     type: string
                   password:
                     type: string

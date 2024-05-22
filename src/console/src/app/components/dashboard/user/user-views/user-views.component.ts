@@ -53,7 +53,8 @@ export class UserViewsComponent implements OnInit, OnDestroy {
       storeUnencoded: true
     });
 
-    const url = `${environment.protocol}://${window.location.hostname}${element.Path}?${element.Repo}`;
+
+    const url = `${environment.protocol}://${window.location.hostname}${element.Path}?${element.Query}`;
 
     window.open(url, '_blank');
   }

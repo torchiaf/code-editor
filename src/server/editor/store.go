@@ -17,6 +17,7 @@ var ctx = context.Background()
 type StoreData struct {
 	Status         string
 	Path           string
+	Query          string
 	Password       string
 	VScodeSettings string
 	GitAuth        string
@@ -46,6 +47,7 @@ func initStore() map[string]StoreData {
 			dataStore := StoreData{
 				Status:         string(secret.Data[fmt.Sprintf("%s_STATUS", id)]),
 				Path:           string(secret.Data[fmt.Sprintf("%s_PATH", id)]),
+				Query:          string(secret.Data[fmt.Sprintf("%s_QUERY", id)]),
 				Password:       string(secret.Data[fmt.Sprintf("%s_PASSWORD", id)]),
 				VScodeSettings: string(secret.Data[fmt.Sprintf("%s_VSCODE_SETTINGS", id)]),
 				GitAuth:        string(secret.Data[fmt.Sprintf("%s_GIT_AUTH", id)]),
@@ -85,6 +87,7 @@ func (store store) Set(editor Editor, data map[string][]byte) {
 	dataStore := StoreData{
 		Status:         string(data[editor.keys.status]),
 		Path:           string(data[editor.keys.path]),
+		Query:          string(data[editor.keys.query]),
 		Password:       string(data[editor.keys.password]),
 		VScodeSettings: string(data[editor.keys.vscodeSettings]),
 		GitAuth:        string(data[editor.keys.gitAuth]),
@@ -96,7 +99,7 @@ func (store store) Set(editor Editor, data map[string][]byte) {
 	_store[editor.Id] = dataStore
 }
 
-func (store store) Upd(editor Editor, session string, repoType string, repo string) {
+func (store store) Upd(editor Editor, session string, repoType string, repo string, query string) {
 
 	data := store.Get(editor)
 	m := make(map[string][]byte)
@@ -122,9 +125,15 @@ func (store store) Upd(editor Editor, session string, repoType string, repo stri
 		repoValue = repo
 	}
 
+	queryValue := data.Query
+	if query != "" {
+		queryValue = query
+	}
+
 	m[editor.keys.session] = []byte(sessionValue)
 	m[editor.keys.repoType] = []byte(repoTypeValue)
 	m[editor.keys.repo] = []byte(repoValue)
+	m[editor.keys.query] = []byte(queryValue)
 
 	store.Set(editor, m)
 }
@@ -137,6 +146,7 @@ func (store store) Del(editor Editor) {
 
 	delete(secret.Data, editor.keys.status)
 	delete(secret.Data, editor.keys.path)
+	delete(secret.Data, editor.keys.query)
 	delete(secret.Data, editor.keys.password)
 	delete(secret.Data, editor.keys.vscodeSettings)
 	delete(secret.Data, editor.keys.gitAuth)

@@ -167,6 +167,7 @@ type EditorI interface {
 type EditorConfigKeys struct {
 	status         string
 	path           string
+	query          string
 	password       string
 	vscodeSettings string
 	gitAuth        string
@@ -197,6 +198,7 @@ func newEditor(ctx context.Context, id string) Editor {
 		keys: EditorConfigKeys{
 			status:         fmt.Sprintf("%s_STATUS", id),
 			path:           fmt.Sprintf("%s_PATH", id),
+			query:          fmt.Sprintf("%s_QUERY", id),
 			password:       fmt.Sprintf("%s_PASSWORD", id),
 			vscodeSettings: fmt.Sprintf("%s_VSCODE_SETTINGS", id),
 			gitAuth:        fmt.Sprintf("%s_GIT_AUTH", id),
@@ -275,7 +277,7 @@ func (editor Editor) Login(port int32, password string) (models.CodeServerSessio
 	session.Name = cookie.Name
 	session.Value = cookie.Value
 
-	Store.Upd(editor, session.Value, "", "")
+	Store.Upd(editor, session.Value, "", "", "")
 
 	return session, nil
 }

@@ -217,6 +217,7 @@ func (vw View) List(c *gin.Context) {
 				UserId:         user.Id,
 				Status:         store.Status,
 				Path:           fmt.Sprintf("/code-editor/%s/", store.Path),
+				Query:          store.Query,
 				Password:       "",
 				VScodeSettings: store.VScodeSettings,
 				GitAuth:        store.GitAuth != "",
@@ -350,7 +351,7 @@ func (vw View) Config(c *gin.Context) {
 	repoInfo := fmt.Sprintf("https://github.com/%s/%s/%s", git.Org, git.Repo, git.Branch)
 	queryParam := fmt.Sprintf("folder=/git/%s", git.Repo)
 
-	editor.Store.Upd(e, "", git.Type, repoInfo)
+	editor.Store.Upd(e, "", git.Type, repoInfo, queryParam)
 
 	c.JSON(http.StatusOK, ginSuccess("Configurations saved", map[string]interface{}{
 		"query-param": queryParam,
