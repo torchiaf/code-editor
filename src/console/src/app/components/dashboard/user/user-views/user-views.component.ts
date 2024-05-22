@@ -21,7 +21,7 @@ export class UserViewsComponent implements OnInit, OnDestroy {
 
   readonly tableRefresh$: Subject<void> = new Subject<void>();
 
-  displayedColumns = ['Id', 'Path', 'VScodeSettings', 'GoTo'];
+  displayedColumns = ['Id', 'Path', 'VScodeSettings', 'GitAuth', 'GoTo'];
   dataSource: MatTableDataSource<Row> = new MatTableDataSource();
 
   constructor(

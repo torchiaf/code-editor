@@ -28,6 +28,14 @@
           </mat-form-field>
         </p>
 
+        <p fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="15px" class="ssh-file-upload">
+          <vo-mat-fileUpload
+            [chooseLabel]="'FIELD_VIEW_SSH_KEY' | translate"
+            [disabled]="view.general.sshKey !== ''"
+            (done)="sshFileUpload($event)">
+          </vo-mat-fileUpload>
+        </p>
+
         <mat-checkbox class="repository-info" name="repositoryInfo" [(ngModel)]="repositoryInfo">{{ (repositoryInfo ? 'FIELD_VIEW_ADVANCED_ENABLED' : 'FIELD_VIEW_ADVANCED_DISABLED') | translate}}</mat-checkbox>
 
         <p *ngIf="repositoryInfo" fxLayout="row" fxLayoutAlign="space-around center">
@@ -55,14 +63,6 @@
               <mat-option *ngFor="let branch of branches" [value]="branch">{{branch}}</mat-option>
             </mat-select>
           </mat-form-field>
-        </p>
-
-        <p *ngIf="repositoryInfo" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="15px" class="ssh-file-upload">
-          <vo-mat-fileUpload
-            [chooseLabel]="'FIELD_VIEW_SSH_KEY' | translate"
-            [disabled]="sshKey !== null"
-            (done)="sshFileUpload($event)">
-          </vo-mat-fileUpload>
         </p>
 
         <p class="form-btn" fxLayout="row" fxLayoutAlign="end end">

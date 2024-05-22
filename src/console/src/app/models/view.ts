@@ -4,6 +4,7 @@ export interface View {
   Path: string;
   Status: string;
   VScodeSettings: string;
+  GitAuth: boolean;
   Session: string;
   RepoType: string;
   Repo: string;

@@ -91,6 +91,12 @@
                     <td mat-cell *matCellDef="let element"> {{element.Path}}?{{element.Repo}} </td>
                   </ng-container>
 
+                  <!-- Auth Column -->
+                  <ng-container matColumnDef="GitAuth">
+                    <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_GIT_AUTH' | translate }} </th>
+                    <td mat-cell *matCellDef="let element"> {{element.GitAuth ? 'Enabled' : 'None'}} </td>
+                  </ng-container>
+
                   <!-- VScodeSettings Column -->
                   <ng-container matColumnDef="VScodeSettings">
                     <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_VSCODE_SETTINGS' | translate }} </th>

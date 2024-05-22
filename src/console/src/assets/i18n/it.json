@@ -60,5 +60,6 @@
   "DELETE_VIEW_CONFIRM_MSG": "Sei sicuro/a?",
   "GOTO_DISABLED": "Impossible accedere ai dati sessione",
 
-  "FIELD_VIEW_SSH_KEY": "Git Chiave SSH"
+  "FIELD_VIEW_SSH_KEY": "Git Chiave SSH",
+  "COLUMN_GIT_AUTH": "Git Auth"
 }

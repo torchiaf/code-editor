@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Extension, ViewCreate } from 'src/app/models/view';
 
 @Component({
@@ -12,8 +12,6 @@ export class ViewCreateFormComponent {
   @Output() done = new EventEmitter<boolean | ViewCreate>();
 
   repositoryInfo = true;
-
-  sshKey: string | null = null;
 
   // TODO hardcoded
   extensions: Extension[] = [{
@@ -38,6 +36,7 @@ export class ViewCreateFormComponent {
       },
       extensions: [],
       vscodeSettings: '',
+      sshKey: '',
     },
     repo: {
       git: {
@@ -48,20 +47,20 @@ export class ViewCreateFormComponent {
         commit: ''
       }
     }
-  }
-
-  constructor() {}
+  };
 
   public async sshFileUpload(files: File[]) {
+    let sshKey = '';
+
     if (files?.length > 0) {
       const text = await files[0]?.text();
 
-      this.sshKey = btoa(text);
+      sshKey = btoa(text);
     } else {
-      this.sshKey = null;
+      sshKey = '';
     }
 
-    console.log(this.sshKey);
+    this.view.general.sshKey = sshKey;
   }
 
   public save() {
