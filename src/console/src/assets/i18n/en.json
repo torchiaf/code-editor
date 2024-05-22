@@ -58,5 +58,7 @@
   "FIELD_VIEW_ADVANCED_DISABLED": "Add Repository",
 
   "DELETE_VIEW_CONFIRM_MSG": "Are you sure?",
-  "GOTO_DISABLED": "Unable to get View Session"
+  "GOTO_DISABLED": "Unable to get View Session",
+
+  "FIELD_VIEW_SSH_KEY": "Git SSH Key"
 }

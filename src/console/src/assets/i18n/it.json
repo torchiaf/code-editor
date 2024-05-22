@@ -58,5 +58,7 @@
   "FIELD_VIEW_ADVANCED_DISABLED": "Aggiungi Repository",
 
   "DELETE_VIEW_CONFIRM_MSG": "Sei sicuro/a?",
-  "GOTO_DISABLED": "Impossible accedere ai dati sessione"
+  "GOTO_DISABLED": "Impossible accedere ai dati sessione",
+
+  "FIELD_VIEW_SSH_KEY": "Git Chiave SSH"
 }

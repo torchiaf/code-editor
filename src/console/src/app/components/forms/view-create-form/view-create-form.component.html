@@ -57,6 +57,14 @@
           </mat-form-field>
         </p>
 
+        <p *ngIf="repositoryInfo" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="15px" class="ssh-file-upload">
+          <vo-mat-fileUpload
+            [chooseLabel]="'FIELD_VIEW_SSH_KEY' | translate"
+            [disabled]="sshKey !== null"
+            (done)="sshFileUpload($event)">
+          </vo-mat-fileUpload>
+        </p>
+
         <p class="form-btn" fxLayout="row" fxLayoutAlign="end end">
           <button
             mat-stroked-button color="primary"

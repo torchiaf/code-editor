@@ -13,6 +13,8 @@ export class ViewCreateFormComponent {
 
   repositoryInfo = true;
 
+  sshKey: string | null = null;
+
   // TODO hardcoded
   extensions: Extension[] = [{
     id: 'hoovercj.vscode-power-mode',
@@ -48,11 +50,21 @@ export class ViewCreateFormComponent {
     }
   }
 
-  constructor(
-  ) {
+  constructor() {}
+
+  public async sshFileUpload(files: File[]) {
+    if (files?.length > 0) {
+      const text = await files[0]?.text();
+
+      this.sshKey = btoa(text);
+    } else {
+      this.sshKey = null;
+    }
+
+    console.log(this.sshKey);
   }
 
-  save() {
+  public save() {
     // TODO fix model
     (this.view as any)['vscode-settings'] = JSON.parse(this.view.general.vscodeSettings || '{}');
     this.view.general.vscodeSettings = undefined;
@@ -68,7 +80,7 @@ export class ViewCreateFormComponent {
     this.done.emit(this.view);
   }
 
-  cancel() {
+  public cancel() {
     this.done.emit(false);
   }
 

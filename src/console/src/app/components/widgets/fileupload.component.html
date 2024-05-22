@@ -1,0 +1,26 @@
+<div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="15px">
+  <button mat-raised-button
+    color="primary"
+    [disabled]="disabled"
+    (click)="onClick($event)">
+    <mat-icon>add</mat-icon>
+    {{chooseLabel}}
+  </button>
+  <input #fileUpload
+    type="file"
+    class="input_fileupload--hidden"
+    (input)="onInput($event)"
+    (change)="onFileSelected($event)"
+    [(ngModel)]="inputFileName"
+    [accept]="accept">
+  <div *ngFor="let f of files" fxLayout="row" fxLayoutAlign="center center">
+    <span>{{f.name}}</span>
+    <button
+      mat-icon-button
+      color="primary"
+      [attr.title]="deleteButtonLabel?deleteButtonLabel:null"
+      (click)="removeFile($event,f)">
+      <mat-icon>{{deleteButtonIcon}}</mat-icon>
+    </button>
+  </div>
+</div>
