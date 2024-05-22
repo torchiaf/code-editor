@@ -109,7 +109,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"user1\",\n    \"password\": \"password1\"\n}",
+					"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password1234\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -166,7 +166,7 @@
 					},
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTU5OTI2ODgsInVzZXJuYW1lIjoiYWRtaW4ifQ.AjsZkc5zaJO0EW6oYeuMzMsbS6re-j29OIWAxy_nncM",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTY1MDMyNDMsImlkIjoibG9jYWwtMDAwMCIsInJvbGUiOiJBZG1pbiIsInVzZXJuYW1lIjoiYWRtaW4ifQ.LwwBowSibaSejv4mMJ7lvSMw6rwp3CO_ZEQMDqmje-s",
 						"type": "text"
 					}
 				],
@@ -274,13 +274,13 @@
 				"header": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTU5OTI2ODgsInVzZXJuYW1lIjoiYWRtaW4ifQ.AjsZkc5zaJO0EW6oYeuMzMsbS6re-j29OIWAxy_nncM",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTY1MDMyNDMsImlkIjoibG9jYWwtMDAwMCIsInJvbGUiOiJBZG1pbiIsInVzZXJuYW1lIjoiYWRtaW4ifQ.LwwBowSibaSejv4mMJ7lvSMw6rwp3CO_ZEQMDqmje-s",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"git\": {\n        \"name\": \"Francesco Torchia\",\n        \"email\": \"torchia.francesco@gmail.com\"\n    },\n    \"extensions\": [\n        {\n            \"id\": \"hoovercj.vscode-power-mode\",\n            \"settings\": {\n                \"powermode.enabled\": true\n            }\n        }\n        \n    ],\n    \"vscode-settings\": {}\n}",
+					"raw": "{\n    \"git\": {\n        \"name\": \"Francesco Torchia\",\n        \"email\": \"torchia.francesco@gmail.com\"\n    },\n    \"extensions\": [\n        {\n            \"id\": \"hoovercj.vscode-power-mode\",\n            \"settings\": {\n                \"powermode.enabled\": true\n            }\n        }\n        \n    ],\n    \"vscode-settings\": {},\n    \"sshKey\": \"\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -324,7 +324,7 @@
 				"header": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTU5OTI2ODgsInVzZXJuYW1lIjoiYWRtaW4ifQ.AjsZkc5zaJO0EW6oYeuMzMsbS6re-j29OIWAxy_nncM",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTYyMDA3MzksInVzZXJuYW1lIjoidXNlcjEifQ.AETrkqUxGlgNFcK8mdylYn9lDS6w2tMryo4xw1ELLn4",
 						"type": "text"
 					}
 				],
@@ -338,7 +338,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost/code-editor/api/v1/views/code-editor-local-0002",
+					"raw": "https://localhost/code-editor/api/v1/views/code-editor-local-0001",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -348,7 +348,7 @@
 						"api",
 						"v1",
 						"views",
-						"code-editor-local-0002"
+						"code-editor-local-0001"
 					]
 				}
 			},
@@ -433,7 +433,7 @@
 					},
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTU5OTI2ODgsInVzZXJuYW1lIjoiYWRtaW4ifQ.AjsZkc5zaJO0EW6oYeuMzMsbS6re-j29OIWAxy_nncM",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTY0OTQ4NjIsImlkIjoibG9jYWwtMDAwMCIsInJvbGUiOiJBZG1pbiIsInVzZXJuYW1lIjoiYWRtaW4ifQ.tbbKFRfP2i5fu2STCEGZ_piuSajOOiK9VaY-dKXqmQw",
 						"type": "text"
 					}
 				],
@@ -447,7 +447,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost/code-editor/api/v1/users",
+					"raw": "https://localhost/code-editor/api/v1/views",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -456,7 +456,7 @@
 						"code-editor",
 						"api",
 						"v1",
-						"users"
+						"views"
 					]
 				}
 			},
@@ -502,7 +502,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"token\": \"your_application_token\",\n    \"password\": \"pippo\"\n}",
+					"raw": "{\n    \"token\": \"tokenexample\",\n    \"password\": \"pippo\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
