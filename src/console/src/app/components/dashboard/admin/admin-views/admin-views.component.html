@@ -128,7 +128,7 @@
                         class="goto"
                         [disabled]="deleting || element.Session?.length === 0"
                         mat-mini-fab color="primary"
-                        matTooltip="{{(element.Session?.length > 0 ? 'COPY_TO_CLIP' : 'GOTO_DISABLED') | translate}}"
+                        matTooltip="{{(element.Session?.length > 0 ? getUrl(element) : 'GOTO_DISABLED') | translate}}"
                         [cdkCopyToClipboard]="getUrl(element)">
                         <mat-icon>content_copy</mat-icon>
                       </button>

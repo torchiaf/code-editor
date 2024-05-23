@@ -8,14 +8,14 @@
             class="goto"
             [disabled]="data.Session.length === 0"
             mat-mini-fab color="primary"
-            matTooltip="{{(data.Session.length > 0 ? 'VIEW_URL' : 'GOTO_DISABLED') | translate}}"
+            matTooltip="{{(data.Session.length > 0 ? getUrl(data) : 'GOTO_DISABLED') | translate}}"
             (click)="goToView(data)">
             <mat-icon>launch</mat-icon>
           </button>
         </div>
         <div class="view-row" fxLayout="column" fxLayoutAlign="space-around center" fxLayoutGap="15px">
           <mat-label class="view-label">{{'COLUMN_PATH' | translate}}</mat-label>
-          <mat-label>{{ data.Repo }}</mat-label>
+          <mat-label>{{ data.Repo || 'none'}}</mat-label>
         </div>
         <div class="view-row" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
           <mat-label class="view-label">{{'COLUMN_GIT_AUTH' | translate}}</mat-label>

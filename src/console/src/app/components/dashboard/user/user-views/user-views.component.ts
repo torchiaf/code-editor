@@ -46,6 +46,12 @@ export class UserViewsComponent implements OnInit, OnDestroy {
     this.cardRefresh$.complete();
   }
 
+  public getUrl(element: View) {
+    const url = `${environment.protocol}://${window.location.hostname}${element.Path}?${element.Query}`;
+
+    return url;
+  }
+
   public goToView(element: View) {
     this.cookieService.get('code-server-session');
     this.cookieService.put('code-server-session', element.Session, {
@@ -54,10 +60,7 @@ export class UserViewsComponent implements OnInit, OnDestroy {
       storeUnencoded: true
     });
 
-
-    const url = `${environment.protocol}://${window.location.hostname}${element.Path}?${element.Query}`;
-
-    window.open(url, '_blank');
+    window.open(this.getUrl(element), '_blank');
   }
 
   public goToCreateView() {
