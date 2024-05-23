@@ -126,11 +126,18 @@ tr.element-row:not(.expanded-row):active {
 
 .inner-table {
   width: 100%;
-  padding: 30px;
+  padding: 0 0 25px 0;
 }
 
 .inner-table-header {
+  margin-bottom: 5px;
+  font-size: 20px;
   color: rgba(0,0,0,.54);
+}
+
+.inner-table-container {
+  box-shadow: 2px 2px #ace0c7;
+  border: 0.5px solid #30ba78
 }
 
 .inner-table mat-form-field {

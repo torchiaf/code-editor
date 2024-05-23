@@ -80,7 +80,9 @@ export class RestClientService {
 
     getView: (viewId: string) => this.codeEditorApi.get<View>(`views/${viewId}`),
 
-    createView: (username: string, viewGeneral: ViewCreateGeneral) => this.codeEditorApi.post<{ viewId: string }>(`views?username=${username}`, viewGeneral),
+    adminCreateView: (username: string, viewGeneral: ViewCreateGeneral) => this.codeEditorApi.post<{ viewId: string }>(`views?username=${username}`, viewGeneral),
+
+    userCreateView: (viewGeneral: ViewCreateGeneral) => this.codeEditorApi.post<{ viewId: string }>('views', viewGeneral),
 
     updateView: (viewId: string, viewRepo: ViewCreateRepo) => this.codeEditorApi.put<void>(`views/${viewId}`, viewRepo),
 

@@ -1,60 +1,101 @@
 <mat-tab-group [selectedIndex]="selectedTab.value">
   <mat-tab label="{{'VIEWS' | translate}}">
-    <mat-card>
-      <table *ngIf="dataSource?.data?.length; else emptyTable"
-        mat-table
-        [dataSource]="dataSource"
-        [dataSource]="dataSource"
-        class="mat-elevation-z8 courses">
+    <div class="empty-container" fxLayout="column" fxLayoutAlign="space-between center" fxLayoutGap="15px">
+      <mat-card>
+        <table *ngIf="dataSource?.data?.length; else emptyTable"
+          mat-table
+          [dataSource]="dataSource"
+          [dataSource]="dataSource"
+          class="mat-elevation-z8 courses">
 
-        <!-- Id Column -->
-        <ng-container matColumnDef="Id">
-          <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_ID' | translate }} </th>
-          <td mat-cell *matCellDef="let element"> {{element.Id}} </td>
-        </ng-container>
+          <!-- Id Column -->
+          <ng-container matColumnDef="Id">
+            <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_ID' | translate }} </th>
+            <td mat-cell *matCellDef="let element"> {{element.Id}} </td>
+          </ng-container>
 
-        <!-- Path Column -->
-        <ng-container matColumnDef="Path">
-          <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_PATH' | translate }} </th>
-          <td mat-cell *matCellDef="let element"> {{element.Repo}} </td>
-        </ng-container>
+          <!-- Path Column -->
+          <ng-container matColumnDef="Path">
+            <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_PATH' | translate }} </th>
+            <td mat-cell *matCellDef="let element"> {{element.Repo || 'None'}} </td>
+          </ng-container>
 
-        <!-- VScodeSettings Column -->
-        <ng-container matColumnDef="VScodeSettings">
-          <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_VSCODE_SETTINGS' | translate }} </th>
-          <td mat-cell *matCellDef="let element"> {{element.VScodeSettings}} </td>
-        </ng-container>
+          <!-- VScodeSettings Column -->
+          <ng-container matColumnDef="VScodeSettings">
+            <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_VSCODE_SETTINGS' | translate }} </th>
+            <td mat-cell *matCellDef="let element"> {{element.VScodeSettings}} </td>
+          </ng-container>
 
-        <!-- Auth Column -->
-        <ng-container matColumnDef="GitAuth">
-          <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_GIT_AUTH' | translate }} </th>
-          <td mat-cell *matCellDef="let element"> {{element.GitAuth ? 'Enabled' : 'None'}} </td>
-        </ng-container>
+          <!-- Auth Column -->
+          <ng-container matColumnDef="GitAuth">
+            <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_GIT_AUTH' | translate }} </th>
+            <td mat-cell *matCellDef="let element"> {{element.GitAuth ? 'Enabled' : 'None'}} </td>
+          </ng-container>
 
-        <!-- GoTo Column -->
-        <ng-container matColumnDef="GoTo">
-          <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let element" matTooltip="{{(element.Session?.length > 0 ? '' : 'GOTO_DISABLED') | translate}}">
-            <button
-              class="goto"
-              [disabled]="element.Session?.length === 0"
-              mat-mini-fab color="primary"
-              matTooltip="{{(element.Session?.length > 0 ? 'VIEW_URL' : 'GOTO_DISABLED') | translate}}"
-              (click)="goToView(element)">
-              <mat-icon>launch</mat-icon>
-            </button>
-          </td>
-        </ng-container>
+          <!-- Delete Column -->
+          <ng-container matColumnDef="Delete">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element">
+              <button
+                *ngIf="!deleting"
+                [disabled]="deleting || creating"
+                mat-mini-fab color="primary"
+                class="delete"
+                matTooltip="{{'DELETE' | translate}}"
+                (click)="deleteView(element)">
+                <mat-icon>delete_forever</mat-icon>
+              </button>
+              <div
+                *ngIf="deleting"
+                class="spinner-container">
+                <mat-spinner diameter="24"></mat-spinner>
+              </div>
+            </td>
+          </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-    </mat-card>
+          <!-- GoTo Column -->
+          <ng-container matColumnDef="GoTo">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element" matTooltip="{{(element.Session?.length > 0 ? '' : 'GOTO_DISABLED') | translate}}">
+              <button
+                class="goto"
+                [disabled]="element.Session?.length === 0"
+                mat-mini-fab color="primary"
+                matTooltip="{{(element.Session?.length > 0 ? 'VIEW_URL' : 'GOTO_DISABLED') | translate}}"
+                (click)="goToView(element)">
+                <mat-icon>launch</mat-icon>
+              </button>
+            </td>
+          </ng-container>
 
-    <ng-template #emptyTable>
-      <span class="empty-table-message">
-        {{'VIEWS_EMPTY' | translate}}
-      </span>
-    </ng-template>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <ng-template #emptyTable>
+          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="15px">
+            <span class="empty-table-message">
+              {{ (creating ? 'VIEW_SPINNER_TOOLTIP' : 'VIEWS_EMPTY') | translate}}
+            </span>
+            <div *ngIf="creating"
+              #spinnerDiv
+              class="spinner-container-creating"
+              matTooltip="{{'VIEW_SPINNER_TOOLTIP' | translate}}">
+              <mat-spinner [diameter]="25"></mat-spinner>
+            </div>
+          </div>
+        </ng-template>
+      </mat-card>
+      <button
+        *ngIf="!dataSource?.data?.length && !creating"
+        mat-raised-button
+        color="primary"
+        (click)="goToCreateView()">
+        <ng-container>{{'CREATE' | translate}}</ng-container>
+      </button>
+    </div>
+  </mat-tab>
+  <mat-tab *ngIf="!dataSource?.data?.length && createView" label="{{'CREATE_VIEW' | translate}}">
+    <app-view-create-form (done)="createViewDone($event)"></app-view-create-form>
   </mat-tab>
 </mat-tab-group>

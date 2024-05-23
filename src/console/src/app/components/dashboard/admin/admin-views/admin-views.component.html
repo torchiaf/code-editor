@@ -75,9 +75,9 @@
         <ng-container matColumnDef="expandedDetail">
           <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
             <div class="element-detail" *ngIf="element.Views?.data.length" [@detailExpand]="expandedElements[element.Id] ? 'expanded' : 'collapsed'">
-              <div class="inner-table mat-elevation-z8" *ngIf="expandedElements[element.Id]">
+              <div class="inner-table mat-elevation-z8" *ngIf="expandedElements[element.Id]" fxLayout="column" fxLayoutAlign="start start">
                 <mat-label class="inner-table-header">{{'VIEW_TABLE_HEADER' | translate}}</mat-label>
-                <table #innerTables mat-table [dataSource]="element.Views">
+                <table #innerTables mat-table class="inner-table-container" [dataSource]="element.Views">
 
                   <!-- Id Column -->
                   <ng-container matColumnDef="Id">
@@ -88,7 +88,7 @@
                   <!-- Path Column -->
                   <ng-container matColumnDef="Path">
                     <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_PATH' | translate }} </th>
-                    <td mat-cell *matCellDef="let element"> {{element.Repo}} </td>
+                    <td mat-cell *matCellDef="let element"> {{element.Repo || 'None'}} </td>
                   </ng-container>
 
                   <!-- Auth Column -->
@@ -179,10 +179,7 @@
     </ng-template>
   </mat-tab>
   <mat-tab *ngIf="createView" label="{{'CREATE_VIEW' | translate}}">
-    <app-view-create-form
-      [data]="createViewData"
-      (done)="createViewDone($event)"
-    >
-  </app-view-create-form>
+    <app-view-create-form (done)="createViewDone($event)">
+    </app-view-create-form>
   </mat-tab>
 </mat-tab-group>

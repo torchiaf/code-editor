@@ -124,16 +124,54 @@ tr.element-row:not(.expanded-row):active {
   opacity: 0.5;
 }
 
-.inner-table {
-  width: 100%;
-  padding: 30px;
-}
-
-.inner-table-header {
+H4 {
+  padding: 20px;
+  padding-bottom: 0;
   color: rgba(0,0,0,.54);
 }
 
-.inner-table mat-form-field {
-  margin-top: 15px;
-  width: 100%;
+.view-form {
+  margin-top: 30px;
+}
+
+.mat-stroked-button {
+  background: none;
+  color: #30ba78;
+}
+
+.mat-form-field {
+  height: 20px;
+}
+
+.cancel-btn {
+  margin-right: 10px;
+}
+
+.form-btn {
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: 20px;
+}
+
+.mat-stroked-button {
+  background-color: transparent;
+  color: #0cbd0f;
+}
+
+.repository-info {
+  margin-left: 16px;
+  margin-top: 40px;
+}
+
+.mat-ripple-element {
+  background-color: #30ba78 !important;
+}
+
+.empty-container {
+  padding: 20px;
+}
+
+.empty-table-message {
+  margin-top: 5px;
+  text-align: center;
 }

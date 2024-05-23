@@ -135,7 +135,7 @@ export class AdminViewsComponent implements OnInit, OnDestroy {
         this.goToViews();
 
         try {
-          const created = await this.restClient.api.createView(row.Name || '', (res as ViewCreate).general);
+          const created = await this.restClient.api.adminCreateView(row.Name || '', (res as ViewCreate).general);
 
           const repoInfo = (res as ViewCreate).repo;
           if(repoInfo) {

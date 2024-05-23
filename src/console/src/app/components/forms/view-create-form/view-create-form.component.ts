@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { BehaviorSubject, catchError, combineLatest, debounceTime, from, map, switchMap } from 'rxjs';
+import { BehaviorSubject, Subject, catchError, combineLatest, debounceTime, from, map, switchMap, takeUntil } from 'rxjs';
 import { Extension, ViewCreate } from 'src/app/models/view';
 import { RestClientService } from 'src/app/services/rest-client.service';
 
@@ -13,6 +13,8 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
   @Input() data!: any;
   @Output() done = new EventEmitter<boolean | ViewCreate>();
 
+  readonly destroyed$ = new Subject<boolean>();
+
   readonly accountChange$ = new BehaviorSubject<string | null>('torchiaf');
 
   readonly repositoryChange$ = new BehaviorSubject<string | null>(null);
@@ -25,7 +27,9 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
         return [];
       }),
       map((repos: any[]) => repos.map((r) => r.name))
-    )));
+    )),
+    takeUntil(this.destroyed$)
+    );
 
   readonly branches$ = combineLatest([
     this.accountChange$,
@@ -37,7 +41,8 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
         this.cleanOnBranchError();
         return [];
       }),
-      map((branches: any[]) => branches.map((r) => r.name)))));
+      map((branches: any[]) => branches.map((r) => r.name)))),
+      takeUntil(this.destroyed$));
 
   repositoryInfo = true;
 
@@ -95,6 +100,7 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.accountChange$.complete();
     this.repositoryChange$.complete();
+    this.destroyed$.next(true);
   }
 
   private cleanOnRepoError() {

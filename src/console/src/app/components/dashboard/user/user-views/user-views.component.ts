@@ -1,12 +1,14 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
 import { FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
-import { Subject, startWith } from 'rxjs';
-import { View } from 'src/app/models/view';
+import { Subject, lastValueFrom, startWith } from 'rxjs';
+import { View, ViewCreate } from 'src/app/models/view';
 import { AuthService } from 'src/app/services/auth.service';
 import { RestClientService } from 'src/app/services/rest-client.service';
 import { environment } from 'src/environments/environment';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from 'src/app/components/dialogs/confirm-dialog/confirm-dialog.component';
 
 type Row = View;
 
@@ -18,14 +20,18 @@ type Row = View;
 export class UserViewsComponent implements OnInit, OnDestroy {
 
   selectedTab = new FormControl(0);
+  createView = false;
 
   readonly tableRefresh$: Subject<void> = new Subject<void>();
 
-  displayedColumns = ['Id', 'Path', 'VScodeSettings', 'GitAuth', 'GoTo'];
+  displayedColumns = ['Id', 'Path', 'VScodeSettings', 'GitAuth', 'Delete', 'GoTo'];
   dataSource: MatTableDataSource<Row> = new MatTableDataSource();
 
+  creating = false;
+  deleting = false;
+
   constructor(
-    private cd: ChangeDetectorRef,
+    public dialog: MatDialog,
     private restClient: RestClientService,
     public authService: AuthService,
     private cookieService: CookieService,
@@ -57,6 +63,59 @@ export class UserViewsComponent implements OnInit, OnDestroy {
     const url = `${environment.protocol}://${window.location.hostname}${element.Path}?${element.Query}`;
 
     window.open(url, '_blank');
+  }
+
+  public goToCreateView() {
+    this.createView = true;
+
+    this.selectedTab.setValue(1);
+  }
+
+  public goToViews() {
+    this.createView = false;
+
+    this.selectedTab.setValue(0);
+  }
+
+  public async deleteView(view: Row) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '300px',
+      height: '150px',
+      data: { message: 'DELETE_VIEW_CONFIRM_MSG', type: 'delete' },
+    });
+    const res = await lastValueFrom(dialogRef.afterClosed());
+    if (res) {
+      this.deleting = true;
+
+      await this.restClient.api.deleteView(view.Id);
+
+      this.deleting = false;
+
+      this.tableRefresh$.next();
+    }
+  }
+
+  public async createViewDone(res: boolean | ViewCreate) {
+    if (res) {
+      this.creating = true;
+      this.goToViews();
+
+      try {
+        const created = await this.restClient.api.userCreateView((res as ViewCreate).general);
+
+        const repoInfo = (res as ViewCreate).repo;
+        if(repoInfo) {
+          await this.restClient.api.updateView(created.viewId || '', repoInfo);
+        }
+      } catch (error) {
+        this.creating = false;
+      }
+
+      this.creating = false;
+      this.tableRefresh$.next();
+    }
+
+    this.goToViews();
   }
 
 }
