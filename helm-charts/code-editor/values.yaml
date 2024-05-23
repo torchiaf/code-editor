@@ -222,7 +222,7 @@ server:
         tokenExpiration: 24
     image:
       repository: ghcr.io/torchiaf/code-editor/server
-      tag: v0.1.0
+      tag: v0.1.1
       pullPolicy: Always
   ports:
   - port: 8082
@@ -239,7 +239,7 @@ console:
   type: ClusterIP
   image:
     repository: ghcr.io/torchiaf/code-editor/console
-    tag: v0.1.0
+    tag: v0.1.1
     pullPolicy: Always
   env:
     baseHref: "/code-editor/console/"
