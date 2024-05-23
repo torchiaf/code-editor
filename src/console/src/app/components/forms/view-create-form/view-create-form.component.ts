@@ -20,7 +20,10 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
   readonly repositories$ = this.accountChange$.pipe(
     debounceTime(600),
     switchMap((account) => from(this.restClient.api.getRepos(account || '')).pipe(
-      catchError(() => []),
+      catchError(() => {
+        this.cleanOnRepoError();
+        return [];
+      }),
       map((repos: any[]) => repos.map((r) => r.name))
     )));
 
@@ -30,7 +33,10 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
   ]).pipe(
     debounceTime(600),
     switchMap(([account, repo]) => from(this.restClient.api.getBranches(account || '', repo || 'code-editor')).pipe(
-      catchError(() => []),
+      catchError(() => {
+        this.cleanOnBranchError();
+        return [];
+      }),
       map((branches: any[]) => branches.map((r) => r.name)))));
 
   repositoryInfo = true;
@@ -89,6 +95,18 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.accountChange$.complete();
     this.repositoryChange$.complete();
+  }
+
+  private cleanOnRepoError() {
+    this.repositories = [];
+    this.branches = [];
+    this.view.repo.git.repo = null;
+    this.view.repo.git.branch = null;
+  }
+
+  private cleanOnBranchError() {
+    this.branches = [];
+    this.view.repo.git.branch = null;
   }
 
   public async sshFileUpload(files: File[]) {
