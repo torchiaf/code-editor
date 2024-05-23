@@ -36,7 +36,10 @@
           </vo-mat-fileUpload>
         </p>
 
-        <mat-checkbox class="repository-info" name="repositoryInfo" [(ngModel)]="repositoryInfo">{{ (repositoryInfo ? 'FIELD_VIEW_ADVANCED_ENABLED' : 'FIELD_VIEW_ADVANCED_DISABLED') | translate}}</mat-checkbox>
+        <mat-checkbox color="primary" class="repository-info" name="repositoryInfo"
+          [(ngModel)]="repositoryInfo">
+          {{ (repositoryInfo ? 'FIELD_VIEW_ADVANCED_ENABLED' : 'FIELD_VIEW_ADVANCED_DISABLED') | translate}}
+        </mat-checkbox>
 
         <p *ngIf="repositoryInfo" fxLayout="row" fxLayoutAlign="space-around center">
           <mat-form-field>
@@ -47,13 +50,14 @@
           </mat-form-field>
           <mat-form-field>
             <mat-label>{{'FIELD_VIEW_GITHUB_ACCOUNT' | translate}}</mat-label>
-            <mat-select [(ngModel)]="view.repo.git.org" name="account">
-              <mat-option *ngFor="let acc of accounts" [value]="acc">{{acc}}</mat-option>
-            </mat-select>
+            <input matInput placeholder="{{'FIELD_VIEW_ACCOUNT_PLACEHOLDER' | translate}}" name="account"
+              [(ngModel)]="view.repo.git.org"
+              (input)="accountChange$.next(view.repo.git.org)">
           </mat-form-field>
           <mat-form-field>
             <mat-label>{{'FIELD_VIEW_GITHUB_REPO' | translate}}</mat-label>
-            <mat-select [(ngModel)]="view.repo.git.repo" name="repo">
+            <mat-select [(ngModel)]="view.repo.git.repo" name="repo"
+              (selectionChange)="repositoryChange$.next(view.repo.git.repo)">
               <mat-option *ngFor="let repo of repositories" [value]="repo">{{repo}}</mat-option>
             </mat-select>
           </mat-form-field>
@@ -65,20 +69,23 @@
           </mat-form-field>
         </p>
 
-        <p class="form-btn" fxLayout="row" fxLayoutAlign="end end">
+        <div class="form-btn" fxLayout="row" fxLayoutAlign="end end">
           <button
             mat-stroked-button color="primary"
             class="cancel-btn"
             (click)="cancel()">
             <ng-container>{{'CANCEL' | translate}}</ng-container>
           </button>
-          <button
-            mat-raised-button
-            color="primary"
-            (click)="save()">
-            <ng-container>{{'SAVE' | translate}}</ng-container>
-          </button>
-        </p>
+          <div matTooltip="{{ (validateRepositoryInfo() ? '' : 'VIEW_CREATE_VALIDATE') | translate}}">
+            <button
+              mat-raised-button
+              color="primary"
+              [disabled]="!validateRepositoryInfo()"
+              (click)="save()">
+              <ng-container>{{'SAVE' | translate}}</ng-container>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </form>

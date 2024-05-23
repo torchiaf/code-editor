@@ -44,9 +44,10 @@
   "FIELD_VIEW_VSCODE_SETTINGS": "VSCodeSettings",
   "FIELD_VIEW_VSCODE_PLACEHOLDER": "empty",
   "FIELD_VIEW_GIT_NAME": "Name",
+  "FIELD_VIEW_ACCOUNT_PLACEHOLDER": "Account",
   "FIELD_VIEW_GIT_PLACEHOLDER": "foo",
   "FIELD_VIEW_GITHUB_TYPE": "Git Type",
-  "FIELD_VIEW_GITHUB_ACCOUNT": "Org",
+  "FIELD_VIEW_GITHUB_ACCOUNT": "Account",
   "FIELD_VIEW_GITHUB_REPO": "Repository",
   "FIELD_VIEW_GITHUB_BRANCH": "Branch",
   "FIELD_VIEW_GIT_EMAIL": "Email",
@@ -63,5 +64,6 @@
   "FIELD_VIEW_SSH_KEY": "Git SSH Key",
   "COLUMN_GIT_AUTH": "Git Authentication",
 
-  "COPY_TO_CLIP": "Copy Url"
+  "COPY_TO_CLIP": "Copy Url",
+  "VIEW_CREATE_VALIDATE": "Git Repository info incomplete"
 }

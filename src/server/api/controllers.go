@@ -319,8 +319,8 @@ func (vw View) Config(c *gin.Context) {
 	}
 
 	var vwConfig models.ViewConfig
-	if err := c.ShouldBindJSON(&vwConfig); err != nil {
-		c.JSON(http.StatusBadRequest, ginError("Missing configs"))
+	if err := c.ShouldBindJSON(&vwConfig); err != nil || vwConfig.Git.Org == "" || vwConfig.Git.Repo == "" || vwConfig.Git.Branch == "" {
+		c.JSON(http.StatusBadRequest, ginError("Missing Git configs"))
 		return
 	}
 

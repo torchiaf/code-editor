@@ -1,17 +1,43 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { BehaviorSubject, catchError, combineLatest, debounceTime, from, map, switchMap } from 'rxjs';
 import { Extension, ViewCreate } from 'src/app/models/view';
+import { RestClientService } from 'src/app/services/rest-client.service';
 
 @Component({
   selector: 'app-view-create-form',
   templateUrl: './view-create-form.component.html',
   styleUrls: ['./view-create-form.component.scss'],
 })
-export class ViewCreateFormComponent {
+export class ViewCreateFormComponent implements OnInit, OnDestroy {
 
   @Input() data!: any;
   @Output() done = new EventEmitter<boolean | ViewCreate>();
 
+  readonly accountChange$ = new BehaviorSubject<string | null>('torchiaf');
+
+  readonly repositoryChange$ = new BehaviorSubject<string | null>(null);
+
+  readonly repositories$ = this.accountChange$.pipe(
+    debounceTime(600),
+    switchMap((account) => from(this.restClient.api.getRepos(account || '')).pipe(
+      catchError(() => []),
+      map((repos: any[]) => repos.map((r) => r.name))
+    )));
+
+  readonly branches$ = combineLatest([
+    this.accountChange$,
+    this.repositoryChange$
+  ]).pipe(
+    debounceTime(600),
+    switchMap(([account, repo]) => from(this.restClient.api.getBranches(account || '', repo || 'code-editor')).pipe(
+      catchError(() => []),
+      map((branches: any[]) => branches.map((r) => r.name)))));
+
   repositoryInfo = true;
+
+  types: string[] = ['gitHub'];
+  repositories: any[] = [];
+  branches: string[] = [];
 
   // TODO hardcoded
   extensions: Extension[] = [{
@@ -21,12 +47,6 @@ export class ViewCreateFormComponent {
     },
     name: 'Power Mode',
   }];
-
-  // TODO hardcoded
-  types: string[] = ['gitHub'];
-  accounts: string[] = ['torchiaf'];
-  repositories: string[] = ['code-editor'];
-  branches: string[] = ['develop', 'main'];
 
   view: any = {
     general: {
@@ -42,12 +62,34 @@ export class ViewCreateFormComponent {
       git: {
         type: 'gitHub',
         org:'torchiaf',
-        repo: 'code-editor',
-        branch: 'main',
+        repo: '',
+        branch: '',
         commit: ''
       }
     }
   };
+
+  constructor(
+    private restClient: RestClientService,
+  ) {
+  }
+
+  async ngOnInit() {
+    this.repositories$.subscribe((repos) => {
+      this.repositories = repos;
+      this.view.repo.git.repo = null;
+      this.view.repo.git.branch = null;
+    });
+    this.branches$.subscribe((branches) => {
+      this.branches = branches;
+      this.view.repo.git.branch = null;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.accountChange$.complete();
+    this.repositoryChange$.complete();
+  }
 
   public async sshFileUpload(files: File[]) {
     let sshKey = '';
@@ -61,6 +103,15 @@ export class ViewCreateFormComponent {
     }
 
     this.view.general.sshKey = sshKey;
+  }
+
+  public validateRepositoryInfo(): boolean {
+    return !this.repositoryInfo || !!(
+      this.view?.repo?.git?.type &&
+      this.view?.repo?.git?.org &&
+      this.view?.repo?.git?.repo &&
+      this.view?.repo?.git?.branch
+    );
   }
 
   public save() {

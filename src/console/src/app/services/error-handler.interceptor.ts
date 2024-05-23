@@ -20,6 +20,19 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    if (request.url.includes('//api.github.com/')) {
+      return next.handle(request).pipe(
+        tap({
+          error: (err) => {
+            if (err.status === 403) {
+              return this.errorHandlerService.httpResponseError$.next('GitHub API rate limit exceeded' as any);
+            }
+            return null;
+          },
+        })
+      );
+    }
+
     return next.handle(request).pipe(
       tap({
         error: (err) => this.errorHandlerService.httpResponseError$.next(err),

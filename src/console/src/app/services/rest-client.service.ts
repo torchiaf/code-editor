@@ -31,30 +31,29 @@ interface ResponseApi<T> {
 })
 export class RestClientService {
 
-  private readonly url = `${environment.protocol}://${window.location.hostname}${environment.restPath}/${environment.apiVersion}`;
-
-  // private headers: Headers;
-
-  private http = {
+  private http = (url: string, callback = <Z>({ data }: { data: Z }) => data) => ({
     get: <T>(
       path: string,
-      options?: HttpGetOptionParams
-    ) => lastValueFrom(this.httpClient.get<ResponseApi<T>>(`${this.url}/${path}`, options).pipe(map(({ data }) => data))),
+      options?: HttpGetOptionParams,
+    ) => lastValueFrom(this.httpClient.get<ResponseApi<T>>(`${url}/${path}`, options).pipe(map(callback))),
     post: <T>(
       path: string,
       body: any | null,
       options?: HttpGetOptionParams
-    ) => lastValueFrom(this.httpClient.post<ResponseApi<T>>(`${this.url}/${path}`, body, options).pipe(map(({ data }) => data))),
+    ) => lastValueFrom(this.httpClient.post<ResponseApi<T>>(`${url}/${path}`, body, options).pipe(map(callback))),
     put: <T>(
       path: string,
       body: any | null,
       options?: HttpGetOptionParams
-    ) => lastValueFrom(this.httpClient.put<ResponseApi<T>>(`${this.url}/${path}`, body, options).pipe(map(({ data }) => data))),
+    ) => lastValueFrom(this.httpClient.put<ResponseApi<T>>(`${url}/${path}`, body, options).pipe(map(callback))),
     delete: <T>(
       path: string,
       options?: HttpGetOptionParams
-    ) => lastValueFrom(this.httpClient.delete<ResponseApi<T>>(`${this.url}/${path}`, options).pipe(map(({ data }) => data))),
-  } as const;
+    ) => lastValueFrom(this.httpClient.delete<ResponseApi<T>>(`${url}/${path}`, options).pipe(map(callback))),
+  });
+
+  private codeEditorApi = this.http(`${environment.protocol}://${window.location.hostname}${environment.restPath}/${environment.apiVersion}`);
+  private gitHubApi = this.http('https://api.github.com', (x: any) => x);
 
   constructor(
     private httpClient: HttpClient,
@@ -63,29 +62,35 @@ export class RestClientService {
 
   public api = {
 
-    ping: () => this.http.get<UserDetails>('ping'),
+    ping: () => this.codeEditorApi.get<UserDetails>('ping'),
 
     /** Login */
 
-    login: (username: string, password: string) => this.http.post<Login>('login', { username, password }),
+    login: (username: string, password: string) => this.codeEditorApi.post<Login>('login', { username, password }),
 
     /** User */
 
-    getUsers: () => this.http.get<Array<UserDetails>>('users'),
+    getUsers: () => this.codeEditorApi.get<Array<UserDetails>>('users'),
 
-    getUser: (name: string) => this.http.get<UserDetails>(`user/${name}`),
+    getUser: (name: string) => this.codeEditorApi.get<UserDetails>(`user/${name}`),
 
     /** Views */
 
-    getViews: () => this.http.get<Array<View>>('views'),
+    getViews: () => this.codeEditorApi.get<Array<View>>('views'),
 
-    getView: (viewId: string) => this.http.get<View>(`views/${viewId}`),
+    getView: (viewId: string) => this.codeEditorApi.get<View>(`views/${viewId}`),
 
-    createView: (username: string, viewGeneral: ViewCreateGeneral) => this.http.post<{ viewId: string }>(`views?username=${username}`, viewGeneral),
+    createView: (username: string, viewGeneral: ViewCreateGeneral) => this.codeEditorApi.post<{ viewId: string }>(`views?username=${username}`, viewGeneral),
 
-    updateView: (viewId: string, viewRepo: ViewCreateRepo) => this.http.put<void>(`views/${viewId}`, viewRepo),
+    updateView: (viewId: string, viewRepo: ViewCreateRepo) => this.codeEditorApi.put<void>(`views/${viewId}`, viewRepo),
 
-    deleteView: (viewId: string) => this.http.delete<void>(`views/${viewId}`),
+    deleteView: (viewId: string) => this.codeEditorApi.delete<void>(`views/${viewId}`),
+
+    /** GitHub */
+
+    getRepos: (org: string) => this.gitHubApi.get<any[]>(`users/${org}/repos`),
+
+    getBranches: (org: string, repo: string) => this.gitHubApi.get<any[]>(`repos/${org}/${repo}/branches`),
 
   } as const;
 

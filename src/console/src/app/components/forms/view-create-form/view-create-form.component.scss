@@ -22,6 +22,7 @@ H4 {
 }
 
 .form-btn {
+  margin-top: 20px;
   margin-left: auto;
   margin-right: 20px;
 }
@@ -42,4 +43,13 @@ H4 {
 
 .ssh-file-upload {
   padding: 15px 0 0 15px;
+}
+
+::ng-deep .mat-checkbox-checked .mat-checkbox-background,
+.mat-checkbox-indeterminate .mat-checkbox-background {
+  background-color: #30ba78 !important;
+}
+
+::ng-deep .mat-checkbox:not(.mat-checkbox-disabled) .mat-checkbox-ripple .mat-ripple-element {
+  background-color: #30ba78 !important;
 }
