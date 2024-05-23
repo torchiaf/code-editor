@@ -39,15 +39,15 @@
 
 .delete {
   background-color: #ea0e2f;
-  transform: scale(0.7);
+
 }
 
-.goto {
-  transform: scale(0.7);
+.git-auth-off {
+  color: #ea0e2f
 }
 
-.mat-icon-button {
-  transform: scale(0.7);
+.git-auth-on {
+  color: #30ba78;
 }
 
 .mat-button-disabled {
@@ -171,7 +171,29 @@ H4 {
   padding: 20px;
 }
 
-.empty-table-message {
+.empty-card-message {
   margin-top: 5px;
   text-align: center;
+}
+
+.view-row {
+  padding: 30px;
+}
+
+.mat-elevation-z8 {
+  background: #fff;
+}
+
+.view-title {
+  color: #30ba78;
+  font-size: 30px;
+}
+
+.view-label {
+  font-size: 20px;
+  color: rgba(0,0,0,.54);
+}
+
+::ng-deep .mat-tab-label .mat-tab-label-content {
+  font-size: x-large;
 }

@@ -1,5 +1,14 @@
 @import './theme/custom-theme';
 
+/* Add application styles & imports to this file! */
+@import '~codemirror/lib/codemirror.css';
+@import '~codemirror/addon/lint/lint.css';
+@import '~codemirror/addon/hint/show-hint.css';
+
+.CodeMirror {
+  height: 30px;
+}
+
 .mat-toolbar.mat-primary,
 .mat-raised-button.mat-primary,
 .mat-button-base,

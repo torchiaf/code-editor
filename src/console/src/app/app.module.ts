@@ -44,6 +44,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { UserViewsComponent } from './components/dashboard/user/user-views/user-views.component';
 import { FileuploadComponent } from './components/widgets/fileupload.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import { CodemirrorModule } from '@ctrl/ngx-codemirror';
+import { CodeMirrorComponent } from './components/code-mirror/code-mirror.component';
 
 // Required during AOT compilation
 export function httpTranslateLoaderFactory(http: HttpClient) {
@@ -65,7 +67,8 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
     UserComponent,
     ViewCreateFormComponent,
     UserViewsComponent,
-    FileuploadComponent
+    FileuploadComponent,
+    CodeMirrorComponent,
   ],
   imports: [
     BrowserModule,
@@ -94,6 +97,7 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
     MatTabsModule,
     MatTooltipModule,
     ClipboardModule,
+    CodemirrorModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

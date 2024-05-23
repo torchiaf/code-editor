@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
 import { FormControl } from '@angular/forms';
-import { MatTableDataSource } from '@angular/material/table';
 import { Subject, lastValueFrom, startWith } from 'rxjs';
 import { View, ViewCreate } from 'src/app/models/view';
 import { AuthService } from 'src/app/services/auth.service';
@@ -9,8 +8,6 @@ import { RestClientService } from 'src/app/services/rest-client.service';
 import { environment } from 'src/environments/environment';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/components/dialogs/confirm-dialog/confirm-dialog.component';
-
-type Row = View;
 
 @Component({
   selector: 'app-user-views',
@@ -22,10 +19,8 @@ export class UserViewsComponent implements OnInit, OnDestroy {
   selectedTab = new FormControl(0);
   createView = false;
 
-  readonly tableRefresh$: Subject<void> = new Subject<void>();
-
-  displayedColumns = ['Id', 'Path', 'VScodeSettings', 'GitAuth', 'Delete', 'GoTo'];
-  dataSource: MatTableDataSource<Row> = new MatTableDataSource();
+  readonly cardRefresh$: Subject<void> = new Subject<void>();
+  data: View | null = null;
 
   creating = false;
   deleting = false;
@@ -38,17 +33,17 @@ export class UserViewsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.tableRefresh$.pipe(startWith(null)).subscribe(async () => {
+    this.cardRefresh$.pipe(startWith(null)).subscribe(async () => {
       const views = await this.restClient.api.getViews();
 
-      const rows: Row[] = views.filter((v) => v.UserId === this.authService.loggedUser?.Id).sort((a, b) => a.Id.localeCompare(b.Id));
+      const rows: View[] = views.filter((v) => v.UserId === this.authService.loggedUser?.Id);
 
-      this.dataSource = new MatTableDataSource(rows);
+      this.data = rows[0];
     });
   }
 
   ngOnDestroy(): void {
-    this.tableRefresh$.complete();
+    this.cardRefresh$.complete();
   }
 
   public goToView(element: View) {
@@ -77,21 +72,21 @@ export class UserViewsComponent implements OnInit, OnDestroy {
     this.selectedTab.setValue(0);
   }
 
-  public async deleteView(view: Row) {
+  public async deleteView() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '300px',
       height: '150px',
       data: { message: 'DELETE_VIEW_CONFIRM_MSG', type: 'delete' },
     });
     const res = await lastValueFrom(dialogRef.afterClosed());
-    if (res) {
+    if (res && this.data) {
       this.deleting = true;
 
-      await this.restClient.api.deleteView(view.Id);
+      await this.restClient.api.deleteView(this.data.Id);
 
       this.deleting = false;
 
-      this.tableRefresh$.next();
+      this.cardRefresh$.next();
     }
   }
 
@@ -112,7 +107,7 @@ export class UserViewsComponent implements OnInit, OnDestroy {
       }
 
       this.creating = false;
-      this.tableRefresh$.next();
+      this.cardRefresh$.next();
     }
 
     this.goToViews();

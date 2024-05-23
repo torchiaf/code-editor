@@ -77,7 +77,7 @@
             <div class="element-detail" *ngIf="element.Views?.data.length" [@detailExpand]="expandedElements[element.Id] ? 'expanded' : 'collapsed'">
               <div class="inner-table mat-elevation-z8" *ngIf="expandedElements[element.Id]" fxLayout="column" fxLayoutAlign="start start">
                 <mat-label class="inner-table-header">{{'VIEW_TABLE_HEADER' | translate}}</mat-label>
-                <table #innerTables mat-table class="inner-table-container" [dataSource]="element.Views">
+                <table #innerTables mat-table class="inner-table-container" class="mat-elevation-z8" [dataSource]="element.Views">
 
                   <!-- Id Column -->
                   <ng-container matColumnDef="Id">
@@ -100,7 +100,9 @@
                   <!-- VScodeSettings Column -->
                   <ng-container matColumnDef="VScodeSettings">
                     <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_VSCODE_SETTINGS' | translate }} </th>
-                    <td mat-cell *matCellDef="let element"> {{element.VScodeSettings}} </td>
+                    <td mat-cell *matCellDef="let element">
+                      <app-code-mirror [data]="element.VScodeSettings"></app-code-mirror>
+                    </td>
                   </ng-container>
 
                   <!-- GoTo Column -->

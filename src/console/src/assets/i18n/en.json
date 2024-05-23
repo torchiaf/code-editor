@@ -34,14 +34,14 @@
   "VIEW_CHECK": "Details",
   "VIEW_ADD": "New",
   "COLUMN_PATH": "Repository",
-  "COLUMN_VSCODE_SETTINGS": "VSCodeSettings",
+  "COLUMN_VSCODE_SETTINGS": "VSCode Settings",
   "VIEW_URL": "Open VSCode",
   "DELETE": "Delete",
   "VIEWS_EMPTY": "There are no enabled Views",
   "CREATE_VIEW": "New",
   "CREATE_VIEW_TITLE": "View Settings",
   "FIELD_VIEW_EXTENSIONS": "Extensions",
-  "FIELD_VIEW_VSCODE_SETTINGS": "VSCodeSettings",
+  "FIELD_VIEW_VSCODE_SETTINGS": "VSCode Settings",
   "FIELD_VIEW_VSCODE_PLACEHOLDER": "empty",
   "FIELD_VIEW_GIT_NAME": "Name",
   "FIELD_VIEW_ACCOUNT_PLACEHOLDER": "Account",
@@ -62,7 +62,7 @@
   "GOTO_DISABLED": "Unable to get View Session",
 
   "FIELD_VIEW_SSH_KEY": "Git SSH Key",
-  "COLUMN_GIT_AUTH": "Git Authentication",
+  "COLUMN_GIT_AUTH": "Git Access",
 
   "COPY_TO_CLIP": "Copy Url",
   "VIEW_CREATE_VALIDATE": "Git Repository info incomplete"
