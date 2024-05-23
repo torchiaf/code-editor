@@ -61,5 +61,7 @@
   "GOTO_DISABLED": "Impossible accedere ai dati sessione",
 
   "FIELD_VIEW_SSH_KEY": "Git Chiave SSH",
-  "COLUMN_GIT_AUTH": "Git Auth"
+  "COLUMN_GIT_AUTH": "Git Auth",
+
+  "COPY_TO_CLIP": "Copia Url"
 }

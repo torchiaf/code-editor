@@ -106,7 +106,7 @@
                   <!-- GoTo Column -->
                   <ng-container matColumnDef="GoTo">
                     <th mat-header-cell *matHeaderCellDef></th>
-                    <td mat-cell *matCellDef="let element">
+                    <td mat-cell *matCellDef="let element" matTooltip="{{(element.Session?.length > 0 ? '' : 'GOTO_DISABLED') | translate}}">
                       <button
                         class="goto"
                         [disabled]="deleting || element.Session?.length === 0"
@@ -114,6 +114,21 @@
                         matTooltip="{{(element.Session?.length > 0 ? 'VIEW_URL' : 'GOTO_DISABLED') | translate}}"
                         (click)="goToView(element)">
                         <mat-icon>launch</mat-icon>
+                      </button>
+                    </td>
+                  </ng-container>
+
+                  <!-- CopyToClipboard Column -->
+                  <ng-container matColumnDef="CopyToClipboard">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element" matTooltip="{{(element.Session?.length > 0 ? '' : 'GOTO_DISABLED') | translate}}">
+                      <button
+                        class="goto"
+                        [disabled]="deleting || element.Session?.length === 0"
+                        mat-mini-fab color="primary"
+                        matTooltip="{{(element.Session?.length > 0 ? 'COPY_TO_CLIP' : 'GOTO_DISABLED') | translate}}"
+                        [cdkCopyToClipboard]="getUrl(element)">
+                        <mat-icon>content_copy</mat-icon>
                       </button>
                     </td>
                   </ng-container>

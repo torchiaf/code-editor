@@ -61,5 +61,7 @@
   "GOTO_DISABLED": "Unable to get View Session",
 
   "FIELD_VIEW_SSH_KEY": "Git SSH Key",
-  "COLUMN_GIT_AUTH": "Git Authentication"
+  "COLUMN_GIT_AUTH": "Git Authentication",
+
+  "COPY_TO_CLIP": "Copy Url"
 }

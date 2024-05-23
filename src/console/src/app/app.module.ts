@@ -43,6 +43,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { UserViewsComponent } from './components/dashboard/user/user-views/user-views.component';
 import { FileuploadComponent } from './components/widgets/fileupload.component';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 // Required during AOT compilation
 export function httpTranslateLoaderFactory(http: HttpClient) {
@@ -92,6 +93,7 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
     MatProgressSpinnerModule,
     MatTabsModule,
     MatTooltipModule,
+    ClipboardModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
