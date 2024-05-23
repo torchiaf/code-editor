@@ -1,0 +1,25 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - v[0-9].*
+
+jobs:
+  build-and-push-console:
+    uses: ./.github/workflows/docker-push.yaml
+    with:
+      image-name: console
+      tag-name: ${{ github.ref_name }}
+    permissions:
+      contents: read
+      packages: write
+
+  build-and-push-server:
+    uses: ./.github/workflows/docker-push.yaml
+    with:
+      image-name: server
+      tag-name: ${{ github.ref_name }}
+    permissions:
+      contents: read
+      packages: write

@@ -6,6 +6,9 @@ on:
       image-name:
         required: true
         type: string
+      tag-name:
+        required: true
+        type: string
 
 env:
   REGISTRY: ghcr.io
@@ -30,5 +33,5 @@ jobs:
       - name: Build and push Docker image
         working-directory: src/${{ inputs.image-name }}
         run: |
-          docker build . --tag ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ inputs.image-name }}:latest
-          docker push ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ inputs.image-name }}:latest
+          docker build . --tag ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ inputs.image-name }}:${{ inputs.tag-name }}
+          docker push ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ inputs.image-name }}:${{ inputs.tag-name }}
