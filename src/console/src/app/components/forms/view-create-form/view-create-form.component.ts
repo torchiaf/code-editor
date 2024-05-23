@@ -17,7 +17,7 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
 
   readonly accountChange$ = new BehaviorSubject<string | null>('torchiaf');
 
-  readonly repositoryChange$ = new BehaviorSubject<string | null>(null);
+  readonly repositoryChange$ = new BehaviorSubject<string | null>('code-editor');
 
   readonly repositories$ = this.accountChange$.pipe(
     debounceTime(600),
@@ -28,15 +28,14 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
       }),
       map((repos: any[]) => repos.map((r) => r.name))
     )),
-    takeUntil(this.destroyed$)
-    );
+    takeUntil(this.destroyed$));
 
   readonly branches$ = combineLatest([
     this.accountChange$,
     this.repositoryChange$
   ]).pipe(
     debounceTime(600),
-    switchMap(([account, repo]) => from(this.restClient.api.getBranches(account || '', repo || 'code-editor')).pipe(
+    switchMap(([account, repo]) => from(this.restClient.api.getBranches(account || '', repo || '')).pipe(
       catchError(() => {
         this.cleanOnBranchError();
         return [];
@@ -45,6 +44,9 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
       takeUntil(this.destroyed$));
 
   repositoryInfo = true;
+
+  initRepo = false;
+  initBranch = false;
 
   types: string[] = ['gitHub'];
   repositories: any[] = [];
@@ -73,8 +75,8 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
       git: {
         type: 'gitHub',
         org:'torchiaf',
-        repo: '',
-        branch: '',
+        repo: 'code-editor',
+        branch: 'main',
         commit: ''
       }
     }
@@ -88,14 +90,22 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.repositories$.subscribe((repos) => {
       this.repositories = repos;
-      this.view.repo.git.repo = null;
-      this.view.repo.git.branch = null;
+      if (this.initRepo) {
+        this.view.repo.git.repo = null;
+        this.view.repo.git.branch = null;
+      }
+      this.initRepo = true;
     });
     this.branches$.subscribe((branches) => {
       this.branches = branches;
-      this.view.repo.git.branch = null;
+      if (this.initBranch) {
+        this.view.repo.git.branch = null;
+      }
+      this.initBranch = true;
     });
   }
+
+
 
   ngOnDestroy(): void {
     this.accountChange$.complete();
