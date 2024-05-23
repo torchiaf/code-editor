@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Subject, catchError, combineLatest, debounceTime, from, map, switchMap, takeUntil } from 'rxjs';
 import { Extension, ViewCreate } from 'src/app/models/view';
 import { RestClientService } from 'src/app/services/rest-client.service';
+import { ErrorDialogComponent } from '../../dialogs/error-dialog/error-dialog.component';
 
 @Component({
   selector: 'app-view-create-form',
@@ -84,6 +86,7 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private restClient: RestClientService,
+    public dialog: MatDialog,
   ) {
   }
 
@@ -149,9 +152,18 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
   }
 
   public save() {
-    // TODO fix model
-    (this.view as any)['vscode-settings'] = JSON.parse(this.view.general.vscodeSettings || '{}');
-    this.view.general.vscodeSettings = undefined;
+    try {
+      // TODO fix model
+      (this.view as any)['vscode-settings'] = JSON.parse(this.view.general.vscodeSettings || '{}');
+      this.view.general.vscodeSettings = undefined;
+    } catch (error) {
+      this.dialog.open(ErrorDialogComponent, {
+        width: '300px',
+        height: '150px',
+        data: { err: 'VSCode Settings, invalid json file' },
+      });
+      return;
+    }
 
     if (this.repositoryInfo) {
       if (this.view.repo) {

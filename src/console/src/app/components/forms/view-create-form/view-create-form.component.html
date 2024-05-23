@@ -24,7 +24,7 @@
           </mat-form-field>
           <mat-form-field>
             <mat-label>{{'FIELD_VIEW_VSCODE_SETTINGS' | translate}}</mat-label>
-            <input matInput placeholder="{{'FIELD_VIEW_VSCODE_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.vscodeSettings" name="vscodeSettings">
+            <input [disabled]="true" matInput placeholder="{{'FIELD_VIEW_VSCODE_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.vscodeSettings" name="vscodeSettings">
           </mat-form-field>
         </p>
 
