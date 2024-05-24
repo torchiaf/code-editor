@@ -85,6 +85,12 @@
                     <td mat-cell *matCellDef="let element"> {{element.Id}} </td>
                   </ng-container>
 
+                  <!-- Name Column -->
+                  <ng-container matColumnDef="Name">
+                    <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_NAME' | translate }} </th>
+                    <td mat-cell *matCellDef="let element"> {{element.Name}} </td>
+                  </ng-container>
+
                   <!-- Path Column -->
                   <ng-container matColumnDef="Path">
                     <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_PATH' | translate }} </th>

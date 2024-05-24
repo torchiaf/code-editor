@@ -2,6 +2,10 @@
   padding: 5px 5px 10px 5px;
 }
 
+.mat-card {
+  min-width: 700px;
+}
+
 .mat-card-title {
   margin-right: 150px;
 }
@@ -9,6 +13,12 @@
 .mat-header-cell, .mat-cell {
   padding: 0 15px 0 15px;
   font-size: 15px;
+}
+
+.mat-column-VScodeSettings {
+  &.mat-cell {
+    text-align: center;
+  }
 }
 
 .mat-column-Name, .mat-column-Status {
@@ -20,10 +30,9 @@
 .mat-column-Delete {
   padding-right: 0;
   padding-left: 0;
-  // padding-right: 10px !important;
 }
 
-.mat-column-Status {
+.mat-column-Status, .mat-column-GitAuth {
   .mat-icon-enabled {
     color: rgba(0,0,0,.54);
   }

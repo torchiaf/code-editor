@@ -165,6 +165,7 @@ type EditorI interface {
 }
 
 type EditorConfigKeys struct {
+	viewName       string
 	status         string
 	path           string
 	query          string
@@ -196,6 +197,7 @@ func newEditor(ctx context.Context, id string) Editor {
 		name:      c.App.Name,
 		namespace: c.App.Namespace,
 		keys: EditorConfigKeys{
+			viewName:       fmt.Sprintf("%s_VIEW_NAME", id),
 			status:         fmt.Sprintf("%s_STATUS", id),
 			path:           fmt.Sprintf("%s_PATH", id),
 			query:          fmt.Sprintf("%s_QUERY", id),
@@ -306,6 +308,7 @@ func (editor Editor) configsCreate(enableConfig models.EnableConfig) {
 	sshKey, _ := utils.Base64Decode(enableConfig.SshKey)
 
 	data := map[string][]byte{
+		editor.keys.viewName:       []byte(enableConfig.ViewName),
 		editor.keys.status:         []byte(Enabled),
 		editor.keys.path:           []byte(utils.RandomString(13)),
 		editor.keys.password:       []byte(utils.RandomString(20, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")),

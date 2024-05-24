@@ -45,7 +45,10 @@
   "FIELD_VIEW_VSCODE_PLACEHOLDER": "vuoto",
   "FIELD_VIEW_GIT_NAME": "Nome",
   "FIELD_VIEW_ACCOUNT_PLACEHOLDER": "Account",
-  "FIELD_VIEW_GIT_PLACEHOLDER": "pippo",
+  "FIELD_VIEW_GIT_NAME_PLACEHOLDER": "pippo",
+  "FIELD_VIEW_GIT_EMAIL_PLACEHOLDER": "pippo@gmail.com",
+  "FIELD_VIEW_NAME": "Nome",
+  "FIELD_VIEW_NAME_PLACEHOLDER": "pippo",
   "FIELD_VIEW_GITHUB_TYPE": "Git Type",
   "FIELD_VIEW_GITHUB_ACCOUNT": "Account",
   "FIELD_VIEW_GITHUB_REPO": "Repository",
@@ -62,8 +65,9 @@
   "GOTO_DISABLED": "Impossible accedere ai dati sessione",
 
   "FIELD_VIEW_SSH_KEY": "Git Chiave SSH",
-  "COLUMN_GIT_AUTH": "Accesso Git",
+  "COLUMN_GIT_AUTH": "Git Configs",
 
   "COPY_TO_CLIP": "Copia Url",
-  "VIEW_CREATE_VALIDATE": "Informazioni Repository Git incomplete"
+  "VIEW_CREATE_ERROR_MISSING_NAME": "Nome View mancante",
+  "VIEW_CREATE_ERROR_REPOSITORY_INFO": "Informazioni Repository Git incomplete"
 }

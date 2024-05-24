@@ -219,6 +219,7 @@ func (vw View) List(c *gin.Context) {
 				Path:           fmt.Sprintf("/code-editor/%s/", store.Path),
 				Query:          store.Query,
 				Password:       "",
+				Name:           store.ViewName,
 				VScodeSettings: store.VScodeSettings,
 				GitAuth:        store.GitAuth != "",
 				Session:        store.Session,
@@ -273,7 +274,7 @@ func (vw View) Create(c *gin.Context) {
 	}
 
 	var enableConfig models.EnableConfig
-	if err := c.ShouldBindJSON(&enableConfig); err != nil {
+	if err := c.ShouldBindJSON(&enableConfig); err != nil || enableConfig.ViewName == "" {
 		c.JSON(http.StatusBadRequest, ginError("Missing configs"))
 		return
 	}

@@ -7,12 +7,18 @@
       <div fxLayout="column" fxLayoutAlign="space-around start">
         <p fxLayout="row" fxLayoutAlign="space-around center">
           <mat-form-field>
+            <mat-label>{{'FIELD_VIEW_NAME' | translate}}</mat-label>
+            <input matInput placeholder="{{'FIELD_VIEW_NAME_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.name" maxlength="15" name="view-name">
+          </mat-form-field>
+        </p>
+        <p fxLayout="row" fxLayoutAlign="space-around center">
+          <mat-form-field>
             <mat-label>{{'FIELD_VIEW_GIT_NAME' | translate}}</mat-label>
-            <input matInput placeholder="{{'FIELD_VIEW_GIT_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.git.name" name="name">
+            <input matInput placeholder="{{'FIELD_VIEW_GIT_NAME_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.git.name" name="name">
           </mat-form-field>
           <mat-form-field>
             <mat-label>{{'FIELD_VIEW_GIT_EMAIL' | translate}}</mat-label>
-            <input matInput placeholder="{{'FIELD_VIEW_GIT_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.git.email" name="email">
+            <input matInput placeholder="{{'FIELD_VIEW_GIT_EMAIL_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.git.email" name="email">
           </mat-form-field>
         </p>
         <p fxLayout="row" fxLayoutAlign="space-around center">
@@ -24,7 +30,7 @@
           </mat-form-field>
           <mat-form-field>
             <mat-label>{{'FIELD_VIEW_VSCODE_SETTINGS' | translate}}</mat-label>
-            <input [disabled]="true" matInput placeholder="{{'FIELD_VIEW_VSCODE_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.vscodeSettings" name="vscodeSettings">
+            <input matInput placeholder="{{'FIELD_VIEW_VSCODE_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.vscodeSettings" name="vscodeSettings">
           </mat-form-field>
         </p>
 
@@ -76,11 +82,11 @@
             (click)="cancel()">
             <ng-container>{{'CANCEL' | translate}}</ng-container>
           </button>
-          <div matTooltip="{{ (validateRepositoryInfo() ? '' : 'VIEW_CREATE_VALIDATE') | translate}}">
+          <div matTooltip="{{ errors().length > 0 ? errorMessages() : '' }}">
             <button
               mat-raised-button
               color="primary"
-              [disabled]="!validateRepositoryInfo()"
+              [disabled]="errors().length > 0"
               (click)="save()">
               <ng-container>{{'SAVE' | translate}}</ng-container>
             </button>

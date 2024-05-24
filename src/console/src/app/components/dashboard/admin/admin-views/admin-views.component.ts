@@ -42,7 +42,7 @@ export class AdminViewsComponent implements OnInit, OnDestroy {
   dataSource: MatTableDataSource<Row> = new MatTableDataSource();
 
   displayedColumns = ['Id', 'Name', 'Email', 'Phone', 'Status'];
-  innerDisplayedColumns = ['Id', 'Path', 'VScodeSettings', 'GitAuth', 'Delete', 'CopyToClipboard', 'GoTo'];
+  innerDisplayedColumns = ['Id', 'Name', 'Path', 'VScodeSettings', 'GitAuth', 'Delete', 'CopyToClipboard', 'GoTo'];
 
   expandedElements: Record<string, boolean> = {};
   collapseDisabled = false;

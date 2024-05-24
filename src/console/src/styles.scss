@@ -6,7 +6,8 @@
 @import '~codemirror/addon/hint/show-hint.css';
 
 .CodeMirror {
-  height: 30px;
+  height: auto;
+  max-width: 600px;
 }
 
 .mat-toolbar.mat-primary,
@@ -82,4 +83,9 @@ mat-dialog-container {
 
 .mat-form-field.mat-focused .mat-form-field-ripple {
   background-color: #30ba78 !important;
+}
+
+.mat-tooltip {
+  font-size: medium;
+  white-space: pre-line;
 }

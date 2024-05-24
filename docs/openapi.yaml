@@ -389,6 +389,7 @@ components:
               items:
                 required:
                   - id
+                  - name
                   - userId
                   - status
                   - path
@@ -401,6 +402,8 @@ components:
                   - repo
                 properties:
                   id:
+                    type: string
+                  name:
                     type: string
                   userId:
                     type: string
@@ -499,6 +502,9 @@ components:
       required:
         - git
       properties:
+        name:
+          type: string
+          description: View name
         git:
           type: object
           description: Git configurations

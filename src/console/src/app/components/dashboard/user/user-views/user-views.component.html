@@ -1,9 +1,44 @@
 <mat-tab-group [selectedIndex]="selectedTab.value">
   <mat-tab label="{{'VIEWS' | translate}}">
     <mat-card>
-      <div *ngIf="data" fxLayout="column" class="mat-elevation-z8">
-        <div class="view-row" fxLayout="row" fxLayoutAlign="space-around center" fxLayoutGap="15px">
-          <mat-label class="view-title">{{ data.Id }}</mat-label>
+      <div *ngIf="data" class="mat-elevation-z8" fxLayout="row" fxLayoutAlign="center start">
+        <div fxLayout="column" fxLayoutAlign="space-around center" fxLayoutGap="15px">
+          <div class="view-row">
+            <mat-label class="view-title">{{ data.Name || data.Id }}</mat-label>
+          </div>
+          <div class="view-row" fxLayout="column" fxLayoutAlign="space-around center" fxLayoutGap="15px">
+            <mat-label class="view-label">{{'COLUMN_PATH' | translate}}</mat-label>
+            <mat-label>{{ data.Repo || 'none'}}</mat-label>
+          </div>
+          <div class="view-row" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+            <mat-label class="view-label">{{'COLUMN_GIT_AUTH' | translate}}</mat-label>
+            <mat-icon *ngIf="data.GitAuth" class="git-auth-on">lens</mat-icon>
+            <mat-icon *ngIf="!data.GitAuth" class="git-auth-off">remove_circle</mat-icon>
+          </div>
+          <div class="view-row" fxLayout="column" fxLayoutAlign="space-around center" fxLayoutGap="15px">
+            <mat-label class="view-label">{{'COLUMN_VSCODE_SETTINGS' | translate}}</mat-label>
+            <app-code-mirror class="code-mirror-row" [data]="data.VScodeSettings"></app-code-mirror>
+          </div>
+          <div class="view-row" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="15px">
+            <div>
+              <button
+                *ngIf="!deleting"
+                [disabled]="deleting || creating"
+                mat-mini-fab color="primary"
+                class="delete"
+                matTooltip="{{'DELETE' | translate}}"
+                (click)="deleteView()">
+                <mat-icon>delete_forever</mat-icon>
+              </button>
+              <div
+                *ngIf="deleting"
+                class="spinner-container">
+                <mat-spinner diameter="24"></mat-spinner>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="go-to-column" fxLayout="row" fxLayoutAlign="space-around center" fxLayoutGap="15px">
           <button
             class="goto"
             [disabled]="data.Session.length === 0"
@@ -12,37 +47,6 @@
             (click)="goToView(data)">
             <mat-icon>launch</mat-icon>
           </button>
-        </div>
-        <div class="view-row" fxLayout="column" fxLayoutAlign="space-around center" fxLayoutGap="15px">
-          <mat-label class="view-label">{{'COLUMN_PATH' | translate}}</mat-label>
-          <mat-label>{{ data.Repo || 'none'}}</mat-label>
-        </div>
-        <div class="view-row" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
-          <mat-label class="view-label">{{'COLUMN_GIT_AUTH' | translate}}</mat-label>
-          <mat-icon *ngIf="data.GitAuth" class="git-auth-on">lens</mat-icon>
-          <mat-icon *ngIf="!data.GitAuth" class="git-auth-off">remove_circle</mat-icon>
-        </div>
-        <div class="view-row" fxLayout="column" fxLayoutAlign="space-around center" fxLayoutGap="15px">
-          <mat-label class="view-label">{{'COLUMN_VSCODE_SETTINGS' | translate}}</mat-label>
-          <app-code-mirror [data]="data.VScodeSettings"></app-code-mirror>
-        </div>
-        <div class="view-row" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="15px">
-          <div>
-            <button
-              *ngIf="!deleting"
-              [disabled]="deleting || creating"
-              mat-mini-fab color="primary"
-              class="delete"
-              matTooltip="{{'DELETE' | translate}}"
-              (click)="deleteView()">
-              <mat-icon>delete_forever</mat-icon>
-            </button>
-            <div
-              *ngIf="deleting"
-              class="spinner-container">
-              <mat-spinner diameter="24"></mat-spinner>
-            </div>
-          </div>
         </div>
       </div>
       <div *ngIf="!data" class="empty-container" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">

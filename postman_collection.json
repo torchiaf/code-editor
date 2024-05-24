@@ -274,13 +274,13 @@
 				"header": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTY1MDMyNDMsImlkIjoibG9jYWwtMDAwMCIsInJvbGUiOiJBZG1pbiIsInVzZXJuYW1lIjoiYWRtaW4ifQ.LwwBowSibaSejv4mMJ7lvSMw6rwp3CO_ZEQMDqmje-s",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTY2NDI4MjcsImlkIjoibG9jYWwtMDAwMCIsInJvbGUiOiJBZG1pbiIsInVzZXJuYW1lIjoiYWRtaW4ifQ.aKR4bgwn9vbn6zRw0hl2CBRiHhajrGB9X_Pu0bdLY9c",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"git\": {\n        \"name\": \"Francesco Torchia\",\n        \"email\": \"torchia.francesco@gmail.com\"\n    },\n    \"extensions\": [\n        {\n            \"id\": \"hoovercj.vscode-power-mode\",\n            \"settings\": {\n                \"powermode.enabled\": true\n            }\n        }\n        \n    ],\n    \"vscode-settings\": {},\n    \"sshKey\": \"\"\n}",
+					"raw": "{\n    \"name\": \"View test\",\n    \"git\": {\n        \"name\": \"Francesco Torchia\",\n        \"email\": \"torchia.francesco@gmail.com\"\n    },\n    \"extensions\": [\n        {\n            \"id\": \"hoovercj.vscode-power-mode\",\n            \"settings\": {\n                \"powermode.enabled\": true\n            }\n        }\n        \n    ],\n    \"vscode-settings\": {},\n    \"sshKey\": \"\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -288,7 +288,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost/code-editor/api/v1/views?username=user2",
+					"raw": "https://localhost/code-editor/api/v1/views?username=user1",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -302,7 +302,7 @@
 					"query": [
 						{
 							"key": "username",
-							"value": "user2"
+							"value": "user1"
 						}
 					]
 				}

@@ -18,12 +18,13 @@ type Users struct {
 
 type View struct {
 	Id             string `yaml:"id"`
+	Name           string `yaml:"name"`
 	UserId         string `yaml:"userId"`
 	Status         string `yaml:"status"`
 	Path           string `yaml:"path"`
 	Query          string `yaml:"query"`
 	Password       string `yaml:"password,omitempty"`
-	VScodeSettings string `yaml:"vscode-settings"`
+	VScodeSettings string `yaml:"vscodeSettings"`
 	GitAuth        bool   `yaml:"gitAuth"`
 	Session        string `yaml:"session"`
 	RepoType       string `yaml:"repoType"`
@@ -65,8 +66,9 @@ type Extension struct {
 }
 
 type EnableConfig struct {
+	ViewName       string                 `json:"name"`
 	Git            GitConfig              `json:"git"`
 	Extensions     []Extension            `json:"extensions"`
-	VscodeSettings map[string]interface{} `json:"vscode-settings"`
+	VscodeSettings map[string]interface{} `json:"vscodeSettings"`
 	SshKey         string                 `json:"sshKey"`
 }

@@ -4,6 +4,7 @@ import { BehaviorSubject, Subject, catchError, combineLatest, debounceTime, from
 import { Extension, ViewCreate } from 'src/app/models/view';
 import { RestClientService } from 'src/app/services/rest-client.service';
 import { ErrorDialogComponent } from '../../dialogs/error-dialog/error-dialog.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-view-create-form',
@@ -63,8 +64,9 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
     name: 'Power Mode',
   }];
 
-  view: any = {
+  view: ViewCreate = {
     general: {
+      name: '',
       git: {
         name: 'Foo Bar',
         email: 'foo@gmail.com'
@@ -87,6 +89,7 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
   constructor(
     private restClient: RestClientService,
     public dialog: MatDialog,
+    public translate: TranslateService,
   ) {
   }
 
@@ -151,11 +154,27 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
     );
   }
 
+  public errors(): string[] {
+    const errors = [];
+
+    if (!this.view.general.name) {
+      errors.push('VIEW_CREATE_ERROR_MISSING_NAME');
+    }
+
+    if (!this.validateRepositoryInfo()) {
+      errors.push('VIEW_CREATE_ERROR_REPOSITORY_INFO');
+    }
+
+    return errors;
+  }
+
+  public errorMessages(): string {
+    return this.errors().reduce((acc, err) => (`${ acc }- ${ this.translate.instant(err) }\n`), '');
+  }
+
   public save() {
     try {
-      // TODO fix model
-      (this.view as any)['vscode-settings'] = JSON.parse(this.view.general.vscodeSettings || '{}');
-      this.view.general.vscodeSettings = undefined;
+      this.view.general.vscodeSettings = JSON.parse(this.view.general.vscodeSettings || '{}');
     } catch (error) {
       this.dialog.open(ErrorDialogComponent, {
         width: '300px',
@@ -170,7 +189,7 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
         this.view.repo.git.commit = this.view.repo.git.branch;
       }
     } else {
-      this.view.repo = undefined;
+      (this.view.repo as any) = undefined;
     }
 
     this.done.emit(this.view);

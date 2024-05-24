@@ -43,9 +43,12 @@
   "FIELD_VIEW_EXTENSIONS": "Extensions",
   "FIELD_VIEW_VSCODE_SETTINGS": "VSCode Settings",
   "FIELD_VIEW_VSCODE_PLACEHOLDER": "empty",
-  "FIELD_VIEW_GIT_NAME": "Name",
+  "FIELD_VIEW_GIT_NAME": "Git Name",
   "FIELD_VIEW_ACCOUNT_PLACEHOLDER": "Account",
-  "FIELD_VIEW_GIT_PLACEHOLDER": "foo",
+  "FIELD_VIEW_GIT_NAME_PLACEHOLDER": "foo",
+  "FIELD_VIEW_GIT_EMAIL_PLACEHOLDER": "foo@gmail.com",
+  "FIELD_VIEW_NAME": "Name",
+  "FIELD_VIEW_NAME_PLACEHOLDER": "foo",
   "FIELD_VIEW_GITHUB_TYPE": "Git Type",
   "FIELD_VIEW_GITHUB_ACCOUNT": "Account",
   "FIELD_VIEW_GITHUB_REPO": "Repository",
@@ -62,8 +65,9 @@
   "GOTO_DISABLED": "Unable to get View Session",
 
   "FIELD_VIEW_SSH_KEY": "Git SSH Key",
-  "COLUMN_GIT_AUTH": "Git Access",
+  "COLUMN_GIT_AUTH": "Git Configs",
 
   "COPY_TO_CLIP": "Copy Url",
-  "VIEW_CREATE_VALIDATE": "Git Repository info incomplete"
+  "VIEW_CREATE_ERROR_MISSING_NAME": "View Name is empty",
+  "VIEW_CREATE_ERROR_REPOSITORY_INFO": "Git Repository info incomplete"
 }

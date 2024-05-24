@@ -15,6 +15,7 @@ import (
 var ctx = context.Background()
 
 type StoreData struct {
+	ViewName       string
 	Status         string
 	Path           string
 	Query          string
@@ -45,6 +46,7 @@ func initStore() map[string]StoreData {
 
 		if len(secret.Data[fmt.Sprintf("%s_STATUS", id)]) > 0 {
 			dataStore := StoreData{
+				ViewName:       string(secret.Data[fmt.Sprintf("%s_VIEW_NAME", id)]),
 				Status:         string(secret.Data[fmt.Sprintf("%s_STATUS", id)]),
 				Path:           string(secret.Data[fmt.Sprintf("%s_PATH", id)]),
 				Query:          string(secret.Data[fmt.Sprintf("%s_QUERY", id)]),
@@ -85,6 +87,7 @@ func (store store) Set(editor Editor, data map[string][]byte) {
 	}
 
 	dataStore := StoreData{
+		ViewName:       string(data[editor.keys.viewName]),
 		Status:         string(data[editor.keys.status]),
 		Path:           string(data[editor.keys.path]),
 		Query:          string(data[editor.keys.query]),
@@ -104,6 +107,7 @@ func (store store) Upd(editor Editor, session string, repoType string, repo stri
 	data := store.Get(editor)
 	m := make(map[string][]byte)
 
+	m[editor.keys.viewName] = []byte(data.ViewName)
 	m[editor.keys.status] = []byte(data.Status)
 	m[editor.keys.path] = []byte(data.Path)
 	m[editor.keys.password] = []byte(data.Password)
@@ -144,6 +148,7 @@ func (store store) Del(editor Editor) {
 		panic(err)
 	}
 
+	delete(secret.Data, editor.keys.viewName)
 	delete(secret.Data, editor.keys.status)
 	delete(secret.Data, editor.keys.path)
 	delete(secret.Data, editor.keys.query)
