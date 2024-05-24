@@ -280,7 +280,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"View test\",\n    \"git\": {\n        \"name\": \"Francesco Torchia\",\n        \"email\": \"torchia.francesco@gmail.com\"\n    },\n    \"extensions\": [\n        {\n            \"id\": \"hoovercj.vscode-power-mode\",\n            \"settings\": {\n                \"powermode.enabled\": true\n            }\n        }\n        \n    ],\n    \"vscode-settings\": {},\n    \"sshKey\": \"\"\n}",
+					"raw": "{\n    \"name\": \"View test\",\n    \"git\": {\n        \"name\": \"Francesco Torchia\",\n        \"email\": \"torchia.francesco@gmail.com\"\n    },\n    \"extensions\": [\n        {\n            \"id\": \"hoovercj.vscode-power-mode\",\n            \"settings\": {\n                \"powermode.enabled\": true\n            }\n        }\n        \n    ],\n    \"vscode-settings\": {},\n    \"sshKey\": \"\",\n    \"gitSource\": {\n        \"org\": \"torchiaf\",\n        \"repo\": \"code-editor\",\n        \"branch\": \"main\"\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"

@@ -438,12 +438,15 @@ components:
                 - code-server-session
                 - path
                 - viewId
+                - query-param
               properties:
                 code-server-session:
                   type: string
                 path:
                   type: string
                 viewId:
+                  type: string
+                query-param:
                   type: string
     ViewConfigResponse:
       allOf:
@@ -527,6 +530,20 @@ components:
         sshKey:
           type: string
           description: SSH key for git authentication
+        gitSource:
+          type: object
+          description: Git Repository configurations
+          properties:
+            type:
+              type: string
+            org:
+              type: string
+            repo:
+              type: string
+            branch:
+              type: string
+            commit:
+              type: string
     ViewConfigRequestBody:
       type: object
       required:
