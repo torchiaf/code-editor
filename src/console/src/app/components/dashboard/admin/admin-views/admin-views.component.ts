@@ -13,6 +13,7 @@ import { RestClientService } from 'src/app/services/rest-client.service';
 import { FormControl } from '@angular/forms';
 import { CookieService } from 'ngx-cookie';
 import { environment } from 'src/environments/environment';
+import { saveAs as importedSaveAs } from 'file-saver';
 
 type Row = UserDetails & { Enabled: boolean, Views: View[] | MatTableDataSource<View> };
 
@@ -42,7 +43,7 @@ export class AdminViewsComponent implements OnInit, OnDestroy {
   dataSource: MatTableDataSource<Row> = new MatTableDataSource();
 
   displayedColumns = ['Id', 'Name', 'Email', 'Phone', 'Status'];
-  innerDisplayedColumns = ['Id', 'Name', 'Path', 'VScodeSettings', 'GitAuth', 'Delete', 'CopyToClipboard', 'GoTo'];
+  innerDisplayedColumns = ['Id', 'Name', 'Path', 'GitAuth', 'VScodeSettings', 'Actions'];
 
   expandedElements: Record<string, boolean> = {};
   collapseDisabled = false;
@@ -186,5 +187,10 @@ export class AdminViewsComponent implements OnInit, OnDestroy {
     });
 
     window.open(this.getUrl(element), '_blank');
+  }
+
+  public downloadVSCodeSettings(element: View) {
+    const blob = new Blob([element.VScodeSettings || ''], { type: 'application/json' });
+    importedSaveAs(blob, `${ element.Id }-vscodeSettings`);
   }
 }

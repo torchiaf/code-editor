@@ -8,6 +8,7 @@
   "MENU_PROFILE": "Profilo",
   "NOTIFICATIONS": "Notifiche",
 
+  "ACTIONS": "Gestione",
   "EDIT_TABLE_ROW": "Modifica",
   "DELETE_TABLE_ROW": "Cancella",
 
@@ -69,5 +70,7 @@
 
   "COPY_TO_CLIP": "Copia Url",
   "VIEW_CREATE_ERROR_MISSING_NAME": "Nome View mancante",
-  "VIEW_CREATE_ERROR_REPOSITORY_INFO": "Informazioni Repository Git incomplete"
+  "VIEW_CREATE_ERROR_REPOSITORY_INFO": "Informazioni Repository Git incomplete",
+
+  "FILE_DOWNLOAD": "Scarica"
 }

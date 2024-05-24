@@ -100,68 +100,72 @@
                   <!-- Auth Column -->
                   <ng-container matColumnDef="GitAuth">
                     <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_GIT_AUTH' | translate }} </th>
-                    <td mat-cell *matCellDef="let element"> {{element.GitAuth ? 'Enabled' : 'None'}} </td>
+                    <td mat-cell *matCellDef="let element">
+                      <mat-icon *ngIf="element.GitAuth" class="git-auth-on">lens</mat-icon>
+                      <mat-icon *ngIf="!element.GitAuth" class="git-auth-off">remove_circle</mat-icon>
+                    </td>
                   </ng-container>
 
                   <!-- VScodeSettings Column -->
                   <ng-container matColumnDef="VScodeSettings">
                     <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_VSCODE_SETTINGS' | translate }} </th>
                     <td mat-cell *matCellDef="let element">
-                      <app-code-mirror [data]="element.VScodeSettings"></app-code-mirror>
-                    </td>
-                  </ng-container>
-
-                  <!-- GoTo Column -->
-                  <ng-container matColumnDef="GoTo">
-                    <th mat-header-cell *matHeaderCellDef></th>
-                    <td mat-cell *matCellDef="let element" matTooltip="{{(element.Session?.length > 0 ? '' : 'GOTO_DISABLED') | translate}}">
-                      <button
-                        class="goto"
-                        [disabled]="deleting || element.Session?.length === 0"
-                        mat-mini-fab color="primary"
-                        matTooltip="{{(element.Session?.length > 0 ? 'VIEW_URL' : 'GOTO_DISABLED') | translate}}"
-                        (click)="goToView(element)">
-                        <mat-icon>launch</mat-icon>
-                      </button>
-                    </td>
-                  </ng-container>
-
-                  <!-- CopyToClipboard Column -->
-                  <ng-container matColumnDef="CopyToClipboard">
-                    <th mat-header-cell *matHeaderCellDef></th>
-                    <td mat-cell *matCellDef="let element" matTooltip="{{(element.Session?.length > 0 ? '' : 'GOTO_DISABLED') | translate}}">
-                      <button
-                        class="goto"
-                        [disabled]="deleting || element.Session?.length === 0"
-                        mat-mini-fab color="primary"
-                        matTooltip="{{(element.Session?.length > 0 ? getUrl(element) : 'GOTO_DISABLED') | translate}}"
-                        [cdkCopyToClipboard]="getUrl(element)">
-                        <mat-icon>content_copy</mat-icon>
-                      </button>
-                    </td>
-                  </ng-container>
-
-                  <!-- Delete Column -->
-                  <ng-container matColumnDef="Delete">
-                    <th mat-header-cell *matHeaderCellDef></th>
-                    <td mat-cell *matCellDef="let element">
-                      <button
-                        *ngIf="deleting !== element.Id"
-                        [disabled]="deleting || creating"
-                        mat-mini-fab color="primary"
-                        class="delete"
-                        matTooltip="{{'DELETE' | translate}}"
-                        (click)="deleteView(element)">
-                        <mat-icon>delete_forever</mat-icon>
-                      </button>
-                      <div
-                        *ngIf="deleting === element.Id"
-                        class="spinner-container">
-                        <mat-spinner diameter="24"></mat-spinner>
+                      <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="2px">
+                        <app-code-mirror [data]="element.VScodeSettings"></app-code-mirror>
+                        <button
+                          *ngIf="element.VScodeSettings?.length > 0"
+                          class="downloadFile mini-icon"
+                          mat-mini-fab color="primary"
+                          matTooltip="{{'FILE_DOWNLOAD' | translate}}"
+                          (click)="downloadVSCodeSettings(element)">
+                          <mat-icon>save_alt</mat-icon>
+                        </button>
                       </div>
                     </td>
                   </ng-container>
 
+                  <!-- Actions Column -->
+                  <ng-container matColumnDef="Actions">
+                    <th mat-header-cell *matHeaderCellDef> {{'ACTIONS' | translate}} </th>
+                    <td mat-cell *matCellDef="let element">
+                      <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="2px">
+                        <div class="goto-container" matTooltip="{{(element.Session?.length > 0 ? '' : 'GOTO_DISABLED') | translate}}">
+                          <button
+                            class="goto mini-icon"
+                            [disabled]="deleting || element.Session?.length === 0"
+                            mat-mini-fab color="primary"
+                            matTooltip="{{(element.Session?.length > 0 ? 'VIEW_URL' : 'GOTO_DISABLED') | translate}}"
+                            (click)="goToView(element)">
+                            <mat-icon>launch</mat-icon>
+                          </button>
+                        </div>
+                        <div class="copy-container" matTooltip="{{(element.Session?.length > 0 ? '' : 'GOTO_DISABLED') | translate}}">
+                          <button
+                            class="copy mini-icon"
+                            [disabled]="deleting || element.Session?.length === 0"
+                            mat-mini-fab color="primary"
+                            matTooltip="{{ getUrl(element) | translate}}"
+                            [cdkCopyToClipboard]="getUrl(element)">
+                            <mat-icon>content_copy</mat-icon>
+                          </button>
+                        </div>
+                        <button
+                          *ngIf="deleting !== element.Id"
+                          [disabled]="deleting || creating"
+                          mat-mini-fab color="primary"
+                          class="delete"
+                          matTooltip="{{'DELETE' | translate}}"
+                          (click)="deleteView(element)">
+                          <mat-icon>delete_forever</mat-icon>
+                        </button>
+                        <div
+                          *ngIf="deleting === element.Id"
+                          class="spinner-container">
+                          <mat-spinner diameter="24"></mat-spinner>
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
                   <tr mat-header-row *matHeaderRowDef="innerDisplayedColumns"></tr>
                   <tr mat-row *matRowDef="let row; columns: innerDisplayedColumns;"></tr>
                 </table>

@@ -16,20 +16,24 @@
 }
 
 .mat-column-VScodeSettings {
+  &.mat-header-cell {
+    text-align: center;
+  }
   &.mat-cell {
     text-align: center;
   }
 }
 
-.mat-column-Name, .mat-column-Status {
+.mat-column-Status {
   &.mat-cell {
     text-align: center;
   }
 }
 
-.mat-column-Delete {
-  padding-right: 0;
-  padding-left: 0;
+.mat-column-Actions .mat-column-GitAuth {
+  &.mat-header-cell {
+    text-align: center;
+  }
 }
 
 .mat-column-Status, .mat-column-GitAuth {
@@ -51,11 +55,7 @@
   transform: scale(0.7);
 }
 
-.goto {
-  transform: scale(0.7);
-}
-
-.mat-icon-button {
+.goto, .copy, .downloadFile, .mat-icon-button {
   transform: scale(0.7);
 }
 
