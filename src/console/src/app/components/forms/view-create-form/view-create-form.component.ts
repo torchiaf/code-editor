@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { FormControl, Validators } from '@angular/forms';
 import { GitSelectStateMatcher, InputStateMatcher } from 'src/app/validations/state-matcher';
 import { CustomValidators } from 'src/app/validations/validators';
+import { ErrorDialogComponent } from '../../dialogs/error-dialog/error-dialog.component';
 
 @Component({
   selector: 'app-view-create-form',
@@ -166,6 +167,17 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
 
   public save() {
     if (!this.validate()) {
+      return;
+    }
+
+    try {
+      this.view.general.vscodeSettings = JSON.parse(this.view.general.vscodeSettings || '{}');
+    } catch (error) {
+      this.dialog.open(ErrorDialogComponent, {
+        width: '300px',
+        height: '150px',
+        data: { err: 'VSCode Settings, invalid json file' },
+      });
       return;
     }
 
