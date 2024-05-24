@@ -4,7 +4,8 @@
     <mat-card>
       <div class="header" fxLayout="row" fxLayoutAlign="space-between center">
         <mat-card-title></mat-card-title>
-        <button mat-icon-button
+        <button *ngIf="dataSource?.data?.length"
+          mat-icon-button
           [disabled]="collapseDisabled"
           matTooltip="{{'VIEW_COLLAPSE_BTN' | translate}}"
           (click)="toggleCollapse()">
@@ -130,22 +131,20 @@
                     <th mat-header-cell *matHeaderCellDef> {{'ACTIONS' | translate}} </th>
                     <td mat-cell *matCellDef="let element">
                       <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="2px">
-                        <div class="goto-container" matTooltip="{{(element.Session?.length > 0 ? '' : 'GOTO_DISABLED') | translate}}">
+                        <div class="goto-container" matTooltip="{{(element.Session?.length > 0 ? 'VIEW_URL' : 'GOTO_DISABLED') | translate}}">
                           <button
                             class="goto mini-icon"
                             [disabled]="deleting || element.Session?.length === 0"
                             mat-mini-fab color="primary"
-                            matTooltip="{{(element.Session?.length > 0 ? 'VIEW_URL' : 'GOTO_DISABLED') | translate}}"
                             (click)="goToView(element)">
                             <mat-icon>launch</mat-icon>
                           </button>
                         </div>
-                        <div class="copy-container" matTooltip="{{(element.Session?.length > 0 ? '' : 'GOTO_DISABLED') | translate}}">
+                        <div class="copy-container" matTooltip="{{(element.Session?.length > 0 ? getUrl(element) : 'GOTO_DISABLED') | translate}}">
                           <button
                             class="copy mini-icon"
                             [disabled]="deleting || element.Session?.length === 0"
                             mat-mini-fab color="primary"
-                            matTooltip="{{ getUrl(element) | translate}}"
                             [cdkCopyToClipboard]="getUrl(element)">
                             <mat-icon>content_copy</mat-icon>
                           </button>

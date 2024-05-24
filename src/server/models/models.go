@@ -71,4 +71,5 @@ type EnableConfig struct {
 	Extensions     []Extension            `json:"extensions"`
 	VscodeSettings map[string]interface{} `json:"vscodeSettings"`
 	SshKey         string                 `json:"sshKey"`
+	GitSource      GitSource              `json:"gitSource,omitempty"`
 }

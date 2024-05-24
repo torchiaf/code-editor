@@ -27,6 +27,11 @@ export interface ViewCreateGeneral {
   extensions: Extension[];
   vscodeSettings: string;
   sshKey: string;
+  gitSource?: {
+    org: string | null,
+    repo: string | null,
+    branch: string | null,
+  }
 }
 
 export interface ViewCreateRepo {

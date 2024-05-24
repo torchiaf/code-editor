@@ -27,7 +27,7 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
   gitSelectMatcher = new GitSelectStateMatcher();
 
   @Input() data!: any;
-  @Output() done = new EventEmitter<boolean | ViewCreate>();
+  @Output() done = new EventEmitter<ViewCreate | null>();
 
   readonly destroyed$ = new Subject<boolean>();
 
@@ -64,8 +64,8 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
   initRepo = false;
   initBranch = false;
 
-  types: string[] = ['gitHub'];
-  repositories: any[] = [];
+  types = ['GitHub'];
+  repositories: string[] = [];
   branches: string[] = [];
 
   // TODO hardcoded
@@ -90,7 +90,7 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
     },
     repo: {
       git: {
-        type: 'gitHub',
+        type: 'GitHub',
         org:'torchiaf',
         repo: 'code-editor',
         branch: 'main',
@@ -123,8 +123,6 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
       this.initBranch = true;
     });
   }
-
-
 
   ngOnDestroy(): void {
     this.accountChange$.complete();
@@ -193,7 +191,7 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
   }
 
   public cancel() {
-    this.done.emit(false);
+    this.done.emit(null);
   }
 
 }

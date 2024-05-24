@@ -7,7 +7,7 @@ import { lastValueFrom, Subject } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/components/dialogs/confirm-dialog/confirm-dialog.component';
 import { UserDetails } from 'src/app/models/user';
-import { View, ViewCreate } from 'src/app/models/view';
+import { View, ViewCreate, ViewCreateGeneral } from 'src/app/models/view';
 import { AuthService } from 'src/app/services/auth.service';
 import { RestClientService } from 'src/app/services/rest-client.service';
 import { FormControl } from '@angular/forms';
@@ -126,7 +126,7 @@ export class AdminViewsComponent implements OnInit, OnDestroy {
     this.selectedTab.setValue(0);
   }
 
-  public async createViewDone(res: boolean | ViewCreate) {
+  public async createViewDone(res: ViewCreate | null) {
     if (res) {
       this.creating = this.createViewData.Id;
 
@@ -136,12 +136,16 @@ export class AdminViewsComponent implements OnInit, OnDestroy {
         this.goToViews();
 
         try {
-          const created = await this.restClient.api.adminCreateView(row.Name || '', (res as ViewCreate).general);
-
-          const repoInfo = (res as ViewCreate).repo;
-          if(repoInfo) {
-            await this.restClient.api.updateView(created.viewId || '', repoInfo);
+          const requestBody: ViewCreateGeneral = {
+            ...res.general,
+            gitSource: {
+              org: res.repo?.git.org,
+              repo: res.repo?.git.repo,
+              branch: res.repo?.git.branch,
+            }
           }
+          
+          await this.restClient.api.adminCreateView(row.Name || '', requestBody);
         } catch (error) {
           this.creating = null;
         }

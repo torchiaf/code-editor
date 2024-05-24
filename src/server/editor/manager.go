@@ -543,10 +543,27 @@ func (editor Editor) Create(enableConfig models.EnableConfig) (int32, error) {
 	return port, nil
 }
 
-func (editor Editor) Config(gitCmd string) error {
+func (editor Editor) Config(git models.GitSource) (string, string, error) {
 	label := matchLabel(editor.Store().Path)
 
-	return execCmdOnPod(editor.ctx, label, gitCmd)
+	gitProtocol := "https://github.com/"
+	if editor.Store().GitAuth != "" {
+		gitProtocol = "git@github.com:"
+	}
+
+	gitCmd := fmt.Sprintf(
+		"cd /git && rm -rf * && git clone %s%s/%s -b %s && cd %s && git checkout %s",
+		gitProtocol,
+		git.Org,
+		git.Repo,
+		git.Branch,
+		git.Repo,
+		git.Commit,
+	)
+
+	repoInfo, queryParam := utils.GitInfo(git)
+
+	return repoInfo, queryParam, execCmdOnPod(editor.ctx, label, gitCmd)
 }
 
 func (editor Editor) Destroy() error {

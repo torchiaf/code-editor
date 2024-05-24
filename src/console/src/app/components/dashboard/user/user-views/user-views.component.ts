@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
 import { FormControl } from '@angular/forms';
 import { Subject, lastValueFrom, startWith } from 'rxjs';
-import { View, ViewCreate } from 'src/app/models/view';
+import { View, ViewCreate, ViewCreateGeneral } from 'src/app/models/view';
 import { AuthService } from 'src/app/services/auth.service';
 import { RestClientService } from 'src/app/services/rest-client.service';
 import { environment } from 'src/environments/environment';
@@ -94,18 +94,22 @@ export class UserViewsComponent implements OnInit, OnDestroy {
     }
   }
 
-  public async createViewDone(res: boolean | ViewCreate) {
+  public async createViewDone(res: ViewCreate | null) {
     if (res) {
       this.creating = true;
       this.goToViews();
 
       try {
-        const created = await this.restClient.api.userCreateView((res as ViewCreate).general);
-
-        const repoInfo = (res as ViewCreate).repo;
-        if(repoInfo) {
-          await this.restClient.api.updateView(created.viewId || '', repoInfo);
+        const requestBody: ViewCreateGeneral = {
+          ...res.general,
+          gitSource: {
+            org: res.repo?.git.org,
+            repo: res.repo?.git.repo,
+            branch: res.repo?.git.branch,
+          }
         }
+
+        await this.restClient.api.userCreateView(requestBody);
       } catch (error) {
         this.creating = false;
       }

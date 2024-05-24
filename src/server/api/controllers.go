@@ -279,6 +279,13 @@ func (vw View) Create(c *gin.Context) {
 		return
 	}
 
+	// Continue if all are empty or all not empty, otherwise throw error
+	if !((enableConfig.GitSource.Org != "" && enableConfig.GitSource.Repo != "" && enableConfig.GitSource.Branch != "") ||
+		(enableConfig.GitSource.Org == "" && enableConfig.GitSource.Repo == "" && enableConfig.GitSource.Branch == "")) {
+		c.JSON(http.StatusBadRequest, ginError("Missing configs"))
+		return
+	}
+
 	port, err := e.Create(enableConfig)
 	if err != nil {
 		c.JSON(http.StatusConflict, ginError("Cannot create View instance"))
@@ -293,10 +300,24 @@ func (vw View) Create(c *gin.Context) {
 		return
 	}
 
+	repoInfo := ""
+	queryParam := ""
+
+	if enableConfig.GitSource.Org != "" && enableConfig.GitSource.Repo != "" && enableConfig.GitSource.Branch != "" {
+		repoInfo, queryParam, err = e.Config(enableConfig.GitSource)
+		if err != nil {
+			c.JSON(http.StatusForbidden, ginError(fmt.Sprintf("code-server pod configuration failed; %s", err.Error())))
+			return
+		}
+
+		editor.Store.Upd(e, "", enableConfig.GitSource.Type, repoInfo, queryParam)
+	}
+
 	c.JSON(http.StatusOK, ginSuccess("View created", map[string]interface{}{
-		"viewId":     e.Id,
-		session.Name: e.Store().Session,
-		"path":       fmt.Sprintf("/code-editor/%s/", e.Store().Path),
+		"viewId":      e.Id,
+		session.Name:  e.Store().Session,
+		"path":        fmt.Sprintf("/code-editor/%s/", e.Store().Path),
+		"query-param": queryParam,
 	}))
 }
 
@@ -325,34 +346,14 @@ func (vw View) Config(c *gin.Context) {
 		return
 	}
 
-	git := vwConfig.Git
-
-	gitProtocol := "https://github.com/"
-	if e.Store().GitAuth != "" {
-		gitProtocol = "git@github.com:"
-	}
-
-	gitCmd := fmt.Sprintf(
-		"cd /git && rm -rf * && git clone %s%s/%s -b %s && cd %s && git checkout %s",
-		gitProtocol,
-		git.Org,
-		git.Repo,
-		git.Branch,
-		git.Repo,
-		git.Commit,
-	)
-
-	err := e.Config(gitCmd)
+	repoInfo, queryParam, err := e.Config(vwConfig.Git)
 
 	if err != nil {
 		c.JSON(http.StatusForbidden, ginError(fmt.Sprintf("code-server pod configuration failed; %s", err.Error())))
 		return
 	}
 
-	repoInfo := fmt.Sprintf("https://github.com/%s/%s/%s", git.Org, git.Repo, git.Branch)
-	queryParam := fmt.Sprintf("folder=/git/%s", git.Repo)
-
-	editor.Store.Upd(e, "", git.Type, repoInfo, queryParam)
+	editor.Store.Upd(e, "", vwConfig.Git.Type, repoInfo, queryParam)
 
 	c.JSON(http.StatusOK, ginSuccess("Configurations saved", map[string]interface{}{
 		"query-param": queryParam,
