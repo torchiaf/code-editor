@@ -3,8 +3,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Subject, catchError, combineLatest, debounceTime, from, map, switchMap, takeUntil } from 'rxjs';
 import { Extension, ViewCreate } from 'src/app/models/view';
 import { RestClientService } from 'src/app/services/rest-client.service';
-import { ErrorDialogComponent } from '../../dialogs/error-dialog/error-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { FormControl, Validators } from '@angular/forms';
+import { GitSelectStateMatcher, InputStateMatcher } from 'src/app/validations/state-matcher';
+import { CustomValidators } from 'src/app/validations/validators';
 
 @Component({
   selector: 'app-view-create-form',
@@ -12,6 +14,16 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./view-create-form.component.scss'],
 })
 export class ViewCreateFormComponent implements OnInit, OnDestroy {
+
+  nameFormControl = new FormControl('', [Validators.required]);
+  emailFormControl = new FormControl('', [Validators.email]);
+  gitAccountFormControl = new FormControl('', [Validators.required]);
+  gitRepoFormControl = new FormControl('', [Validators.required]);
+  gitBranchFormControl = new FormControl('', [Validators.required]);
+  vscodeSettingsFormControl = new FormControl('', [CustomValidators.jsonValidator()]);
+
+  inputMatcher = new InputStateMatcher();
+  gitSelectMatcher = new GitSelectStateMatcher();
 
   @Input() data!: any;
   @Output() done = new EventEmitter<boolean | ViewCreate>();
@@ -145,42 +157,15 @@ export class ViewCreateFormComponent implements OnInit, OnDestroy {
     this.view.general.sshKey = sshKey;
   }
 
-  public validateRepositoryInfo(): boolean {
-    return !this.repositoryInfo || !!(
-      this.view?.repo?.git?.type &&
-      this.view?.repo?.git?.org &&
-      this.view?.repo?.git?.repo &&
-      this.view?.repo?.git?.branch
-    );
-  }
-
-  public errors(): string[] {
-    const errors = [];
-
-    if (!this.view.general.name) {
-      errors.push('VIEW_CREATE_ERROR_MISSING_NAME');
-    }
-
-    if (!this.validateRepositoryInfo()) {
-      errors.push('VIEW_CREATE_ERROR_REPOSITORY_INFO');
-    }
-
-    return errors;
-  }
-
-  public errorMessages(): string {
-    return this.errors().reduce((acc, err) => (`${ acc }- ${ this.translate.instant(err) }\n`), '');
+  public validate(): boolean {
+    return this.nameFormControl.valid &&
+      this.emailFormControl.valid &&
+      this.vscodeSettingsFormControl.valid &&
+      (!this.repositoryInfo || (this.gitAccountFormControl.valid && this.gitRepoFormControl.valid && this.gitBranchFormControl.valid));
   }
 
   public save() {
-    try {
-      this.view.general.vscodeSettings = JSON.parse(this.view.general.vscodeSettings || '{}');
-    } catch (error) {
-      this.dialog.open(ErrorDialogComponent, {
-        width: '300px',
-        height: '150px',
-        data: { err: 'VSCode Settings, invalid json file' },
-      });
+    if (!this.validate()) {
       return;
     }
 

@@ -3,12 +3,17 @@
     <h4 mat-title>{{'CREATE_VIEW_TITLE' | translate}}</h4>
   </div>
   <form #viewForm="ngForm">
-    <div fxLayout="row" fxLayoutAlign="center none" class="view-form">
+    <div fxLayout="row" fxLayoutAlign="center none">
       <div fxLayout="column" fxLayoutAlign="space-around start">
         <p fxLayout="row" fxLayoutAlign="space-around center">
           <mat-form-field>
             <mat-label>{{'FIELD_VIEW_NAME' | translate}}</mat-label>
-            <input matInput placeholder="{{'FIELD_VIEW_NAME_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.name" maxlength="15" name="view-name">
+            <input matInput
+              [formControl]="nameFormControl"
+              [errorStateMatcher]="inputMatcher"
+              placeholder="{{'FIELD_VIEW_NAME_PLACEHOLDER' | translate}}"
+              [(ngModel)]="view.general.name" maxlength="15" name="view-name">
+              <mat-error *ngIf="nameFormControl.hasError('required')"> {{'VIEW_CREATE_VALIDATION_NAME_REQUIRED' | translate}} </mat-error>
           </mat-form-field>
         </p>
         <p fxLayout="row" fxLayoutAlign="space-around center">
@@ -18,7 +23,11 @@
           </mat-form-field>
           <mat-form-field>
             <mat-label>{{'FIELD_VIEW_GIT_EMAIL' | translate}}</mat-label>
-            <input matInput placeholder="{{'FIELD_VIEW_GIT_EMAIL_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.git.email" name="email">
+            <input matInput
+              [formControl]="emailFormControl"
+              [errorStateMatcher]="inputMatcher"
+              placeholder="{{'FIELD_VIEW_GIT_EMAIL_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.git.email" name="email">
+              <mat-error *ngIf="emailFormControl.hasError('email')">{{'VIEW_CREATE_VALIDATION_EMAIL_VALID' | translate}}</mat-error>
           </mat-form-field>
         </p>
         <p fxLayout="row" fxLayoutAlign="space-around center">
@@ -30,10 +39,13 @@
           </mat-form-field>
           <mat-form-field>
             <mat-label>{{'FIELD_VIEW_VSCODE_SETTINGS' | translate}}</mat-label>
-            <input matInput placeholder="{{'FIELD_VIEW_VSCODE_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.vscodeSettings" name="vscodeSettings">
+            <input matInput
+              [formControl]="vscodeSettingsFormControl"
+              [errorStateMatcher]="inputMatcher"
+              placeholder="{{'FIELD_VIEW_VSCODE_PLACEHOLDER' | translate}}" [(ngModel)]="view.general.vscodeSettings" name="vscodeSettings">
+              <mat-error *ngIf="vscodeSettingsFormControl.hasError('invalidJson')">{{'VIEW_CREATE_VALIDATION_VSCODE_SETTINGS_VALID' | translate}}</mat-error>
           </mat-form-field>
         </p>
-
         <p fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="15px" class="ssh-file-upload">
           <vo-mat-fileUpload
             [chooseLabel]="'FIELD_VIEW_SSH_KEY' | translate"
@@ -41,12 +53,10 @@
             (done)="sshFileUpload($event)">
           </vo-mat-fileUpload>
         </p>
-
         <mat-checkbox color="primary" class="repository-info" name="repositoryInfo"
           [(ngModel)]="repositoryInfo">
           {{ (repositoryInfo ? 'FIELD_VIEW_ADVANCED_ENABLED' : 'FIELD_VIEW_ADVANCED_DISABLED') | translate}}
         </mat-checkbox>
-
         <p *ngIf="repositoryInfo" fxLayout="row" fxLayoutAlign="space-around center">
           <mat-form-field>
             <mat-label>{{'FIELD_VIEW_GITHUB_TYPE' | translate}}</mat-label>
@@ -56,25 +66,35 @@
           </mat-form-field>
           <mat-form-field>
             <mat-label>{{'FIELD_VIEW_GITHUB_ACCOUNT' | translate}}</mat-label>
-            <input matInput placeholder="{{'FIELD_VIEW_ACCOUNT_PLACEHOLDER' | translate}}" name="account"
+            <input matInput
+              [formControl]="gitAccountFormControl"
+              [errorStateMatcher]="inputMatcher"
+              placeholder="{{'FIELD_VIEW_ACCOUNT_PLACEHOLDER' | translate}}" name="account"
               [(ngModel)]="view.repo.git.org"
               (input)="accountChange$.next(view.repo.git.org)">
+              <mat-error *ngIf="gitAccountFormControl.hasError('required')"> {{'VIEW_CREATE_VALIDATION_GIT_ACCOUNT_REQUIRED' | translate}} </mat-error>
           </mat-form-field>
           <mat-form-field>
             <mat-label>{{'FIELD_VIEW_GITHUB_REPO' | translate}}</mat-label>
             <mat-select [(ngModel)]="view.repo.git.repo" name="repo"
+              [formControl]="gitRepoFormControl"
+              [errorStateMatcher]="gitSelectMatcher"
               (selectionChange)="repositoryChange$.next(view.repo.git.repo)">
               <mat-option *ngFor="let repo of repositories" [value]="repo">{{repo}}</mat-option>
             </mat-select>
+            <mat-error *ngIf="gitRepoFormControl.hasError('required')"> {{'VIEW_CREATE_VALIDATION_GIT_REPO_REQUIRED' | translate}} </mat-error>
           </mat-form-field>
           <mat-form-field>
             <mat-label>{{'FIELD_VIEW_GITHUB_BRANCH' | translate}}</mat-label>
-            <mat-select [(ngModel)]="view.repo.git.branch" name="branch">
+            <mat-select
+              [formControl]="gitBranchFormControl"
+              [errorStateMatcher]="gitSelectMatcher"
+              [(ngModel)]="view.repo.git.branch" name="branch">
               <mat-option *ngFor="let branch of branches" [value]="branch">{{branch}}</mat-option>
             </mat-select>
+            <mat-error *ngIf="gitBranchFormControl.hasError('required')"> {{'VIEW_CREATE_VALIDATION_GIT_BRANCH_REQUIRED' | translate}} </mat-error>
           </mat-form-field>
         </p>
-
         <div class="form-btn" fxLayout="row" fxLayoutAlign="end end">
           <button
             mat-stroked-button color="primary"
@@ -82,11 +102,10 @@
             (click)="cancel()">
             <ng-container>{{'CANCEL' | translate}}</ng-container>
           </button>
-          <div matTooltip="{{ errors().length > 0 ? errorMessages() : '' }}">
+          <div>
             <button
               mat-raised-button
               color="primary"
-              [disabled]="errors().length > 0"
               (click)="save()">
               <ng-container>{{'SAVE' | translate}}</ng-container>
             </button>

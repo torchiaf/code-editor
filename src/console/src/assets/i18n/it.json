@@ -69,8 +69,13 @@
   "COLUMN_GIT_AUTH": "Git Configs",
 
   "COPY_TO_CLIP": "Copia Url",
-  "VIEW_CREATE_ERROR_MISSING_NAME": "Nome View mancante",
-  "VIEW_CREATE_ERROR_REPOSITORY_INFO": "Informazioni Repository Git incomplete",
+
+  "VIEW_CREATE_VALIDATION_NAME_REQUIRED": "Prego, scegli un nome",
+  "VIEW_CREATE_VALIDATION_EMAIL_VALID": "Prego, inserire una email valida",
+  "VIEW_CREATE_VALIDATION_GIT_ACCOUNT_REQUIRED": "Prego, scegli un Account Utente",
+  "VIEW_CREATE_VALIDATION_GIT_REPO_REQUIRED": "Prego, scegli un Repository",
+  "VIEW_CREATE_VALIDATION_GIT_BRANCH_REQUIRED": "Prego, scegli un Branch",
+  "VIEW_CREATE_VALIDATION_VSCODE_SETTINGS_VALID": "File Json invalido",
 
   "FILE_DOWNLOAD": "Scarica"
 }

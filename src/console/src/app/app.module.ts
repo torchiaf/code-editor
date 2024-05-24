@@ -5,7 +5,7 @@ import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/pages/login/login.component';
 import { AppRoutingModule } from './app-routing.module';
-import { FormsModule }   from '@angular/forms';
+import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCardModule } from '@angular/material/card';
@@ -76,6 +76,7 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     FlexLayoutModule,
     BrowserAnimationsModule,
     MatExpansionModule,

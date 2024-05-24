@@ -69,8 +69,13 @@
   "COLUMN_GIT_AUTH": "Git Configs",
 
   "COPY_TO_CLIP": "Copy Url",
-  "VIEW_CREATE_ERROR_MISSING_NAME": "View Name is empty",
-  "VIEW_CREATE_ERROR_REPOSITORY_INFO": "Git Repository info incomplete",
+
+  "VIEW_CREATE_VALIDATION_NAME_REQUIRED": "Please enter a Name",
+  "VIEW_CREATE_VALIDATION_EMAIL_VALID": "Please enter a valid email address",
+  "VIEW_CREATE_VALIDATION_GIT_ACCOUNT_REQUIRED": "Please enter a Git User Account",
+  "VIEW_CREATE_VALIDATION_GIT_REPO_REQUIRED": "Please select a Repository",
+  "VIEW_CREATE_VALIDATION_GIT_BRANCH_REQUIRED": "Please select a Branch",
+  "VIEW_CREATE_VALIDATION_VSCODE_SETTINGS_VALID": "Wrong Json format",
 
   "FILE_DOWNLOAD": "Download"
 }
