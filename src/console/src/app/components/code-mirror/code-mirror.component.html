@@ -1,4 +1,5 @@
 <ngx-codemirror
-  [(ngModel)]="data"
-  [options]="codeMirrorOptions">
+  [ngModel]="data"
+  (ngModelChange)="dataChange.emit($event)"
+  [options]="_options">
 </ngx-codemirror>

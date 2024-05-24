@@ -25,7 +25,7 @@ export interface ViewCreateGeneral {
     email: string;
   };
   extensions: Extension[];
-  vscodeSettings?: string;
+  vscodeSettings: string;
   sshKey: string;
 }
 

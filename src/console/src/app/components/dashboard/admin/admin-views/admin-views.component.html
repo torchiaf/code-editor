@@ -64,7 +64,7 @@
               mat-icon-button
               class="mat-icon-disabled"
               (click)="goToCreateView(element)"
-              matTooltip="{{'VIEW_ADD' | translate}}"
+              matTooltip="{{'VIEW_NEW' | translate}}"
               [matTooltipPosition]="'right'"
               [disabled]="creating">
               <mat-icon>play_arrow</mat-icon>
@@ -112,7 +112,7 @@
                     <th mat-header-cell *matHeaderCellDef> {{ 'COLUMN_VSCODE_SETTINGS' | translate }} </th>
                     <td mat-cell *matCellDef="let element">
                       <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="2px">
-                        <app-code-mirror [data]="element.VScodeSettings"></app-code-mirror>
+                        <app-code-mirror [data]="element.VScodeSettings" [options]="{ readOnly: 'nocursor' }"></app-code-mirror>
                         <button
                           *ngIf="element.VScodeSettings?.length > 0"
                           class="downloadFile mini-icon"

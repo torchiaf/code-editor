@@ -18,7 +18,7 @@
           <div class="view-row" fxLayout="column" fxLayoutAlign="space-around center" fxLayoutGap="15px">
             <mat-label class="view-label">{{'COLUMN_VSCODE_SETTINGS' | translate}}</mat-label>
             <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="2px">
-              <app-code-mirror class="code-mirror-row" [data]="data.VScodeSettings"></app-code-mirror>
+              <app-code-mirror class="code-mirror-row" [data]="data.VScodeSettings" [options]="{ readOnly: 'nocursor' }"></app-code-mirror>
               <button
                 *ngIf="!!data.VScodeSettings?.length"
                 class="downloadFile mini-icon"
