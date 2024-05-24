@@ -143,8 +143,8 @@ export class AdminViewsComponent implements OnInit, OnDestroy {
               repo: res.repo?.git.repo,
               branch: res.repo?.git.branch,
             }
-          }
-          
+          };
+
           await this.restClient.api.adminCreateView(row.Name || '', requestBody);
         } catch (error) {
           this.creating = null;
@@ -168,10 +168,13 @@ export class AdminViewsComponent implements OnInit, OnDestroy {
     if (res) {
       this.deleting = view.Id;
 
-      await this.restClient.api.deleteView(view.Id);
+      try {
+        await this.restClient.api.deleteView(view.Id);
+      } catch (error) {
+        this.deleting = null;
+      }
 
       this.deleting = null;
-
       this.tableRefresh$.next();
     }
   }

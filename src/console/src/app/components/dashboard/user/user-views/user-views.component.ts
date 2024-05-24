@@ -86,7 +86,11 @@ export class UserViewsComponent implements OnInit, OnDestroy {
     if (res && this.data) {
       this.deleting = true;
 
-      await this.restClient.api.deleteView(this.data.Id);
+      try {
+        await this.restClient.api.deleteView(this.data.Id);
+      } catch (error) {
+        this.deleting = false;
+      }
 
       this.deleting = false;
 
@@ -107,7 +111,7 @@ export class UserViewsComponent implements OnInit, OnDestroy {
             repo: res.repo?.git.repo,
             branch: res.repo?.git.branch,
           }
-        }
+        };
 
         await this.restClient.api.userCreateView(requestBody);
       } catch (error) {
