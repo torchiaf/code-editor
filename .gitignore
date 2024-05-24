@@ -1,6 +1,7 @@
 # dev
 out.yaml
 dev-*
+__debug*
 
 # node
 node_modules

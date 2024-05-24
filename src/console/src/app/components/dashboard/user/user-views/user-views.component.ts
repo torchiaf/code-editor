@@ -8,6 +8,7 @@ import { RestClientService } from 'src/app/services/rest-client.service';
 import { environment } from 'src/environments/environment';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/components/dialogs/confirm-dialog/confirm-dialog.component';
+import { downloadJson } from 'src/app/utils/file';
 
 @Component({
   selector: 'app-user-views',
@@ -114,6 +115,10 @@ export class UserViewsComponent implements OnInit, OnDestroy {
     }
 
     this.goToViews();
+  }
+
+  public downloadVSCodeSettings(element: View) {
+    downloadJson(`${ element.Id }-vscodeSettings`, element.VScodeSettings || '');
   }
 
 }

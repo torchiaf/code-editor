@@ -30,7 +30,7 @@
   }
 }
 
-.mat-column-Actions .mat-column-GitAuth {
+.mat-column-Actions, .mat-column-GitAuth {
   &.mat-header-cell {
     text-align: center;
   }
@@ -78,10 +78,6 @@
   display: flex;
   flex-direction: row;
   height: 40px;
-  .mat-progress-spinner {
-    margin-top: 10px;
-    margin-left: 10px;
-  }
 }
 
 // nested style

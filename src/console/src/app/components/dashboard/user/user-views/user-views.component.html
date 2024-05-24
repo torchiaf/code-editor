@@ -17,7 +17,17 @@
           </div>
           <div class="view-row" fxLayout="column" fxLayoutAlign="space-around center" fxLayoutGap="15px">
             <mat-label class="view-label">{{'COLUMN_VSCODE_SETTINGS' | translate}}</mat-label>
-            <app-code-mirror class="code-mirror-row" [data]="data.VScodeSettings"></app-code-mirror>
+            <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="2px">
+              <app-code-mirror class="code-mirror-row" [data]="data.VScodeSettings"></app-code-mirror>
+              <button
+                *ngIf="!!data.VScodeSettings?.length"
+                class="downloadFile mini-icon"
+                mat-mini-fab color="primary"
+                matTooltip="{{'FILE_DOWNLOAD' | translate}}"
+                (click)="downloadVSCodeSettings(data)">
+                <mat-icon>save_alt</mat-icon>
+              </button>
+            </div>
           </div>
           <div class="view-row" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="15px">
             <div>

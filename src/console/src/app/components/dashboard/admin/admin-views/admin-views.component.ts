@@ -13,7 +13,7 @@ import { RestClientService } from 'src/app/services/rest-client.service';
 import { FormControl } from '@angular/forms';
 import { CookieService } from 'ngx-cookie';
 import { environment } from 'src/environments/environment';
-import { saveAs as importedSaveAs } from 'file-saver';
+import { downloadJson } from 'src/app/utils/file';
 
 type Row = UserDetails & { Enabled: boolean, Views: View[] | MatTableDataSource<View> };
 
@@ -190,7 +190,6 @@ export class AdminViewsComponent implements OnInit, OnDestroy {
   }
 
   public downloadVSCodeSettings(element: View) {
-    const blob = new Blob([element.VScodeSettings || ''], { type: 'application/json' });
-    importedSaveAs(blob, `${ element.Id }-vscodeSettings`);
+    downloadJson(`${ element.Id }-vscodeSettings`, element.VScodeSettings || '');
   }
 }
