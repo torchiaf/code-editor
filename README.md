@@ -39,9 +39,9 @@ code-editor is an open source application to deploy [code-server](https://github
   response:
   {
     "viewId": "0001",
-    "code-server-session": code-server instance token to use in the browser,
     "path": path of the code-server instance UI,
-    "query-param": path to the cloned repo provisioned in the code-server instance
+    "query-param": path to the cloned repo provisioned in the code-server instance,
+    "code-server-session": code-server instance token to use in the browser
   }
   ```
 
