@@ -55,15 +55,18 @@ code-editor is an open source application to deploy [code-server](https://github
 
   Admin console
 
-  ![image](https://github.com/torchiaf/code-editor/assets/26394656/eb47d9ef-2db0-4d31-8805-8aa4cb8f830d)
+  ![image](https://github.com/torchiaf/code-editor/assets/26394656/daeeeca8-269d-439a-8549-863943329ed7)
+
 
   Create Page
 
-  ![image](https://github.com/torchiaf/code-editor/assets/26394656/b961412a-776e-4ba1-ab71-389e5d098e36)
+  ![image](https://github.com/torchiaf/code-editor/assets/26394656/327b275c-5954-4d7c-89ac-12c0cd99bc86)
+
 
   Users console
 
-  ![image](https://github.com/torchiaf/code-editor/assets/26394656/f976d149-573f-4b22-bde8-5263b29fef63)
+  ![image](https://github.com/torchiaf/code-editor/assets/26394656/dcbcdd78-f83c-4cfd-88b7-b289f636c98a)
+
 
   VSCode instance
   
