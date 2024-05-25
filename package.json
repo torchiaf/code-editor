@@ -1,6 +1,6 @@
 {
   "name": "code-editor",
-  "version": "v1.0.0",
+  "version": "v1.0.1",
   "description": "code-server deployed on kubernetes clusters, supporting multi-user and external authentication",
   "main": "index.js",
   "scripts": {
