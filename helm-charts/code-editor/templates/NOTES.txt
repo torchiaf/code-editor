@@ -1,20 +1,8 @@
-1. Get the application URL by running these commands:
-{{- if .Values.codeServer.ingress.enabled }}
-{{- range $host := .Values.codeServer.ingress.hosts }}
-  {{- range .paths }}
-  http://{{ $host.host }}/code-editor/route_name/?folder=/git/code-editor
+{{- if .Values.console.enabled }}
+1. Code Editor console is available here:
+  {{- if .Values.dev }}
+    http://{{ .Values.domain }}/code-editor/console
+  {{- else }}
+    https://{{ .Values.domain }}/code-editor/console
   {{- end }}
-{{- end }}
-{{- else if contains "NodePort" .Values.codeServer.service.type }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "code-editor.fullname" . }})
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT
-{{- else if contains "LoadBalancer" .Values.codeServer.service.type }}
-     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-           You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "code-editor.fullname" . }}'
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "code-editor.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo http://$SERVICE_IP:{{ .Values.codeServer.service.port }}
-{{- else if contains "ClusterIP" .Values.codeServer.service.type }}
-  echo "Visit http://127.0.0.1:3000 to use your application"
-  kubectl port-forward --namespace {{ .Release.Namespace }} service/{{ include "code-editor.fullname" . }} 3000:http
 {{- end }}
