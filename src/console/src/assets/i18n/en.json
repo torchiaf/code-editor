@@ -54,7 +54,7 @@
   "FIELD_VIEW_GITHUB_ACCOUNT": "Account",
   "FIELD_VIEW_GITHUB_REPO": "Repository",
   "FIELD_VIEW_GITHUB_BRANCH": "Branch",
-  "FIELD_VIEW_GIT_EMAIL": "Email",
+  "FIELD_VIEW_GIT_EMAIL": "Git Email",
   "VIEW_COLLAPSE_BTN": "Collapse all",
   "VIEW_TABLE_HEADER": "Views",
   "VIEW_SPINNER_TOOLTIP": "Creation in progress",
